@@ -43,11 +43,40 @@ body {
     align-items: center;
     gap: 1rem;
     padding: 2rem;
+    background: linear-gradient(135deg, #e0f2fe 0%, #f8fafc 50%, #fef3c7 100%);
 }
 
 #start-screen h1 {
     font-size: 3rem;
     color: var(--primary);
+    animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+#start-screen .subtitle {
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+#start-screen .categories {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#start-screen .category-chip {
+    background: var(--card-bg);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--text);
+    box-shadow: var(--shadow);
 }
 
 #start-screen p {
@@ -91,6 +120,11 @@ body {
 .btn-danger:disabled {
     background: #ccc;
     cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-danger[title]:disabled:hover {
+    position: relative;
 }
 
 /* Game screen layout */
@@ -136,8 +170,30 @@ body {
 }
 
 .opponent-cards .card {
-    transform: scale(0.7);
+    transform: scale(0.8);
     transform-origin: center top;
+}
+
+/* Scroll indicator gradient for cards */
+.cards-container {
+    position: relative;
+}
+
+.cards-container::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(to left, var(--bg), transparent);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.cards-container.has-scroll::after {
+    opacity: 1;
 }
 
 /* Individual cards */
@@ -195,6 +251,21 @@ body {
     font-weight: 600;
 }
 
+.card.clickable {
+    cursor: pointer;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.card.clickable:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+}
+
 /* Board area */
 #board-area {
     flex: 1;
@@ -207,12 +278,50 @@ body {
     position: relative;
 }
 
+.category-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
 .category-label {
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 1.25rem;
     color: var(--primary);
-    font-weight: 600;
-    margin-bottom: 0.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.btn-change-category {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: var(--card-bg);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-change-category:hover {
+    background: var(--primary);
+    transform: rotate(180deg);
+}
+
+.btn-change-category:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.btn-change-category:disabled:hover {
+    background: var(--card-bg);
+    transform: none;
 }
 
 /* Board wrapper with +/- indicators */
@@ -224,25 +333,39 @@ body {
 }
 
 .board-indicator {
-    font-size: 1.5rem;
-    font-weight: bold;
-    width: 30px;
-    height: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    font-weight: 600;
+    gap: 2px;
+}
+
+.board-indicator .icon {
+    font-size: 1.25rem;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    flex-shrink: 0;
 }
 
-.board-indicator.plus {
+.board-indicator.plus .icon {
     background: var(--success);
     color: white;
 }
 
-.board-indicator.minus {
+.board-indicator.minus .icon {
     background: var(--danger);
     color: white;
+}
+
+.board-indicator .label {
+    color: var(--text-light);
+    white-space: nowrap;
 }
 
 .board-cards {
@@ -258,17 +381,9 @@ body {
     border-color: #fbbf24;
 }
 
-/* Reference card styling */
-.board-cards .card.reference {
-    background: #e0f2fe;
-    border-color: var(--primary);
-    border-width: 3px;
-}
+/* Reference card - no special styling, just normal card */
 
-.board-cards .card.revealed {
-    background: #dcfce7;
-    border-color: var(--success);
-}
+/* Revealed cards during bluff - no special color */
 
 .board-cards .card.clickable {
     cursor: pointer;
@@ -285,7 +400,7 @@ body {
 }
 
 /* Action bar */
-#action-bar, #placing-bar, #reveal-bar {
+#action-bar, #placing-bar, #reveal-bar, #bluff-result-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -327,10 +442,26 @@ body {
 }
 
 /* Reveal bar */
-.reveal-progress {
-    font-size: 0.875rem;
+#reveal-bar {
+    justify-content: center;
+}
+
+/* Bluff result bar */
+#bluff-result-bar {
+    justify-content: center;
+    gap: 1rem;
+}
+
+.bluff-result-text {
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text);
+}
+
+.reveal-hint {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary);
 }
 
 /* Slot for placing cards */
@@ -372,12 +503,11 @@ body {
     color: var(--success);
 }
 
-/* Pending card on board */
+/* Pending card on board - the card being placed */
 .board-cards .card.pending {
-    background: #fef9c3;
-    border-color: #facc15;
+    border-color: var(--primary);
     border-width: 3px;
-    animation: pulse 1s infinite;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
 }
 
 @keyframes pulse {
@@ -385,20 +515,49 @@ body {
     50% { opacity: 0.8; transform: scale(0.98); }
 }
 
-/* Message area */
+/* Toast message area */
 #message-area {
     position: fixed;
-    top: 50%;
+    top: 1rem;
     left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--card-bg);
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%);
+    background: var(--text);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     text-align: center;
     font-weight: 600;
+    font-size: 0.875rem;
     z-index: 100;
-    animation: fadeIn 0.3s;
+    animation: toastIn 0.3s ease-out;
+    max-width: 90%;
+}
+
+#message-area.toast-out {
+    animation: toastOut 0.3s ease-in forwards;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes toastOut {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
 }
 
 @keyframes fadeIn {
@@ -511,13 +670,37 @@ body {
 
 /* Highlight current player cards */
 .player1-area.active .cards-container {
-    background: rgba(37, 99, 235, 0.1);
+    background: rgba(37, 99, 235, 0.15);
     border-radius: 8px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.3);
 }
 
 .player2-area.active .cards-container {
-    background: rgba(220, 38, 38, 0.1);
+    background: rgba(220, 38, 38, 0.15);
     border-radius: 8px;
+    border: 2px solid var(--danger);
+    box-shadow: 0 0 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Pulse animation for active player cards */
+.player1-area.active .card,
+.player2-area.active .card {
+    animation: cardPulse 2s ease-in-out infinite;
+}
+
+@keyframes cardPulse {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Player label colors */
+.player1-area.active .player-label {
+    color: var(--primary);
+}
+
+.player2-area.active .player-label {
+    color: var(--danger);
 }
 
 /* Card value formatting */
@@ -593,4 +776,31 @@ body {
     display: block;
     width: 100%;
     margin-top: 1rem;
+}
+
+/* Capital validation buttons */
+.validation-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.validation-buttons button {
+    flex: 1;
+}
+
+/* Card entry animation */
+.card {
+    animation: cardEntry 0.3s ease-out;
+}
+
+@keyframes cardEntry {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }

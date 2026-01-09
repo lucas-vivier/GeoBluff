@@ -10,8 +10,14 @@
     <div id="app">
         <!-- Start screen -->
         <div id="start-screen" class="screen">
-            <h1>GeoBluff</h1>
-            <p>Jeu de géographie pour 2 joueurs</p>
+            <h1>🌍 GeoBluff</h1>
+            <p class="subtitle">Jeu de géographie pour deux équipes</p>
+            <p>Placez vos cartes du plus grand au plus petit et appelez le bluff au bon moment.</p>
+            <div class="categories">
+                <span class="category-chip">👥 Population</span>
+                <span class="category-chip">📐 Superficie</span>
+                <span class="category-chip">💰 PIB</span>
+            </div>
             <button id="start-btn" class="btn-primary">Nouvelle Partie</button>
         </div>
 
@@ -22,32 +28,39 @@
 
             <!-- Player 2 area (opponent, top) -->
             <div class="player-area player2-area">
-                <div class="player-label">Joueur 2</div>
+                <div class="player-label">équipe 2</div>
                 <div id="player2-cards" class="cards-container opponent-cards"></div>
             </div>
 
             <!-- Board area -->
             <div id="board-area">
-                <div class="category-label">
-                    <span id="category-name"></span>
+                <div class="category-header">
+                    <span id="category-name" class="category-label"></span>
+                    <button id="change-category-btn" class="btn-change-category" title="Changer de catégorie">🔄</button>
                 </div>
                 <div class="board-wrapper">
-                    <div class="board-indicator plus">+</div>
+                    <div class="board-indicator minus">
+                        <span class="icon">-</span>
+                        <span class="label">Petit</span>
+                    </div>
                     <div id="board-cards" class="cards-container board-cards"></div>
-                    <div class="board-indicator minus">-</div>
+                    <div class="board-indicator plus">
+                        <span class="icon">+</span>
+                        <span class="label">Grand</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Player 1 area (current, bottom) -->
             <div class="player-area player1-area">
                 <div id="player1-cards" class="cards-container active-cards"></div>
-                <div class="player-label">Joueur 1</div>
+                <div class="player-label">équipe 1</div>
             </div>
 
             <!-- Action bar - playing phase -->
             <div id="action-bar">
-                <button id="bluff-btn" class="btn-danger">BLUFF</button>
-                <div id="turn-indicator">Tour: Joueur 1</div>
+                <button id="bluff-btn" class="btn-danger" title="Posez d'abord une carte">BLUFF !</button>
+                <div id="turn-indicator">Tour: équipe 1</div>
             </div>
 
             <!-- Action bar - placing phase -->
@@ -57,10 +70,10 @@
                 <button id="validate-btn" class="btn-primary">Valider</button>
             </div>
 
-            <!-- Action bar - bluff reveal phase -->
-            <div id="reveal-bar" class="hidden">
-                <span class="reveal-progress">Carte <span id="reveal-current">0</span>/<span id="reveal-total">0</span></span>
-                <button id="reveal-btn" class="btn-primary">Révéler la carte suivante</button>
+            <!-- Action bar - bluff result phase -->
+            <div id="bluff-result-bar" class="hidden">
+                <span id="bluff-result-message" class="bluff-result-text"></span>
+                <button id="continue-btn" class="btn-primary">Continuer</button>
             </div>
 
             <!-- Message area -->
@@ -86,38 +99,23 @@
             </div>
         </div>
 
+        <!-- Capital validation modal -->
+        <div id="capital-validation-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Validation de la capitale</h2>
+                <p id="capital-validation-text"></p>
+                <div class="validation-buttons">
+                    <button id="capital-accept-btn" class="btn-primary">Accepter</button>
+                    <button id="capital-refuse-btn" class="btn-danger">Refuser</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Rules modal -->
         <div id="rules-modal" class="modal hidden">
             <div class="modal-content rules-modal-content">
                 <h2>Regles du jeu</h2>
-                <div class="rules-text">
-                    <p><strong>But :</strong> Se debarrasser de toutes ses cartes en premier.</p>
-
-                    <p><strong>Deroulement :</strong></p>
-                    <ul>
-                        <li>Une categorie est tiree au hasard (Population, Superficie, PIB)</li>
-                        <li>Une carte de reference est placee au centre</li>
-                        <li>A tour de role, placez une carte sur le plateau</li>
-                        <li>Les cartes doivent etre ordonnees de la plus grande valeur (gauche) a la plus petite (droite)</li>
-                    </ul>
-
-                    <p><strong>Bluff :</strong></p>
-                    <ul>
-                        <li>Si vous pensez que l'ordre est faux, criez "BLUFF !"</li>
-                        <li>Toutes les cartes sont revelees</li>
-                        <li>Si l'ordre etait correct : vous recuperez toutes les cartes</li>
-                        <li>Si l'ordre etait faux : l'adversaire recupere les cartes</li>
-                    </ul>
-
-                    <p><strong>Victoire :</strong></p>
-                    <ul>
-                        <li>Quand vous posez votre derniere carte, nommez sa capitale</li>
-                        <li>Bonne reponse = Victoire !</li>
-                        <li>Mauvaise reponse = la carte revient dans votre main</li>
-                    </ul>
-
-                    <p class="rules-source"><strong>Source des donnees :</strong> Banque Mondiale 2023</p>
-                </div>
+                <div id="rules-content" class="rules-text"></div>
                 <button id="close-rules-btn" class="btn-primary">Compris !</button>
             </div>
         </div>

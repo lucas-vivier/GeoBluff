@@ -117,16 +117,50 @@ def get_state():
         # Add pending card info
         if state["pending_card"]:
             state["pending_card"] = hide_card(state["pending_card"])
+    elif state["phase"] == "bluff_reveal":
+        # During bluff reveal, show values only for revealed cards
+        state["player1_cards"] = [hide_card(c) for c in state["player1_cards"]]
+        state["player2_cards"] = [hide_card(c) for c in state["player2_cards"]]
+        state["board"] = [
+            {**full_card(c), "revealed": c.get("revealed", False), "is_reference": i == 0}
+            for i, c in enumerate(state["board"])
+        ]
     else:
-        # During reveal or other phases, show values
+        # During other phases (game_over, capital_check, etc.), show all values
         state["player1_cards"] = [full_card(c) for c in state["player1_cards"]]
         state["player2_cards"] = [full_card(c) for c in state["player2_cards"]]
         state["board"] = [
-            {**full_card(c), "revealed": i < state.get("reveal_index", 0), "is_reference": i == 0}
+            {**full_card(c), "revealed": True, "is_reference": i == 0}
             for i, c in enumerate(state["board"])
         ]
 
     return state
+
+def change_category():
+    """Change to a different category (only during playing phase with just reference card)."""
+    global game_state
+
+    if game_state is None:
+        return {"error": "No game in progress"}
+
+    if game_state["phase"] != "playing":
+        return {"error": "Can only change category during playing phase"}
+
+    # Only allow category change when board has just the reference card
+    if len(game_state["board"]) > 1:
+        return {"error": "Cannot change category after cards have been placed"}
+
+    # Pick a different category
+    old_category = game_state["category"]
+    available = [c for c in CATEGORIES if c != old_category]
+    new_category = random.choice(available)
+
+    game_state["category"] = new_category
+    game_state["category_label"] = CATEGORY_LABELS[new_category]
+    game_state["message"] = f"Nouvelle catégorie : {CATEGORY_LABELS[new_category]}"
+
+    return get_state()
+
 
 def play_card(player, card_name):
     """Play a card from hand - enters placing phase."""
@@ -194,7 +228,7 @@ def validate_placement():
     cards = game_state[f"player{player}_cards"]
     if len(cards) == 0:
         game_state["phase"] = "capital_check"
-        game_state["message"] = f"Joueur {player} doit entrer la capitale de {card['name']}"
+        game_state["message"] = f"L'équipe {player} doit entrer la capitale de {card['name']}"
         return get_state()
 
     # Switch player
@@ -246,23 +280,30 @@ def call_bluff(player):
 
     return get_state()
 
-def reveal_card():
-    """Reveal next card during bluff check."""
+def reveal_card(index):
+    """Reveal a specific card during bluff check."""
     global game_state
 
     if game_state is None or game_state["phase"] != "bluff_reveal":
         return {"error": "Not in reveal phase"}
 
-    game_state["reveal_index"] += 1
+    if index < 0 or index >= len(game_state["board"]):
+        return {"error": "Invalid card index"}
+
+    # Mark this card as revealed
+    game_state["board"][index]["revealed"] = True
+
+    # Count revealed cards
+    revealed_count = sum(1 for card in game_state["board"] if card.get("revealed", False))
 
     # Check if all cards revealed
-    if game_state["reveal_index"] >= len(game_state["board"]):
+    if revealed_count >= len(game_state["board"]):
         return check_bluff_result()
 
     return get_state()
 
 def check_bluff_result():
-    """Check if bluff was correct after all cards revealed."""
+    """Check if bluff was correct after all cards revealed - enter result phase."""
     global game_state
 
     category = game_state["category"]
@@ -277,13 +318,32 @@ def check_bluff_result():
             break
 
     if is_correct_order:
-        # Order was correct, bluff caller loses - they draw 2 new cards
+        # Order was correct, bluff caller loses
         loser = bluff_caller
-        game_state["message"] = f"Tout etait en ordre ! Joueur {bluff_caller} pioche 2 cartes..."
+        game_state["message"] = f"Tout était en ordre ! L'équipe {bluff_caller} piochera 2 cartes."
     else:
-        # Order was wrong, bluff caller wins - opponent draws 2 new cards
+        # Order was wrong, bluff caller wins
         loser = 2 if bluff_caller == 1 else 1
-        game_state["message"] = f"Bien vu ! Le bluff est demasque ! Joueur {loser} pioche 2 cartes."
+        game_state["message"] = f"Bien vu ! Le bluff est démasqué ! L'équipe {loser} piochera 2 cartes."
+
+    # Enter result phase - wait for user to click continue
+    game_state["phase"] = "bluff_result"
+    game_state["bluff_loser"] = loser
+
+    return get_state()
+
+
+def continue_after_bluff():
+    """Continue game after bluff result has been shown."""
+    global game_state
+
+    if game_state is None:
+        return {"error": "No game in progress"}
+
+    if game_state["phase"] != "bluff_result":
+        return {"error": "Not in bluff result phase"}
+
+    loser = game_state["bluff_loser"]
 
     # Clear the board (cards are discarded)
     game_state["board"] = []
@@ -296,7 +356,7 @@ def check_bluff_result():
         if len(game_state[f"player{player}_cards"]) == 0:
             game_state["phase"] = "game_over"
             game_state["winner"] = player
-            game_state["message"] += f" Joueur {player} gagne la partie !"
+            game_state["message"] = f"L'équipe {player} gagne la partie !"
             return get_state()
 
     # Start new round with new category and new reference card
@@ -365,7 +425,7 @@ def check_capital_answer(player, answer):
     if check_capital(answer, correct_capital):
         game_state["phase"] = "game_over"
         game_state["winner"] = player
-        game_state["message"] = f"Bravo ! {correct_capital} est correct. Joueur {player} gagne !"
+        game_state["message"] = f"Bravo ! {correct_capital} est correct. L'équipe {player} gagne !"
     else:
         # Wrong answer - enter validation phase where opponent can accept or refuse
         game_state["phase"] = "capital_validation"
@@ -394,14 +454,14 @@ def validate_capital_decision(accepted):
         # Opponent accepts the answer
         game_state["phase"] = "game_over"
         game_state["winner"] = player
-        game_state["message"] = f"L'adversaire a accepte ! Joueur {player} gagne !"
+        game_state["message"] = f"L'adversaire a accepte ! L'équipe {player} gagne !"
     else:
         # Opponent refuses - player draws 2 new cards
         game_state["board"].pop()  # Remove the card from board
         draw_new_cards(player, 2)
         game_state["phase"] = "playing"
         game_state["current_player"] = 2 if player == 1 else 1
-        game_state["message"] = f"Refuse ! La capitale etait {correct_capital}. Joueur {player} pioche 2 cartes."
+        game_state["message"] = f"Refuse ! La capitale etait {correct_capital}. L'équipe {player} pioche 2 cartes."
 
     # Clear validation state
     game_state["capital_answer"] = None

@@ -1,6 +1,7 @@
 // GeoBluff - Main JavaScript
 
 let gameState = null;
+let toastTimeout = null;
 
 // DOM Elements
 const startScreen = document.getElementById('start-screen');
@@ -26,13 +27,18 @@ const actionBar = document.getElementById('action-bar');
 const placingBar = document.getElementById('placing-bar');
 const cancelBtn = document.getElementById('cancel-btn');
 const validateBtn = document.getElementById('validate-btn');
-const revealBar = document.getElementById('reveal-bar');
-const revealBtn = document.getElementById('reveal-btn');
-const revealCurrent = document.getElementById('reveal-current');
-const revealTotal = document.getElementById('reveal-total');
 const rulesBtn = document.getElementById('rules-btn');
 const rulesModal = document.getElementById('rules-modal');
+const rulesContent = document.getElementById('rules-content');
 const closeRulesBtn = document.getElementById('close-rules-btn');
+const capitalValidationModal = document.getElementById('capital-validation-modal');
+const capitalValidationText = document.getElementById('capital-validation-text');
+const capitalAcceptBtn = document.getElementById('capital-accept-btn');
+const capitalRefuseBtn = document.getElementById('capital-refuse-btn');
+const changeCategoryBtn = document.getElementById('change-category-btn');
+const bluffResultBar = document.getElementById('bluff-result-bar');
+const bluffResultMessage = document.getElementById('bluff-result-message');
+const continueBtn = document.getElementById('continue-btn');
 
 // API calls
 async function api(endpoint, method = 'GET', body = null) {
@@ -66,7 +72,7 @@ function formatValue(value, category) {
 
 // Create card element
 function createCard(card, options = {}) {
-    const { isActive = false, showValue = false, isReference = false, isPending = false } = options;
+    const { isActive = false, showValue = false, isReference = false, isPending = false, canReveal = false, cardIndex = -1 } = options;
 
     const div = document.createElement('div');
     div.className = 'card';
@@ -94,6 +100,11 @@ function createCard(card, options = {}) {
 
     if (isActive) {
         div.addEventListener('click', () => selectAndPlayCard(card));
+    }
+
+    if (canReveal) {
+        div.classList.add('clickable');
+        div.addEventListener('click', () => revealCardByIndex(cardIndex));
     }
 
     return div;
@@ -181,11 +192,11 @@ async function callBluff() {
     }
 }
 
-// Reveal card during bluff
-async function revealCard() {
+// Reveal card during bluff (by clicking on it)
+async function revealCardByIndex(index) {
     if (gameState.phase !== 'bluff_reveal') return;
 
-    const result = await api('reveal-card', 'POST');
+    const result = await api('reveal-card', 'POST', { index });
 
     if (!result.error) {
         gameState = result;
@@ -212,6 +223,36 @@ async function submitCapital() {
     }
 }
 
+// Capital validation decision (opponent accepts or refuses)
+async function capitalDecision(accepted) {
+    const result = await api('capital-decision', 'POST', { accepted });
+
+    if (!result.error) {
+        gameState = result;
+        render();
+    }
+}
+
+// Change category
+async function changeCategory() {
+    const result = await api('change-category', 'POST');
+
+    if (!result.error) {
+        gameState = result;
+        render();
+    }
+}
+
+// Continue after bluff result
+async function continueAfterBluff() {
+    const result = await api('continue-after-bluff', 'POST');
+
+    if (!result.error) {
+        gameState = result;
+        render();
+    }
+}
+
 // Render game state
 function render() {
     if (!gameState) return;
@@ -222,7 +263,7 @@ function render() {
     categoryName.textContent = gameState.category_label;
 
     // Update turn indicator
-    turnIndicator.textContent = `Tour: Joueur ${gameState.current_player}`;
+    turnIndicator.textContent = `Tour: équipe ${gameState.current_player}`;
     turnIndicator.className = gameState.current_player === 2 ? 'player2' : '';
 
     // Update player areas
@@ -286,16 +327,30 @@ function render() {
             }
         }
     } else if (gameState.phase === 'bluff_reveal') {
-        // Bluff reveal: show cards, revealed ones show value
+        // Bluff reveal: click on cards to reveal them
         gameState.board.forEach((card, index) => {
             const isReference = card.is_reference || false;
-            const showValue = card.revealed || false;
-            const cardEl = createCard(card, { showValue, isReference });
+            const isRevealed = card.revealed || false;
+            const canReveal = !isRevealed;
+            const cardEl = createCard(card, {
+                showValue: isRevealed,
+                isReference,
+                canReveal,
+                cardIndex: index
+            });
 
-            if (card.revealed) {
+            if (isRevealed) {
                 cardEl.classList.add('revealed');
             }
 
+            boardCards.appendChild(cardEl);
+        });
+    } else if (gameState.phase === 'bluff_result') {
+        // Bluff result: show all cards with values (all revealed)
+        gameState.board.forEach((card, index) => {
+            const isReference = card.is_reference || false;
+            const cardEl = createCard(card, { showValue: true, isReference });
+            cardEl.classList.add('revealed');
             boardCards.appendChild(cardEl);
         });
     } else {
@@ -310,20 +365,22 @@ function render() {
     // Show/hide action bars
     actionBar.classList.add('hidden');
     placingBar.classList.add('hidden');
-    revealBar.classList.add('hidden');
+    bluffResultBar.classList.add('hidden');
 
     if (gameState.phase === 'placing') {
         placingBar.classList.remove('hidden');
-    } else if (gameState.phase === 'bluff_reveal') {
-        revealBar.classList.remove('hidden');
-        revealCurrent.textContent = gameState.reveal_index;
-        revealTotal.textContent = gameState.board.length;
-    } else {
+    } else if (gameState.phase === 'bluff_result') {
+        bluffResultBar.classList.remove('hidden');
+        bluffResultMessage.textContent = gameState.message;
+    } else if (gameState.phase !== 'bluff_reveal') {
         actionBar.classList.remove('hidden');
     }
 
     // Update bluff button - only enabled when there are at least 2 cards on board
     bluffBtn.disabled = gameState.phase !== 'playing' || gameState.board.length < 2;
+
+    // Update change category button - only enabled when board has just reference card
+    changeCategoryBtn.disabled = gameState.phase !== 'playing' || gameState.board.length > 1;
 
     // Show/hide modals
     if (gameState.phase === 'capital_check') {
@@ -335,21 +392,51 @@ function render() {
         capitalModal.classList.add('hidden');
     }
 
+    if (gameState.phase === 'capital_validation') {
+        capitalValidationText.textContent = gameState.message;
+        capitalValidationModal.classList.remove('hidden');
+    } else {
+        capitalValidationModal.classList.add('hidden');
+    }
+
     if (gameState.phase === 'game_over') {
-        winnerText.textContent = `Joueur ${gameState.winner} gagne !`;
+        winnerText.textContent = `L'équipe ${gameState.winner} gagne !`;
         gameoverMessage.textContent = gameState.message;
         gameoverModal.classList.remove('hidden');
     } else {
         gameoverModal.classList.add('hidden');
     }
 
-    // Show message if any
+    // Show message as toast
     if (gameState.message && gameState.phase !== 'game_over' && gameState.phase !== 'capital_check' && gameState.phase !== 'placing') {
-        messageArea.textContent = gameState.message;
-        messageArea.classList.remove('hidden');
+        showToast(gameState.message);
     } else {
-        messageArea.classList.add('hidden');
+        hideToast();
     }
+}
+
+// Toast functions
+function showToast(message) {
+    if (toastTimeout) {
+        clearTimeout(toastTimeout);
+    }
+    messageArea.textContent = message;
+    messageArea.classList.remove('hidden', 'toast-out');
+
+    // Auto-hide after 4 seconds
+    toastTimeout = setTimeout(() => {
+        messageArea.classList.add('toast-out');
+        setTimeout(() => {
+            messageArea.classList.add('hidden');
+        }, 300);
+    }, 4000);
+}
+
+function hideToast() {
+    if (toastTimeout) {
+        clearTimeout(toastTimeout);
+    }
+    messageArea.classList.add('hidden');
 }
 
 // Start new game
@@ -373,11 +460,37 @@ capitalInput.addEventListener('keypress', (e) => {
 cancelBtn.addEventListener('click', cancelPlacement);
 validateBtn.addEventListener('click', validatePlacement);
 
-// Reveal phase button
-revealBtn.addEventListener('click', revealCard);
+// Capital validation buttons
+capitalAcceptBtn.addEventListener('click', () => capitalDecision(true));
+capitalRefuseBtn.addEventListener('click', () => capitalDecision(false));
 
-// Rules modal
+// Change category button
+changeCategoryBtn.addEventListener('click', changeCategory);
+
+// Continue after bluff button
+continueBtn.addEventListener('click', continueAfterBluff);
+
+// Rules modal - load from file
+async function loadRules() {
+    const res = await fetch('/api/rules');
+    const text = await res.text();
+    // Simple markdown to HTML conversion
+    const html = text
+        .replace(/^# (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h4>$1</h4>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>\n?)+/gs, '<ul>$&</ul>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/^(?!<[hul])/gm, '<p>')
+        .replace(/(?<![>])$/gm, '</p>')
+        .replace(/<p><\/p>/g, '')
+        .replace(/<p>(<[hul])/g, '$1')
+        .replace(/(<\/[hul]>)<\/p>/g, '$1');
+    rulesContent.innerHTML = html;
+}
+
 rulesBtn.addEventListener('click', () => {
+    loadRules();
     rulesModal.classList.remove('hidden');
 });
 

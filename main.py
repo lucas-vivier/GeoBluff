@@ -38,6 +38,10 @@ class CapitalDecisionRequest(BaseModel):
     accepted: bool  # True if opponent accepts the answer
 
 
+class RevealCardRequest(BaseModel):
+    index: int  # Index of card to reveal
+
+
 @app.get("/")
 async def index(request: Request):
     """Serve the game page."""
@@ -87,9 +91,9 @@ async def call_bluff(req: BluffRequest):
 
 
 @app.post("/api/reveal-card")
-async def reveal_card():
-    """Reveal next card during bluff."""
-    result = game.reveal_card()
+async def reveal_card(req: RevealCardRequest):
+    """Reveal a specific card during bluff."""
+    result = game.reveal_card(req.index)
     if "error" in result:
         return JSONResponse(result, status_code=400)
     return result
@@ -126,6 +130,33 @@ async def validate_placement():
 async def cancel_placement():
     """Cancel placement and return card to hand."""
     result = game.cancel_placement()
+    if "error" in result:
+        return JSONResponse(result, status_code=400)
+    return result
+
+
+@app.post("/api/capital-decision")
+async def capital_decision(req: CapitalDecisionRequest):
+    """Opponent decides if capital answer is acceptable."""
+    result = game.validate_capital_decision(req.accepted)
+    if "error" in result:
+        return JSONResponse(result, status_code=400)
+    return result
+
+
+@app.post("/api/change-category")
+async def change_category():
+    """Change to a different category."""
+    result = game.change_category()
+    if "error" in result:
+        return JSONResponse(result, status_code=400)
+    return result
+
+
+@app.post("/api/continue-after-bluff")
+async def continue_after_bluff():
+    """Continue game after viewing bluff result."""
+    result = game.continue_after_bluff()
     if "error" in result:
         return JSONResponse(result, status_code=400)
     return result
