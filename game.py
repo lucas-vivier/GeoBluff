@@ -1,0 +1,410 @@
+"""Game logic for GeoBluff."""
+import json
+import random
+import unicodedata
+from pathlib import Path
+
+# Use countries_test.json for testing, countries.json for production
+COUNTRIES_FILE = Path(__file__).parent / "countries_test.json"
+
+def load_countries():
+    """Load countries from JSON file."""
+    with open(COUNTRIES_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+COUNTRIES = load_countries()
+CATEGORIES = ["population", "area", "gdp"]
+CATEGORY_LABELS = {"population": "Population", "area": "Superficie (km²)", "gdp": "PIB ($)"}
+
+game_state = None
+
+def normalize_text(text):
+    """Remove accents and lowercase for comparison."""
+    text = text.lower().strip()
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', text)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+def levenshtein_distance(s1, s2):
+    """Calculate Levenshtein distance between two strings."""
+    if len(s1) < len(s2):
+        return levenshtein_distance(s2, s1)
+    if len(s2) == 0:
+        return len(s1)
+
+    previous_row = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+
+    return previous_row[-1]
+
+def check_capital(input_capital, correct_capital):
+    """Check if input capital matches (with tolerance)."""
+    input_norm = normalize_text(input_capital)
+    correct_norm = normalize_text(correct_capital)
+
+    if input_norm == correct_norm:
+        return True
+
+    return levenshtein_distance(input_norm, correct_norm) <= 2
+
+def new_game():
+    """Start a new game."""
+    global game_state
+
+    category = random.choice(CATEGORIES)
+    shuffled = random.sample(COUNTRIES, len(COUNTRIES))
+
+    # Reference card (15th card, separate from player hands)
+    reference_card = shuffled[14]
+    player1_cards = shuffled[:7]
+    player2_cards = shuffled[7:14]
+
+    game_state = {
+        "category": category,
+        "category_label": CATEGORY_LABELS[category],
+        "player1_cards": player1_cards,
+        "player2_cards": player2_cards,
+        "board": [reference_card],  # Start with reference card on board
+        "current_player": 1,
+        "phase": "playing",  # playing, placing, bluff_reveal, capital_check, game_over
+        "winner": None,
+        "message": None,
+        "bluff_caller": None,
+        "reveal_index": 0,
+        "pending_card": None,  # Card being placed (not yet validated)
+        "pending_position": 0  # Index where card will be inserted (0 = leftmost)
+    }
+
+    return get_state()
+
+def get_state():
+    """Get current game state (hiding opponent's card values)."""
+    if game_state is None:
+        return None
+
+    state = game_state.copy()
+    category = state["category"]
+
+    # Hide values for cards in hand (only show name and flag)
+    def hide_card(card):
+        return {"name": card["name"], "flag": card["flag"], "capital": card["capital"]}
+
+    def full_card(card):
+        return {
+            "name": card["name"],
+            "flag": card["flag"],
+            "capital": card["capital"],
+            "value": card[category]
+        }
+
+    # During playing/placing phase, hide card values
+    if state["phase"] in ("playing", "placing"):
+        state["player1_cards"] = [hide_card(c) for c in state["player1_cards"]]
+        state["player2_cards"] = [hide_card(c) for c in state["player2_cards"]]
+        # All cards hidden (including reference)
+        state["board"] = [
+            {**hide_card(c), "is_reference": i == 0}
+            for i, c in enumerate(state["board"])
+        ]
+        # Add pending card info
+        if state["pending_card"]:
+            state["pending_card"] = hide_card(state["pending_card"])
+    else:
+        # During reveal or other phases, show values
+        state["player1_cards"] = [full_card(c) for c in state["player1_cards"]]
+        state["player2_cards"] = [full_card(c) for c in state["player2_cards"]]
+        state["board"] = [
+            {**full_card(c), "revealed": i < state.get("reveal_index", 0), "is_reference": i == 0}
+            for i, c in enumerate(state["board"])
+        ]
+
+    return state
+
+def play_card(player, card_name):
+    """Play a card from hand - enters placing phase."""
+    global game_state
+
+    if game_state is None:
+        return {"error": "No game in progress"}
+
+    if game_state["phase"] != "playing":
+        return {"error": "Cannot play card now"}
+
+    if game_state["current_player"] != player:
+        return {"error": "Not your turn"}
+
+    cards = game_state[f"player{player}_cards"]
+    card = next((c for c in cards if c["name"] == card_name), None)
+
+    if card is None:
+        return {"error": "Card not found"}
+
+    # Remove card from hand and enter placing phase
+    cards.remove(card)
+    game_state["pending_card"] = card
+    # Default position: rightmost (after all existing cards)
+    game_state["pending_position"] = len(game_state["board"])
+    game_state["phase"] = "placing"
+    game_state["message"] = "Choisissez la position puis validez"
+
+    return get_state()
+
+def set_position(position):
+    """Change the position of the pending card (index)."""
+    global game_state
+
+    if game_state is None or game_state["phase"] != "placing":
+        return {"error": "Not in placing phase"}
+
+    # Position is an index from 0 to len(board)
+    max_pos = len(game_state["board"])
+    if not isinstance(position, int) or position < 0 or position > max_pos:
+        return {"error": f"Position must be between 0 and {max_pos}"}
+
+    game_state["pending_position"] = position
+    return get_state()
+
+def validate_placement():
+    """Validate the card placement and end turn."""
+    global game_state
+
+    if game_state is None or game_state["phase"] != "placing":
+        return {"error": "Not in placing phase"}
+
+    card = game_state["pending_card"]
+    position = game_state["pending_position"]
+    player = game_state["current_player"]
+
+    # Insert card at the specified index
+    game_state["board"].insert(position, card)
+
+    # Clear pending state
+    game_state["pending_card"] = None
+    game_state["pending_position"] = None
+
+    # Check for win condition
+    cards = game_state[f"player{player}_cards"]
+    if len(cards) == 0:
+        game_state["phase"] = "capital_check"
+        game_state["message"] = f"Joueur {player} doit entrer la capitale de {card['name']}"
+        return get_state()
+
+    # Switch player
+    game_state["current_player"] = 2 if player == 1 else 1
+    game_state["phase"] = "playing"
+    game_state["message"] = None
+
+    return get_state()
+
+def cancel_placement():
+    """Cancel placement and return card to hand."""
+    global game_state
+
+    if game_state is None or game_state["phase"] != "placing":
+        return {"error": "Not in placing phase"}
+
+    player = game_state["current_player"]
+    card = game_state["pending_card"]
+
+    # Return card to hand
+    game_state[f"player{player}_cards"].append(card)
+    game_state["pending_card"] = None
+    game_state["pending_position"] = None
+    game_state["phase"] = "playing"
+    game_state["message"] = None
+
+    return get_state()
+
+def call_bluff(player):
+    """Call bluff on the last played card."""
+    global game_state
+
+    if game_state is None:
+        return {"error": "No game in progress"}
+
+    if game_state["phase"] != "playing":
+        return {"error": "Cannot call bluff now"}
+
+    if len(game_state["board"]) < 2:
+        return {"error": "Need at least 2 cards on board"}
+
+    if game_state["current_player"] != player:
+        return {"error": "Not your turn"}
+
+    game_state["phase"] = "bluff_reveal"
+    game_state["bluff_caller"] = player
+    game_state["reveal_index"] = 0
+    game_state["message"] = "Cliquez sur les cartes pour les révéler"
+
+    return get_state()
+
+def reveal_card():
+    """Reveal next card during bluff check."""
+    global game_state
+
+    if game_state is None or game_state["phase"] != "bluff_reveal":
+        return {"error": "Not in reveal phase"}
+
+    game_state["reveal_index"] += 1
+
+    # Check if all cards revealed
+    if game_state["reveal_index"] >= len(game_state["board"]):
+        return check_bluff_result()
+
+    return get_state()
+
+def check_bluff_result():
+    """Check if bluff was correct after all cards revealed."""
+    global game_state
+
+    category = game_state["category"]
+    board = game_state["board"]
+    bluff_caller = game_state["bluff_caller"]
+
+    # Check if order is correct (descending)
+    is_correct_order = True
+    for i in range(len(board) - 1):
+        if board[i][category] < board[i + 1][category]:
+            is_correct_order = False
+            break
+
+    if is_correct_order:
+        # Order was correct, bluff caller loses - they draw 2 new cards
+        loser = bluff_caller
+        game_state["message"] = f"Tout etait en ordre ! Joueur {bluff_caller} pioche 2 cartes..."
+    else:
+        # Order was wrong, bluff caller wins - opponent draws 2 new cards
+        loser = 2 if bluff_caller == 1 else 1
+        game_state["message"] = f"Bien vu ! Le bluff est demasque ! Joueur {loser} pioche 2 cartes."
+
+    # Clear the board (cards are discarded)
+    game_state["board"] = []
+
+    # Loser draws 2 new cards from available countries
+    draw_new_cards(loser, 2)
+
+    # Check if someone has won (no cards left) - unlikely after drawing but check anyway
+    for player in [1, 2]:
+        if len(game_state[f"player{player}_cards"]) == 0:
+            game_state["phase"] = "game_over"
+            game_state["winner"] = player
+            game_state["message"] += f" Joueur {player} gagne la partie !"
+            return get_state()
+
+    # Start new round with new category and new reference card
+    start_new_round(loser)
+
+    return get_state()
+
+
+def draw_new_cards(player, count):
+    """Draw new cards for a player from available countries."""
+    global game_state
+
+    # Get all cards currently in players' hands
+    player_cards = set(c["name"] for c in game_state["player1_cards"] + game_state["player2_cards"])
+
+    # Get available countries (not in any player's hand)
+    available = [c for c in COUNTRIES if c["name"] not in player_cards]
+
+    # Draw up to 'count' cards
+    cards_to_draw = min(count, len(available))
+    if cards_to_draw > 0:
+        new_cards = random.sample(available, cards_to_draw)
+        game_state[f"player{player}_cards"].extend(new_cards)
+
+def start_new_round(starting_player):
+    """Start a new round with a new category."""
+    global game_state
+
+    # Pick new category (different from current)
+    old_category = game_state["category"]
+    available = [c for c in CATEGORIES if c != old_category]
+    new_category = random.choice(available)
+
+    # Pick a reference card from remaining countries (not in players' hands)
+    player_cards = set(c["name"] for c in game_state["player1_cards"] + game_state["player2_cards"])
+    available_countries = [c for c in COUNTRIES if c["name"] not in player_cards]
+
+    if available_countries:
+        reference_card = random.choice(available_countries)
+    else:
+        # If all countries are in hands, take one from loser's hand
+        reference_card = game_state[f"player{starting_player}_cards"].pop(0)
+
+    game_state["board"] = [reference_card]
+    game_state["category"] = new_category
+    game_state["category_label"] = CATEGORY_LABELS[new_category]
+    game_state["current_player"] = starting_player
+    game_state["phase"] = "playing"
+    game_state["bluff_caller"] = None
+    game_state["reveal_index"] = 0
+    game_state["message"] += f" Nouvelle catégorie : {CATEGORY_LABELS[new_category]}"
+
+def check_capital_answer(player, answer):
+    """Check if the capital answer is correct."""
+    global game_state
+
+    if game_state is None:
+        return {"error": "No game in progress"}
+
+    if game_state["phase"] != "capital_check":
+        return {"error": "Not in capital check phase"}
+
+    last_card = game_state["board"][-1]
+    correct_capital = last_card["capital"]
+
+    if check_capital(answer, correct_capital):
+        game_state["phase"] = "game_over"
+        game_state["winner"] = player
+        game_state["message"] = f"Bravo ! {correct_capital} est correct. Joueur {player} gagne !"
+    else:
+        # Wrong answer - enter validation phase where opponent can accept or refuse
+        game_state["phase"] = "capital_validation"
+        game_state["capital_answer"] = answer
+        game_state["capital_player"] = player
+        game_state["message"] = f"Reponse: '{answer}'. La vraie capitale est '{correct_capital}'. L'adversaire peut accepter ou refuser."
+
+    return get_state()
+
+
+def validate_capital_decision(accepted):
+    """Opponent decides if the capital answer is acceptable."""
+    global game_state
+
+    if game_state is None:
+        return {"error": "No game in progress"}
+
+    if game_state["phase"] != "capital_validation":
+        return {"error": "Not in capital validation phase"}
+
+    player = game_state["capital_player"]
+    last_card = game_state["board"][-1]
+    correct_capital = last_card["capital"]
+
+    if accepted:
+        # Opponent accepts the answer
+        game_state["phase"] = "game_over"
+        game_state["winner"] = player
+        game_state["message"] = f"L'adversaire a accepte ! Joueur {player} gagne !"
+    else:
+        # Opponent refuses - player draws 2 new cards
+        game_state["board"].pop()  # Remove the card from board
+        draw_new_cards(player, 2)
+        game_state["phase"] = "playing"
+        game_state["current_player"] = 2 if player == 1 else 1
+        game_state["message"] = f"Refuse ! La capitale etait {correct_capital}. Joueur {player} pioche 2 cartes."
+
+    # Clear validation state
+    game_state["capital_answer"] = None
+    game_state["capital_player"] = None
+
+    return get_state()

@@ -1,0 +1,596 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --danger: #dc2626;
+    --danger-dark: #b91c1c;
+    --success: #16a34a;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Screens */
+.screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Start screen */
+#start-screen {
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+#start-screen h1 {
+    font-size: 3rem;
+    color: var(--primary);
+}
+
+#start-screen p {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.btn-primary, .btn-danger {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: var(--danger-dark);
+}
+
+.btn-danger:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Game screen layout */
+#game-screen {
+    padding: 0.5rem;
+    gap: 0.5rem;
+}
+
+/* Player areas */
+.player-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.player-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-align: center;
+    font-weight: 600;
+}
+
+.player2-area {
+    flex: 0 0 auto;
+}
+
+.player1-area {
+    flex: 0 0 auto;
+}
+
+/* Cards container */
+.cards-container {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    padding: 0.25rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.active-cards .card {
+    cursor: grab;
+}
+
+.opponent-cards .card {
+    transform: scale(0.7);
+    transform-origin: center top;
+}
+
+/* Individual cards */
+.card {
+    flex: 0 0 auto;
+    width: 70px;
+    height: 100px;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    scroll-snap-align: center;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    user-select: none;
+    touch-action: none;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.card.dragging {
+    opacity: 0.5;
+    transform: scale(1.05);
+}
+
+.card.selected {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary);
+}
+
+.card .flag {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.card .name {
+    font-size: 0.6rem;
+    text-align: center;
+    margin-top: 0.25rem;
+    line-height: 1.1;
+    max-height: 2.2em;
+    overflow: hidden;
+}
+
+.card .value {
+    font-size: 0.55rem;
+    color: var(--text-light);
+    margin-top: auto;
+    font-weight: 600;
+}
+
+/* Board area */
+#board-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+    border-radius: 12px;
+    padding: 0.5rem;
+    min-height: 140px;
+    position: relative;
+}
+
+.category-label {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+/* Board wrapper with +/- indicators */
+.board-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.board-indicator {
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.board-indicator.plus {
+    background: var(--success);
+    color: white;
+}
+
+.board-indicator.minus {
+    background: var(--danger);
+    color: white;
+}
+
+.board-cards {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    min-height: 110px;
+}
+
+.board-cards .card {
+    background: #fef3c7;
+    border-color: #fbbf24;
+}
+
+/* Reference card styling */
+.board-cards .card.reference {
+    background: #e0f2fe;
+    border-color: var(--primary);
+    border-width: 3px;
+}
+
+.board-cards .card.revealed {
+    background: #dcfce7;
+    border-color: var(--success);
+}
+
+.board-cards .card.clickable {
+    cursor: pointer;
+}
+
+.board-cards .card.clickable:hover {
+    transform: scale(1.05);
+}
+
+/* Drop zone indicator */
+#board-area.drag-over {
+    background: linear-gradient(135deg, #bbf7d0 0%, #dcfce7 100%);
+    border: 2px dashed var(--success);
+}
+
+/* Action bar */
+#action-bar, #placing-bar, #reveal-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    gap: 0.5rem;
+}
+
+#turn-indicator {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+#turn-indicator.player2 {
+    color: var(--danger);
+}
+
+/* Placing bar */
+.btn-secondary {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: var(--bg);
+}
+
+.placing-hint {
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+/* Reveal bar */
+.reveal-progress {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Slot for placing cards */
+.slot {
+    width: 24px;
+    height: 80px;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.slot:hover {
+    border-color: var(--primary);
+    background: rgba(37, 99, 235, 0.1);
+}
+
+.slot.active {
+    border-color: var(--success);
+    background: rgba(22, 163, 74, 0.2);
+    border-style: solid;
+}
+
+.slot-arrow {
+    font-size: 1rem;
+    color: var(--text-light);
+}
+
+.slot:hover .slot-arrow,
+.slot.active .slot-arrow {
+    color: var(--primary);
+}
+
+.slot.active .slot-arrow {
+    color: var(--success);
+}
+
+/* Pending card on board */
+.board-cards .card.pending {
+    background: #fef9c3;
+    border-color: #facc15;
+    border-width: 3px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(0.98); }
+}
+
+/* Message area */
+#message-area {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--card-bg);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-weight: 600;
+    z-index: 100;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    padding: 1rem;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 320px;
+    width: 100%;
+}
+
+.modal-content h2 {
+    margin-bottom: 0.5rem;
+}
+
+.modal-content p {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* Card flip animation */
+.card.flipping {
+    animation: flip 0.5s;
+}
+
+@keyframes flip {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(90deg); }
+    100% { transform: rotateY(0deg); }
+}
+
+/* Responsive */
+@media (min-width: 480px) {
+    .card {
+        width: 80px;
+        height: 110px;
+    }
+
+    .card .flag {
+        font-size: 1.75rem;
+    }
+
+    .card .name {
+        font-size: 0.65rem;
+    }
+
+    .cards-container {
+        gap: 0.5rem;
+    }
+}
+
+@media (min-width: 768px) {
+    #game-screen {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+
+    .card {
+        width: 90px;
+        height: 120px;
+    }
+
+    .card .flag {
+        font-size: 2rem;
+    }
+
+    .card .name {
+        font-size: 0.7rem;
+    }
+
+    .opponent-cards .card {
+        transform: scale(0.8);
+    }
+}
+
+/* Highlight current player cards */
+.player1-area.active .cards-container {
+    background: rgba(37, 99, 235, 0.1);
+    border-radius: 8px;
+}
+
+.player2-area.active .cards-container {
+    background: rgba(220, 38, 38, 0.1);
+    border-radius: 8px;
+}
+
+/* Card value formatting */
+.card .value {
+    word-break: break-all;
+}
+
+/* Rules button */
+.rules-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: var(--card-bg);
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 50;
+    transition: all 0.2s;
+}
+
+.rules-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* Rules modal */
+.rules-modal-content {
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.rules-modal-content h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.rules-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.rules-text p {
+    margin-bottom: 0.75rem;
+    color: var(--text);
+}
+
+.rules-text ul {
+    margin-left: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.rules-text li {
+    margin-bottom: 0.25rem;
+    color: var(--text);
+}
+
+.rules-source {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-light) !important;
+}
+
+.rules-modal-content button {
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+}
