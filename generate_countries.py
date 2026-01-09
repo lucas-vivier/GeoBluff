@@ -7,12 +7,13 @@ Usage:
     python generate_countries.py
 
 Crée countries.json avec ~195 pays contenant:
-- nom, capitale, drapeau, population, superficie, PIB
+- name, capital, flag, population, area, gdp (+ autres catégories configurées)
 """
 
 import json
 import requests
 import time
+from pathlib import Path
 from typing import Optional
 
 
@@ -29,7 +30,7 @@ def fetch_rest_countries() -> dict:
     
     url = "https://restcountries.com/v3.1/all"
     params = {
-        "fields": "name,cca2,cca3,translations,capital,region,area,population",
+        "fields": "name,cca2,cca3,translations,capital,region,area,population,latlng",
     }
     headers = {"User-Agent": "GeoBluff/1.0 (+https://restcountries.com)"}
     response = requests.get(url, params=params, headers=headers, timeout=60)
@@ -54,17 +55,22 @@ def fetch_rest_countries() -> dict:
         capitals = country.get("capital", [])
         capital = capitals[0] if capitals else ""
         
+        latlng = country.get("latlng") or []
+        latitude = latlng[0] if len(latlng) > 0 else None
+        longitude = latlng[1] if len(latlng) > 1 else None
+
         countries[iso3] = {
-            "nom": name,
-            "nom_en": name_en,
-            "capitale": capital,
-            "drapeau": get_flag_emoji(iso2),
+            "name": name,
+            "name_en": name_en,
+            "capital": capital,
+            "flag": get_flag_emoji(iso2),
             "iso2": iso2,
             "iso3": iso3,
             "region": country.get("region", ""),
-            "superficie": country.get("area"),
+            "area": country.get("area"),
             "population": country.get("population"),
-            "pib": None,
+            "latitude": latitude,
+            "longitude": longitude,
         }
     
     print(f"   ✓ {len(countries)} pays")
@@ -158,50 +164,133 @@ CAPITALE_VARIANTES = {
     "Addis-Abeba": ["Addis Ababa"],
 }
 
+DEFAULT_CATEGORIES = [
+    {
+        "id": "population",
+        "label": "Population",
+        "source": "rest",
+        "field": "population",
+    },
+    {
+        "id": "area",
+        "label": "Superficie (km²)",
+        "source": "rest",
+        "field": "area",
+    },
+    {
+        "id": "gdp",
+        "label": "PIB ($)",
+        "source": "wb",
+        "indicator": "NY.GDP.MKTP.CD",
+    },
+]
+
+
+def load_categories_config(config_path: Path) -> dict:
+    if not config_path.exists():
+        return {
+            "enabled_categories": [c["id"] for c in DEFAULT_CATEGORIES],
+            "categories": DEFAULT_CATEGORIES,
+        }
+
+    with open(config_path, encoding="utf-8") as f:
+        return json.load(f)
+
 
 def generate_countries_json(output: str = "countries.json"):
     """Génère le fichier countries.json."""
     print("🌍 Génération de countries.json pour GeoBluff\n")
+    min_coverage = 150
     
+    config_path = Path(__file__).parent / "categories_config.json"
+    config = load_categories_config(config_path)
+    categories = config.get("categories", DEFAULT_CATEGORIES)
+    enabled = config.get("enabled_categories") or [c["id"] for c in categories]
+    enabled_set = set(enabled)
+    category_map = {c["id"]: c for c in categories if c["id"] in enabled_set}
+
     # 1. Données de base
     countries = fetch_rest_countries()
     
     # 2. Indicateurs World Bank
-    population = fetch_world_bank("SP.POP.TOTL", "Population")
-    gdp = fetch_world_bank("NY.GDP.MKTP.CD", "PIB")
+    wb_data = {}
+    disabled = []
+    for cat_id, cat in category_map.items():
+        if cat.get("source") == "wb":
+            indicator = cat.get("indicator")
+            if indicator:
+                wb_data[cat_id] = fetch_world_bank(indicator, cat.get("label", cat_id))
+                if len(wb_data[cat_id]) == 0:
+                    disabled.append(cat_id)
+        elif cat.get("source") == "rest":
+            field = cat.get("field")
+            if field and not any(c.get(field) is not None for c in countries.values()):
+                disabled.append(cat_id)
+
+    if disabled:
+        for cat_id in disabled:
+            enabled_set.discard(cat_id)
+            category_map.pop(cat_id, None)
+            wb_data.pop(cat_id, None)
+        print("   ⚠ Catégories ignorées (pas de données): " + ", ".join(disabled))
     
     # 3. Fusionner
     print("\n🔄 Fusion des données...")
     
     for iso3, c in countries.items():
-        # Population World Bank si disponible
-        if iso3 in population:
-            c["population"] = int(population[iso3])
-        
-        # PIB
-        if iso3 in gdp:
-            c["pib"] = int(gdp[iso3])
+        # Categories depuis World Bank
+        for cat_id, values in wb_data.items():
+            if iso3 in values:
+                value = values[iso3]
+                if cat_id == "gdp":
+                    value = int(value)
+                else:
+                    value = float(value)
+                c[cat_id] = value
         
         # Capitale en français
         if iso3 in CAPITALES_FR:
-            c["capitale_en"] = c["capitale"]
-            c["capitale"] = CAPITALES_FR[iso3]
+            c["capital_en"] = c["capital"]
+            c["capital"] = CAPITALES_FR[iso3]
         else:
-            c["capitale_en"] = c["capitale"]
+            c["capital_en"] = c["capital"]
         
         # Variantes de capitale
-        cap = c["capitale"]
-        variantes = [cap, c["capitale_en"]]
+        cap = c["capital"]
+        variantes = [cap, c["capital_en"]]
         if cap in CAPITALE_VARIANTES:
             variantes.extend(CAPITALE_VARIANTES[cap])
-        c["capitale_variantes"] = list(set(v for v in variantes if v))
+        c["capital_variants"] = list(set(v for v in variantes if v))
+        
+        # Categories depuis REST
+        for cat_id, cat in category_map.items():
+            if cat.get("source") == "rest":
+                field = cat.get("field")
+                if field and cat_id not in c:
+                    c[cat_id] = c.get(field)
     
-    # 4. Filtrer pays valides
+    # 4. Appliquer la tolérance de couverture par catégorie
+    coverage = {
+        cat_id: sum(1 for c in countries.values() if c.get(cat_id) is not None)
+        for cat_id in enabled_set
+    }
+    low_coverage = [cat_id for cat_id, count in coverage.items() if count < min_coverage]
+    if low_coverage:
+        for cat_id in low_coverage:
+            enabled_set.discard(cat_id)
+            category_map.pop(cat_id, None)
+            wb_data.pop(cat_id, None)
+        print(
+            f"   ⚠ Catégories ignorées (< {min_coverage} pays): "
+            + ", ".join(low_coverage)
+        )
+
+    # 5. Filtrer pays valides
     valid = [
         c for c in countries.values()
-        if c["population"] and c["superficie"] and c["nom"]
+        if c.get("name") and all(c.get(cat_id) is not None for cat_id in enabled_set)
     ]
-    valid.sort(key=lambda x: x["nom"])
+    valid.sort(key=lambda x: x["name"])
     
     # 5. Sauvegarder
     print(f"\n💾 Sauvegarde de {len(valid)} pays...")
@@ -209,20 +298,26 @@ def generate_countries_json(output: str = "countries.json"):
         json.dump(valid, f, ensure_ascii=False, indent=2)
     
     # Stats
-    with_gdp = sum(1 for c in valid if c["pib"])
+    with_gdp = sum(1 for c in valid if c.get("gdp") is not None)
     print(f"\n✅ {output} créé!")
     print(f"   - {len(valid)} pays")
-    print(f"   - {with_gdp} avec PIB")
+    if "gdp" in enabled_set:
+        print(f"   - {with_gdp} avec PIB")
     
     return valid
 
 
 def show_categories():
     """Affiche les catégories disponibles pour le jeu."""
+    config_path = Path(__file__).parent / "categories_config.json"
+    config = load_categories_config(config_path)
+    categories = config.get("categories", DEFAULT_CATEGORIES)
+    enabled = config.get("enabled_categories") or [c["id"] for c in categories]
+    category_map = {c["id"]: c for c in categories if c["id"] in enabled}
     print("\n📊 Catégories disponibles pour GeoBluff:")
-    print("   - population : Nombre d'habitants")
-    print("   - superficie : Surface en km²")
-    print("   - pib : Produit Intérieur Brut en $")
+    for cat_id in enabled:
+        label = category_map.get(cat_id, {}).get("label", cat_id)
+        print(f"   - {cat_id} : {label}")
 
 
 if __name__ == "__main__":

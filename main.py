@@ -1,6 +1,7 @@
 """FastAPI app for GeoBluff."""
 from pathlib import Path
-from fastapi import FastAPI, Request
+from typing import Optional
+from fastapi import FastAPI, Request, Body
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse, PlainTextResponse
@@ -42,6 +43,10 @@ class RevealCardRequest(BaseModel):
     index: int  # Index of card to reveal
 
 
+class NewGameRequest(BaseModel):
+    cards_per_player: int = 7
+
+
 @app.get("/")
 async def index(request: Request):
     """Serve the game page."""
@@ -58,9 +63,10 @@ async def get_rules():
 
 
 @app.post("/api/new-game")
-async def new_game():
+async def new_game(req: Optional[NewGameRequest] = Body(default=None)):
     """Start a new game."""
-    return game.new_game()
+    cards = req.cards_per_player if req else 7
+    return game.new_game(cards)
 
 
 @app.get("/api/game-state")
@@ -157,6 +163,15 @@ async def change_category():
 async def continue_after_bluff():
     """Continue game after viewing bluff result."""
     result = game.continue_after_bluff()
+    if "error" in result:
+        return JSONResponse(result, status_code=400)
+    return result
+
+
+@app.post("/api/continue-after-final-validation")
+async def continue_after_final_validation():
+    """Continue game after failed final validation."""
+    result = game.continue_after_final_validation()
     if "error" in result:
         return JSONResponse(result, status_code=400)
     return result

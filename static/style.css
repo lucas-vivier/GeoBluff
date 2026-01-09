@@ -84,6 +84,34 @@ body {
     margin-bottom: 1rem;
 }
 
+/* Cards count selector */
+.cards-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.cards-selector label {
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.cards-selector select {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.cards-selector select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
 /* Buttons */
 .btn-primary, .btn-danger {
     padding: 0.75rem 1.5rem;
@@ -199,30 +227,24 @@ body {
 /* Individual cards */
 .card {
     flex: 0 0 auto;
-    width: 70px;
-    height: 100px;
+    width: 60px;
+    height: 80px;
     background: var(--card-bg);
     border: 2px solid var(--border);
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.25rem;
+    padding: 0.2rem;
     scroll-snap-align: center;
     transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     user-select: none;
-    touch-action: none;
 }
 
 .card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow);
-}
-
-.card.dragging {
-    opacity: 0.5;
-    transform: scale(1.05);
 }
 
 .card.selected {
@@ -231,7 +253,7 @@ body {
 }
 
 .card .flag {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     line-height: 1;
 }
 
@@ -249,6 +271,10 @@ body {
     color: var(--text-light);
     margin-top: auto;
     font-weight: 600;
+}
+
+.card.revealed .value {
+    font-size: 0.8rem;
 }
 
 .card.clickable {
@@ -273,8 +299,9 @@ body {
     flex-direction: column;
     background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
     border-radius: 12px;
-    padding: 0.5rem;
-    min-height: 140px;
+    padding: 0.25rem;
+    min-height: 120px;
+    max-height: 160px;
     position: relative;
 }
 
@@ -370,19 +397,32 @@ body {
 
 .board-cards {
     flex: 1;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
-    min-height: 110px;
+    min-height: 85px;
     overflow-x: auto;
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem;
     scroll-behavior: smooth;
 }
 
 .board-cards .card {
     background: #fef3c7;
     border-color: #fbbf24;
-    touch-action: pan-x;
+}
+
+/* Last capital display */
+.last-capital {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    padding: 0.25rem;
+    min-height: 1.5rem;
+}
+
+.last-capital:not(:empty) {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
 }
 
 /* Reference card - no special styling, just normal card */
@@ -470,10 +510,10 @@ body {
 
 /* Slot for placing cards */
 .slot {
-    width: 24px;
-    height: 80px;
+    width: 20px;
+    height: 70px;
     border: 2px dashed var(--border);
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -630,6 +670,39 @@ body {
 /* Responsive */
 @media (min-width: 480px) {
     .card {
+        width: 70px;
+        height: 95px;
+    }
+
+    .card .flag {
+        font-size: 1.5rem;
+    }
+
+    .card .name {
+        font-size: 0.6rem;
+    }
+
+    .cards-container {
+        gap: 0.4rem;
+    }
+
+    #board-area {
+        max-height: 180px;
+    }
+
+    .board-cards {
+        min-height: 100px;
+    }
+}
+
+@media (min-width: 768px) {
+    #game-screen {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+
+    .card {
         width: 80px;
         height: 110px;
     }
@@ -642,33 +715,16 @@ body {
         font-size: 0.65rem;
     }
 
-    .cards-container {
-        gap: 0.5rem;
-    }
-}
-
-@media (min-width: 768px) {
-    #game-screen {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 1rem;
-    }
-
-    .card {
-        width: 90px;
-        height: 120px;
-    }
-
-    .card .flag {
-        font-size: 2rem;
-    }
-
-    .card .name {
-        font-size: 0.7rem;
-    }
-
     .opponent-cards .card {
-        transform: scale(0.8);
+        transform: scale(0.85);
+    }
+
+    #board-area {
+        max-height: 200px;
+    }
+
+    .slot {
+        height: 90px;
     }
 }
 
@@ -712,49 +768,35 @@ body {
     word-break: break-all;
 }
 
-/* Rules button */
-.rules-btn {
+/* Top buttons container */
+.top-buttons {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid var(--primary);
-    background: var(--card-bg);
-    color: var(--primary);
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
+    display: flex;
+    gap: 0.5rem;
     z-index: 50;
-    transition: all 0.2s;
 }
 
-.rules-btn:hover {
-    background: var(--primary);
-    color: white;
-}
-
-/* Restart button */
-.restart-btn {
-    position: absolute;
-    top: 0.5rem;
-    right: 3rem;
+/* Icon buttons (unified style) */
+.icon-btn {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     border: 2px solid var(--border);
     background: var(--card-bg);
     color: var(--text);
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    z-index: 50;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.restart-btn:hover {
-    background: var(--text);
+.icon-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
     color: white;
 }
 

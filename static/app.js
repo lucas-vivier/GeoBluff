@@ -40,6 +40,9 @@ const changeCategoryBtn = document.getElementById('change-category-btn');
 const bluffResultBar = document.getElementById('bluff-result-bar');
 const bluffResultMessage = document.getElementById('bluff-result-message');
 const continueBtn = document.getElementById('continue-btn');
+const homeBtn = document.getElementById('home-btn');
+const cardsCountSelect = document.getElementById('cards-count');
+const lastCapitalDiv = document.getElementById('last-capital');
 
 // API calls
 async function api(endpoint, method = 'GET', body = null) {
@@ -49,24 +52,63 @@ async function api(endpoint, method = 'GET', body = null) {
     return res.json();
 }
 
+// Format hemisphere values with sign and direction
+function formatHemisphere(value, positiveLabel, negativeLabel) {
+    const num = Number(value);
+    if (Number.isNaN(num)) return value.toString();
+    const sign = num >= 0 ? '+' : '-';
+    const label = num >= 0 ? positiveLabel : negativeLabel;
+    const absVal = Math.abs(num);
+    const formatted = absVal.toFixed(1).replace(/\.0$/, '');
+    return `${sign}${formatted} ${label}`;
+}
+
 // Format numbers for display
 function formatValue(value, category) {
+    const num = Number(value);
     if (category === 'population') {
-        if (value >= 1e9) return (value / 1e9).toFixed(1) + ' Mrd';
-        if (value >= 1e6) return (value / 1e6).toFixed(1) + ' M';
-        if (value >= 1e3) return (value / 1e3).toFixed(0) + ' k';
-        return value.toString();
+        if (num >= 1e9) return (num / 1e9).toFixed(1) + ' Mrd';
+        if (num >= 1e6) return (num / 1e6).toFixed(1) + ' M';
+        if (num >= 1e3) return (num / 1e3).toFixed(0) + ' k';
+        return num.toString();
     }
     if (category === 'area') {
-        if (value >= 1e6) return (value / 1e6).toFixed(2) + ' M km²';
-        if (value >= 1e3) return (value / 1e3).toFixed(0) + 'k km²';
-        return value + ' km²';
+        if (num >= 1e6) return (num / 1e6).toFixed(2) + ' M km²';
+        if (num >= 1e3) return (num / 1e3).toFixed(0) + 'k km²';
+        return num + ' km²';
     }
     if (category === 'gdp') {
-        if (value >= 1e12) return (value / 1e12).toFixed(1) + ' T$';
-        if (value >= 1e9) return (value / 1e9).toFixed(0) + ' Mrd$';
-        if (value >= 1e6) return (value / 1e6).toFixed(0) + ' M$';
-        return value + ' $';
+        if (num >= 1e12) return (num / 1e12).toFixed(1) + ' T$';
+        if (num >= 1e9) return (num / 1e9).toFixed(0) + ' Mrd$';
+        if (num >= 1e6) return (num / 1e6).toFixed(0) + ' M$';
+        return num + ' $';
+    }
+    if (category === 'life_expectancy') {
+        return num.toFixed(1) + ' ans';
+    }
+    if (category === 'co2_per_capita') {
+        return num.toFixed(2) + ' t';
+    }
+    if (category === 'population_density') {
+        return num.toFixed(1) + ' hab/km²';
+    }
+    if (category === 'inflation') {
+        return num.toFixed(1) + ' %';
+    }
+    if (category === 'internet_users') {
+        return num.toFixed(1) + ' %';
+    }
+    if (category === 'electricity_access') {
+        return num.toFixed(1) + ' %';
+    }
+    if (category === 'unemployment') {
+        return num.toFixed(1) + ' %';
+    }
+    if (category === 'north_south') {
+        return formatHemisphere(value, 'N', 'S');
+    }
+    if (category === 'east_west') {
+        return formatHemisphere(value, 'E', 'W');
     }
     return value.toString();
 }
@@ -193,9 +235,9 @@ async function callBluff() {
     }
 }
 
-// Reveal card during bluff (by clicking on it)
+// Reveal card during bluff or final validation (by clicking on it)
 async function revealCardByIndex(index) {
-    if (gameState.phase !== 'bluff_reveal') return;
+    if (gameState.phase !== 'bluff_reveal' && gameState.phase !== 'final_validation') return;
 
     const result = await api('reveal-card', 'POST', { index });
 
@@ -244,9 +286,14 @@ async function changeCategory() {
     }
 }
 
-// Continue after bluff result
-async function continueAfterBluff() {
-    const result = await api('continue-after-bluff', 'POST');
+// Continue after bluff result or final validation result
+async function continueAfterResult() {
+    let endpoint = 'continue-after-bluff';
+    if (gameState.phase === 'final_validation_result') {
+        endpoint = 'continue-after-final-validation';
+    }
+
+    const result = await api(endpoint, 'POST');
 
     if (!result.error) {
         gameState = result;
@@ -262,6 +309,30 @@ function render() {
 
     // Update category
     categoryName.textContent = gameState.category_label;
+
+    // Update board indicators based on category
+    const minusIndicator = document.querySelector('.board-indicator.minus');
+    const plusIndicator = document.querySelector('.board-indicator.plus');
+
+    if (gameState.category === 'north_south') {
+        minusIndicator.querySelector('.icon').textContent = '↓';
+        minusIndicator.querySelector('.label').textContent = 'Sud';
+        plusIndicator.querySelector('.icon').textContent = '↑';
+        plusIndicator.querySelector('.label').textContent = 'Nord';
+    } else if (gameState.category === 'east_west') {
+        minusIndicator.querySelector('.icon').textContent = '←';
+        minusIndicator.querySelector('.label').textContent = 'Ouest';
+        plusIndicator.querySelector('.icon').textContent = '→';
+        plusIndicator.querySelector('.label').textContent = 'Est';
+    } else {
+        minusIndicator.querySelector('.icon').textContent = '-';
+        minusIndicator.querySelector('.label').textContent = 'Petit';
+        plusIndicator.querySelector('.icon').textContent = '+';
+        plusIndicator.querySelector('.label').textContent = 'Grand';
+    }
+
+    // Clear last capital display (not used anymore)
+    lastCapitalDiv.textContent = '';
 
     // Update turn indicator
     turnIndicator.textContent = `Tour: équipe ${gameState.current_player}`;
@@ -327,8 +398,8 @@ function render() {
                 boardCards.appendChild(createCard(card, { isReference }));
             }
         }
-    } else if (gameState.phase === 'bluff_reveal') {
-        // Bluff reveal: click on cards to reveal them
+    } else if (gameState.phase === 'bluff_reveal' || gameState.phase === 'final_validation') {
+        // Bluff reveal or final validation: click on cards to reveal them
         gameState.board.forEach((card, index) => {
             const isReference = card.is_reference || false;
             const isRevealed = card.revealed || false;
@@ -346,8 +417,8 @@ function render() {
 
             boardCards.appendChild(cardEl);
         });
-    } else if (gameState.phase === 'bluff_result') {
-        // Bluff result: show all cards with values (all revealed)
+    } else if (gameState.phase === 'bluff_result' || gameState.phase === 'final_validation_result') {
+        // Bluff result or final validation result: show all cards with values (all revealed)
         gameState.board.forEach((card, index) => {
             const isReference = card.is_reference || false;
             const cardEl = createCard(card, { showValue: true, isReference });
@@ -370,10 +441,10 @@ function render() {
 
     if (gameState.phase === 'placing') {
         placingBar.classList.remove('hidden');
-    } else if (gameState.phase === 'bluff_result') {
+    } else if (gameState.phase === 'bluff_result' || gameState.phase === 'final_validation_result') {
         bluffResultBar.classList.remove('hidden');
         bluffResultMessage.textContent = gameState.message;
-    } else if (gameState.phase !== 'bluff_reveal') {
+    } else if (gameState.phase !== 'bluff_reveal' && gameState.phase !== 'final_validation') {
         actionBar.classList.remove('hidden');
     }
 
@@ -385,8 +456,9 @@ function render() {
 
     // Show/hide modals
     if (gameState.phase === 'capital_check') {
-        const lastCard = gameState.board[gameState.board.length - 1];
-        capitalCountry.textContent = `${lastCard.flag} ${lastCard.name}`;
+        // Use capital_card (the card the player just placed)
+        const card = gameState.capital_card || gameState.board[gameState.board.length - 1];
+        capitalCountry.textContent = `${card.flag} ${card.name}`;
         capitalModal.classList.remove('hidden');
         capitalInput.focus();
     } else {
@@ -442,16 +514,29 @@ function hideToast() {
 
 // Start new game
 async function startGame() {
-    gameState = await api('new-game', 'POST');
-    startScreen.classList.add('hidden');
-    gameScreen.classList.remove('hidden');
-    render();
+    const cardsCount = cardsCountSelect ? parseInt(cardsCountSelect.value) : 7;
+    try {
+        gameState = await api('new-game', 'POST', { cards_per_player: cardsCount });
+        startScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+        render();
+    } catch (err) {
+        console.error('Error starting game:', err);
+    }
+}
+
+// Go back to home
+function goHome() {
+    gameScreen.classList.add('hidden');
+    startScreen.classList.remove('hidden');
+    gameState = null;
 }
 
 // Event listeners
 startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', startGame);
 restartGameBtn.addEventListener('click', startGame);
+if (homeBtn) homeBtn.addEventListener('click', goHome);
 bluffBtn.addEventListener('click', callBluff);
 capitalSubmit.addEventListener('click', submitCapital);
 capitalInput.addEventListener('keypress', (e) => {
@@ -470,7 +555,7 @@ capitalRefuseBtn.addEventListener('click', () => capitalDecision(false));
 changeCategoryBtn.addEventListener('click', changeCategory);
 
 // Continue after bluff button
-continueBtn.addEventListener('click', continueAfterBluff);
+continueBtn.addEventListener('click', continueAfterResult);
 
 // Rules modal - load from file
 async function loadRules() {

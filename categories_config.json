@@ -1,0 +1,90 @@
+{
+  "enabled_categories": [
+    "population",
+    "area",
+    "gdp",
+    "life_expectancy",
+    "co2_per_capita",
+    "population_density",
+    "inflation",
+    "internet_users",
+    "electricity_access",
+    "unemployment",
+    "north_south",
+    "east_west"
+  ],
+  "categories": [
+    {
+      "id": "population",
+      "label": "Population",
+      "source": "rest",
+      "field": "population"
+    },
+    {
+      "id": "area",
+      "label": "Superficie (km²)",
+      "source": "rest",
+      "field": "area"
+    },
+    {
+      "id": "gdp",
+      "label": "PIB ($)",
+      "source": "wb",
+      "indicator": "NY.GDP.MKTP.CD"
+    },
+    {
+      "id": "life_expectancy",
+      "label": "Espérance de vie (ans)",
+      "source": "wb",
+      "indicator": "SP.DYN.LE00.IN"
+    },
+    {
+      "id": "co2_per_capita",
+      "label": "CO2 par habitant (t)",
+      "source": "wb",
+      "indicator": "EN.ATM.CO2E.PC"
+    },
+    {
+      "id": "population_density",
+      "label": "Densité (hab/km²)",
+      "source": "wb",
+      "indicator": "EN.POP.DNST"
+    },
+    {
+      "id": "inflation",
+      "label": "Inflation annuelle (%)",
+      "source": "wb",
+      "indicator": "FP.CPI.TOTL.ZG"
+    },
+    {
+      "id": "internet_users",
+      "label": "Utilisateurs d'internet (%)",
+      "source": "wb",
+      "indicator": "IT.NET.USER.ZS"
+    },
+    {
+      "id": "electricity_access",
+      "label": "Accès à l'électricité (%)",
+      "source": "wb",
+      "indicator": "EG.ELC.ACCS.ZS"
+    },
+    {
+      "id": "unemployment",
+      "label": "Chômage (%)",
+      "source": "wb",
+      "indicator": "SL.UEM.TOTL.ZS"
+    },
+    {
+      "id": "north_south",
+      "label": "Nord/Sud (latitude)",
+      "source": "rest",
+      "field": "latitude"
+    },
+    {
+      "id": "east_west",
+      "label": "Est/Ouest (longitude)",
+      "source": "rest",
+      "field": "longitude"
+    }
+  ]
+}

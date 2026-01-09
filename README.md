@@ -1,6 +1,6 @@
 # GeoBluff
 
-A geography-themed bluffing card game where two teams compete to get rid of their cards by placing them in order based on country statistics (population, area, or GDP).
+A geography-themed bluffing card game where two teams compete to get rid of their cards by placing them in order based on country statistics (configurable categories).
 
 ## Game Rules
 
@@ -8,10 +8,10 @@ A geography-themed bluffing card game where two teams compete to get rid of thei
 
 ### How to Play
 
-1. A random category is chosen: Population, Area (km²), or GDP ($)
+1. A random category is chosen from the configured list
 2. A reference card is placed in the center
 3. Players take turns placing cards on the board
-4. Cards must be ordered from highest value (left) to lowest value (right)
+4. Cards must be ordered from lowest value (left) to highest value (right)
 5. You can bluff by placing a card in the wrong position!
 
 ### Calling a Bluff
@@ -52,7 +52,9 @@ pip install requests
 python generate_countries.py
 ```
 
-This creates `countries.json` with ~195 countries containing name, capital, flag emoji, population, area, and GDP.
+This creates `countries.json` with ~195 countries containing name, capital, flag emoji, and the configured categories.
+
+Configure categories in `categories_config.json`.
 
 ## Project Structure
 

@@ -4,17 +4,55 @@ import random
 import unicodedata
 from pathlib import Path
 
-# Use countries_test.json for testing, countries.json for production
-COUNTRIES_FILE = Path(__file__).parent / "countries_test.json"
+# Use countries.json for production, fallback to countries_test.json if needed
+COUNTRIES_FILE = Path(__file__).parent / "countries.json"
+FALLBACK_COUNTRIES_FILE = Path(__file__).parent / "countries_test.json"
+
+DEFAULT_CATEGORIES = [
+    {"id": "population", "label": "Population"},
+    {"id": "area", "label": "Superficie (km²)"},
+    {"id": "gdp", "label": "PIB ($)"},
+]
+
+CONFIG_FILE = Path(__file__).parent / "categories_config.json"
+
+
+def load_categories_config(countries):
+    if not CONFIG_FILE.exists():
+        enabled = [c["id"] for c in DEFAULT_CATEGORIES]
+        labels = {c["id"]: c["label"] for c in DEFAULT_CATEGORIES}
+    else:
+        with open(CONFIG_FILE, encoding="utf-8") as f:
+            config = json.load(f)
+
+        categories = config.get("categories", DEFAULT_CATEGORIES)
+        enabled = config.get("enabled_categories") or [c["id"] for c in categories]
+        labels = {c["id"]: c.get("label", c["id"]) for c in categories if c["id"] in enabled}
+
+    if countries:
+        available = set(countries[0].keys())
+        enabled = [cat_id for cat_id in enabled if cat_id in available]
+        labels = {cat_id: labels[cat_id] for cat_id in enabled}
+
+    return enabled, labels
 
 def load_countries():
     """Load countries from JSON file."""
-    with open(COUNTRIES_FILE, encoding="utf-8") as f:
-        return json.load(f)
+    primary = COUNTRIES_FILE if COUNTRIES_FILE.exists() else None
+    fallback = FALLBACK_COUNTRIES_FILE if FALLBACK_COUNTRIES_FILE.exists() else None
+
+    for path in [primary, fallback]:
+        if path is None:
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        if data and {"name", "capital", "flag"}.issubset(data[0].keys()):
+            return data
+
+    return []
 
 COUNTRIES = load_countries()
-CATEGORIES = ["population", "area", "gdp"]
-CATEGORY_LABELS = {"population": "Population", "area": "Superficie (km²)", "gdp": "PIB ($)"}
+CATEGORIES, CATEGORY_LABELS = load_categories_config(COUNTRIES)
 
 game_state = None
 
@@ -55,17 +93,20 @@ def check_capital(input_capital, correct_capital):
 
     return levenshtein_distance(input_norm, correct_norm) <= 2
 
-def new_game():
+def new_game(cards_per_player=7):
     """Start a new game."""
     global game_state
+
+    cards_per_player = max(3, min(cards_per_player, 10))
 
     category = random.choice(CATEGORIES)
     shuffled = random.sample(COUNTRIES, len(COUNTRIES))
 
-    # Reference card (15th card, separate from player hands)
-    reference_card = shuffled[14]
-    player1_cards = shuffled[:7]
-    player2_cards = shuffled[7:14]
+    # Reference card (after player hands)
+    ref_index = cards_per_player * 2
+    reference_card = shuffled[ref_index]
+    player1_cards = shuffled[:cards_per_player]
+    player2_cards = shuffled[cards_per_player:cards_per_player * 2]
 
     game_state = {
         "category": category,
@@ -117,8 +158,8 @@ def get_state():
         # Add pending card info
         if state["pending_card"]:
             state["pending_card"] = hide_card(state["pending_card"])
-    elif state["phase"] == "bluff_reveal":
-        # During bluff reveal, show values only for revealed cards
+    elif state["phase"] in ("bluff_reveal", "final_validation"):
+        # During bluff reveal or final validation, show values only for revealed cards
         state["player1_cards"] = [hide_card(c) for c in state["player1_cards"]]
         state["player2_cards"] = [hide_card(c) for c in state["player2_cards"]]
         state["board"] = [
@@ -133,6 +174,10 @@ def get_state():
             {**full_card(c), "revealed": True, "is_reference": i == 0}
             for i, c in enumerate(state["board"])
         ]
+
+    # Include capital_card info for capital_check phase
+    if state.get("capital_card"):
+        state["capital_card"] = hide_card(state["capital_card"])
 
     return state
 
@@ -224,11 +269,14 @@ def validate_placement():
     game_state["pending_card"] = None
     game_state["pending_position"] = None
 
-    # Check for win condition
+    # Check for win condition (last card played)
     cards = game_state[f"player{player}_cards"]
     if len(cards) == 0:
-        game_state["phase"] = "capital_check"
-        game_state["message"] = f"L'équipe {player} doit entrer la capitale de {card['name']}"
+        # Enter final validation phase - reveal cards one by one like bluff
+        game_state["phase"] = "final_validation"
+        game_state["final_player"] = player  # Player who placed last card
+        game_state["capital_card"] = card  # Store for capital check later
+        game_state["message"] = "Validation finale - cliquez sur les cartes pour les révéler"
         return get_state()
 
     # Switch player
@@ -281,10 +329,10 @@ def call_bluff(player):
     return get_state()
 
 def reveal_card(index):
-    """Reveal a specific card during bluff check."""
+    """Reveal a specific card during bluff check or final validation."""
     global game_state
 
-    if game_state is None or game_state["phase"] != "bluff_reveal":
+    if game_state is None or game_state["phase"] not in ("bluff_reveal", "final_validation"):
         return {"error": "Not in reveal phase"}
 
     if index < 0 or index >= len(game_state["board"]):
@@ -298,7 +346,10 @@ def reveal_card(index):
 
     # Check if all cards revealed
     if revealed_count >= len(game_state["board"]):
-        return check_bluff_result()
+        if game_state["phase"] == "bluff_reveal":
+            return check_bluff_result()
+        else:
+            return check_final_validation_result()
 
     return get_state()
 
@@ -310,10 +361,13 @@ def check_bluff_result():
     board = game_state["board"]
     bluff_caller = game_state["bluff_caller"]
 
-    # Check if order is correct (ascending)
+    # Check if order is correct (ascending, ties are valid)
     is_correct_order = True
     for i in range(len(board) - 1):
-        if board[i][category] > board[i + 1][category]:
+        val1 = board[i][category]
+        val2 = board[i + 1][category]
+        # Use tolerance for float comparison, ties (equal values) are valid
+        if val1 > val2 + 0.0001:
             is_correct_order = False
             break
 
@@ -329,6 +383,67 @@ def check_bluff_result():
     # Enter result phase - wait for user to click continue
     game_state["phase"] = "bluff_result"
     game_state["bluff_loser"] = loser
+
+    return get_state()
+
+
+def check_final_validation_result():
+    """Check if order is correct after final validation - either ask capital or penalize."""
+    global game_state
+
+    category = game_state["category"]
+    board = game_state["board"]
+    player = game_state["final_player"]
+
+    # Check if order is correct (ascending, ties are valid)
+    is_correct_order = True
+    for i in range(len(board) - 1):
+        val1 = board[i][category]
+        val2 = board[i + 1][category]
+        if val1 > val2 + 0.0001:
+            is_correct_order = False
+            break
+
+    if is_correct_order:
+        # Order correct - now ask for capital
+        card = game_state["capital_card"]
+        game_state["phase"] = "capital_check"
+        game_state["message"] = f"Ordre correct ! L'équipe {player} doit entrer la capitale de {card['name']}"
+    else:
+        # Order wrong - player draws 2 cards, enter result phase
+        game_state["phase"] = "final_validation_result"
+        game_state["final_validation_failed"] = True
+        game_state["message"] = f"Mauvais ordre ! L'équipe {player} piochera 2 cartes."
+
+    return get_state()
+
+
+def continue_after_final_validation():
+    """Continue game after failed final validation - end of round like bluff."""
+    global game_state
+
+    if game_state is None:
+        return {"error": "No game in progress"}
+
+    if game_state["phase"] != "final_validation_result":
+        return {"error": "Not in final validation result phase"}
+
+    player = game_state["final_player"]
+
+    # Clear the board (cards are discarded)
+    game_state["board"] = []
+
+    # Player draws 2 new cards
+    draw_new_cards(player, 2)
+
+    # Clear validation state
+    game_state["final_player"] = None
+    game_state["capital_card"] = None
+    game_state["final_validation_failed"] = None
+
+    # Start new round with new category, other player starts
+    other_player = 2 if player == 1 else 1
+    start_new_round(other_player)
 
     return get_state()
 
@@ -419,8 +534,9 @@ def check_capital_answer(player, answer):
     if game_state["phase"] != "capital_check":
         return {"error": "Not in capital check phase"}
 
-    last_card = game_state["board"][-1]
-    correct_capital = last_card["capital"]
+    # Use the stored capital_card (the card the player just placed)
+    card = game_state.get("capital_card") or game_state["board"][-1]
+    correct_capital = card["capital"]
 
     if check_capital(answer, correct_capital):
         game_state["phase"] = "game_over"
@@ -447,8 +563,9 @@ def validate_capital_decision(accepted):
         return {"error": "Not in capital validation phase"}
 
     player = game_state["capital_player"]
-    last_card = game_state["board"][-1]
-    correct_capital = last_card["capital"]
+    # Use the stored capital_card
+    card = game_state.get("capital_card") or game_state["board"][-1]
+    correct_capital = card["capital"]
 
     if accepted:
         # Opponent accepts the answer
@@ -456,8 +573,12 @@ def validate_capital_decision(accepted):
         game_state["winner"] = player
         game_state["message"] = f"L'adversaire a accepte ! L'équipe {player} gagne !"
     else:
-        # Opponent refuses - player draws 2 new cards
-        game_state["board"].pop()  # Remove the card from board
+        # Opponent refuses - remove the capital_card from board and player draws 2 new cards
+        if game_state.get("capital_card"):
+            # Find and remove the capital_card from board
+            game_state["board"] = [c for c in game_state["board"] if c["name"] != card["name"]]
+        else:
+            game_state["board"].pop()
         draw_new_cards(player, 2)
         game_state["phase"] = "playing"
         game_state["current_player"] = 2 if player == 1 else 1
@@ -466,5 +587,6 @@ def validate_capital_decision(accepted):
     # Clear validation state
     game_state["capital_answer"] = None
     game_state["capital_player"] = None
+    game_state["capital_card"] = None
 
     return get_state()

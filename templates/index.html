@@ -17,15 +17,34 @@
                 <span class="category-chip">👥 Population</span>
                 <span class="category-chip">📐 Superficie</span>
                 <span class="category-chip">💰 PIB</span>
+                <span class="category-chip">❤️ Espérance de vie</span>
+                <span class="category-chip">🏘️ Densité</span>
+                <span class="category-chip">🌐 Internet</span>
+                <span class="category-chip">💡 Électricité</span>
+                <span class="category-chip">📉 Chômage</span>
+                <span class="category-chip">🧭 Nord/Sud</span>
+                <span class="category-chip">🧭 Est/Ouest</span>
+            </div>
+            <div class="cards-selector">
+                <label for="cards-count">Cartes par équipe :</label>
+                <select id="cards-count">
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="7" selected>7</option>
+                    <option value="10">10</option>
+                </select>
             </div>
             <button id="start-btn" class="btn-primary">Nouvelle Partie</button>
         </div>
 
         <!-- Game screen -->
         <div id="game-screen" class="screen hidden">
-            <!-- Rules button -->
-            <button id="rules-btn" class="rules-btn" title="Règles du jeu">?</button>
-            <button id="restart-game-btn" class="restart-btn" title="Recommencer la partie">⟲</button>
+            <!-- Top right buttons -->
+            <div class="top-buttons">
+                <button id="home-btn" class="icon-btn" title="Retour au menu">🏠</button>
+                <button id="restart-game-btn" class="icon-btn" title="Recommencer">⟲</button>
+                <button id="rules-btn" class="icon-btn" title="Règles">?</button>
+            </div>
 
             <!-- Player 2 area (opponent, top) -->
             <div class="player-area player2-area">
@@ -50,6 +69,7 @@
                         <span class="label">Grand</span>
                     </div>
                 </div>
+                <div id="last-capital" class="last-capital"></div>
             </div>
 
             <!-- Player 1 area (current, bottom) -->
