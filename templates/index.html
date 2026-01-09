@@ -8,9 +8,6 @@
 </head>
 <body>
     <div id="app">
-        <div class="language-toggle">
-            <button id="language-btn" class="icon-btn language-btn" title="Passer en anglais">🇬🇧</button>
-        </div>
         <!-- Start screen -->
         <div id="start-screen" class="screen">
             <h1>🌍 GeoBluff</h1>
@@ -42,8 +39,9 @@
 
         <!-- Game screen -->
         <div id="game-screen" class="screen hidden">
-            <!-- Top right buttons -->
-            <div class="top-buttons">
+            <!-- Top buttons row -->
+            <div class="top-controls">
+                <button id="language-btn" class="icon-btn language-btn" title="Passer en anglais">🇬🇧</button>
                 <button id="home-btn" class="icon-btn" data-i18n-title="home_title" title="Retour au menu">🏠</button>
                 <button id="restart-game-btn" class="icon-btn" data-i18n-title="restart_title" title="Recommencer">⟲</button>
                 <button id="rules-btn" class="icon-btn" data-i18n-title="rules_title" title="Règles">?</button>

@@ -795,13 +795,11 @@ body {
 }
 
 /* Top buttons container */
-.top-buttons {
-    position: absolute;
-    top: 3.25rem;
-    right: 0.5rem;
+.top-controls {
     display: flex;
     gap: 0.5rem;
-    z-index: 50;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 /* Icon buttons (unified style) */
@@ -824,14 +822,6 @@ body {
     background: var(--primary);
     border-color: var(--primary);
     color: white;
-}
-
-/* Language toggle */
-.language-toggle {
-    position: fixed;
-    top: 0.5rem;
-    left: 0.5rem;
-    z-index: 60;
 }
 
 .language-btn {
