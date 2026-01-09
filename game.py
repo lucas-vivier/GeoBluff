@@ -16,6 +16,58 @@ DEFAULT_CATEGORIES = [
 
 CONFIG_FILE = Path(__file__).parent / "categories_config.json"
 
+SUPPORTED_LANGUAGES = {"fr", "en"}
+DEFAULT_LANGUAGE = "fr"
+game_language = DEFAULT_LANGUAGE
+
+CATEGORY_LABELS_EN = {
+    "population": "Population",
+    "area": "Area (km2)",
+    "gdp": "GDP ($)",
+    "life_expectancy": "Life expectancy (years)",
+    "co2_per_capita": "CO2 per capita (t)",
+    "population_density": "Density (people/km2)",
+    "inflation": "Annual inflation (%)",
+    "internet_users": "Internet users (%)",
+    "electricity_access": "Electricity access (%)",
+    "unemployment": "Unemployment (%)",
+    "north_south": "North/South (latitude)",
+    "east_west": "East/West (longitude)"
+}
+
+TRANSLATIONS = {
+    "fr": {
+        "choose_position": "Choisissez la position puis validez",
+        "final_validation": "Validation finale - cliquez sur les cartes pour les révéler",
+        "reveal_cards": "Cliquez sur les cartes pour les révéler",
+        "new_category": "Nouvelle catégorie : {label}",
+        "bluff_correct": "Tout était en ordre ! L'équipe {player} piochera 2 cartes.",
+        "bluff_wrong": "Bien vu ! Le bluff est démasqué ! L'équipe {player} piochera 2 cartes.",
+        "order_correct_capital": "Ordre correct ! L'équipe {player} doit entrer la capitale de {country}",
+        "order_wrong": "Mauvais ordre ! L'équipe {player} piochera 2 cartes.",
+        "game_over_win": "L'équipe {player} gagne la partie !",
+        "capital_correct": "Bravo ! {capital} est correct. L'équipe {player} gagne !",
+        "capital_incorrect": "Reponse: '{answer}'. La vraie capitale est '{capital}'. L'adversaire peut accepter ou refuser.",
+        "capital_accepted": "L'adversaire a accepte ! L'équipe {player} gagne !",
+        "capital_refused": "Refuse ! La capitale etait {capital}. L'équipe {player} pioche 2 cartes."
+    },
+    "en": {
+        "choose_position": "Choose the position, then confirm",
+        "final_validation": "Final validation - click the cards to reveal them",
+        "reveal_cards": "Click the cards to reveal them",
+        "new_category": "New category: {label}",
+        "bluff_correct": "All in order! Team {player} draws 2 cards.",
+        "bluff_wrong": "Nice catch! The bluff is exposed! Team {player} draws 2 cards.",
+        "order_correct_capital": "Correct order! Team {player} must enter the capital of {country}",
+        "order_wrong": "Wrong order! Team {player} draws 2 cards.",
+        "game_over_win": "Team {player} wins the game!",
+        "capital_correct": "Great! {capital} is correct. Team {player} wins!",
+        "capital_incorrect": "Answer: '{answer}'. The real capital is '{capital}'. The opponent can accept or refuse.",
+        "capital_accepted": "Opponent accepted! Team {player} wins!",
+        "capital_refused": "Refused! The capital was {capital}. Team {player} draws 2 cards."
+    }
+}
+
 
 def load_categories_config(countries):
     if not CONFIG_FILE.exists():
@@ -36,6 +88,46 @@ def load_categories_config(countries):
 
     return enabled, labels
 
+def normalize_language(language):
+    if not language:
+        return DEFAULT_LANGUAGE
+    language = language.lower().strip()
+    return language if language in SUPPORTED_LANGUAGES else DEFAULT_LANGUAGE
+
+def get_language():
+    if game_state and "language" in game_state:
+        return game_state["language"]
+    return game_language
+
+def get_category_label(category_id, language):
+    if language == "en":
+        return CATEGORY_LABELS_EN.get(category_id, CATEGORY_LABELS.get(category_id, category_id))
+    return CATEGORY_LABELS.get(category_id, category_id)
+
+def translate(key, language, **params):
+    bundle = TRANSLATIONS.get(language, TRANSLATIONS[DEFAULT_LANGUAGE])
+    template = bundle.get(key, TRANSLATIONS[DEFAULT_LANGUAGE].get(key, key))
+    if "category_id" in params and "label" not in params:
+        params["label"] = get_category_label(params["category_id"], language)
+    return template.format(**params)
+
+def set_message(key, **params):
+    if game_state is None:
+        return
+    game_state["message_parts"] = [{"key": key, "params": params}]
+
+def append_message(key, **params):
+    if game_state is None:
+        return
+    if not game_state.get("message_parts"):
+        game_state["message_parts"] = []
+    game_state["message_parts"].append({"key": key, "params": params})
+
+def clear_message():
+    if game_state is None:
+        return
+    game_state["message_parts"] = None
+
 def load_countries():
     """Load countries from JSON file."""
     primary = COUNTRIES_FILE if COUNTRIES_FILE.exists() else None
@@ -55,6 +147,16 @@ COUNTRIES = load_countries()
 CATEGORIES, CATEGORY_LABELS = load_categories_config(COUNTRIES)
 
 game_state = None
+
+def pick_random_category(exclude=None):
+    """Pick a random category, optionally excluding one."""
+    if not CATEGORIES:
+        return None
+    if exclude and len(CATEGORIES) > 1:
+        candidates = [c for c in CATEGORIES if c != exclude]
+        if candidates:
+            return random.choice(candidates)
+    return random.choice(CATEGORIES)
 
 def normalize_text(text):
     """Remove accents and lowercase for comparison."""
@@ -93,13 +195,16 @@ def check_capital(input_capital, correct_capital):
 
     return levenshtein_distance(input_norm, correct_norm) <= 2
 
-def new_game(cards_per_player=7):
+def new_game(cards_per_player=7, language=None):
     """Start a new game."""
-    global game_state
+    global game_state, game_language
+
+    if language is not None:
+        game_language = normalize_language(language)
 
     cards_per_player = max(3, min(cards_per_player, 10))
 
-    category = random.choice(CATEGORIES)
+    category = pick_random_category()
     shuffled = random.sample(COUNTRIES, len(COUNTRIES))
 
     # Reference card (after player hands)
@@ -110,18 +215,19 @@ def new_game(cards_per_player=7):
 
     game_state = {
         "category": category,
-        "category_label": CATEGORY_LABELS[category],
+        "category_label": get_category_label(category, game_language),
         "player1_cards": player1_cards,
         "player2_cards": player2_cards,
         "board": [reference_card],  # Start with reference card on board
         "current_player": 1,
         "phase": "playing",  # playing, placing, bluff_reveal, capital_check, game_over
         "winner": None,
-        "message": None,
+        "message_parts": None,
         "bluff_caller": None,
         "reveal_index": 0,
         "pending_card": None,  # Card being placed (not yet validated)
-        "pending_position": 0  # Index where card will be inserted (0 = leftmost)
+        "pending_position": 0,  # Index where card will be inserted (0 = leftmost)
+        "language": game_language
     }
 
     return get_state()
@@ -132,6 +238,9 @@ def get_state():
         return None
 
     state = game_state.copy()
+    language = get_language()
+    state["language"] = language
+    state["category_label"] = get_category_label(state["category"], language)
     category = state["category"]
 
     # Hide values for cards in hand (only show name and flag)
@@ -179,7 +288,28 @@ def get_state():
     if state.get("capital_card"):
         state["capital_card"] = hide_card(state["capital_card"])
 
+    if state.get("message_parts"):
+        parts = [
+            translate(part["key"], language, **(part.get("params") or {}))
+            for part in state["message_parts"]
+        ]
+        state["message"] = " ".join(parts)
+    else:
+        state["message"] = None
+
+    state.pop("message_parts", None)
+
     return state
+
+def set_language(language):
+    """Set current language for the game."""
+    global game_language, game_state
+
+    game_language = normalize_language(language)
+    if game_state:
+        game_state["language"] = game_language
+        game_state["category_label"] = get_category_label(game_state["category"], game_language)
+    return get_state() if game_state else {"language": game_language}
 
 def change_category():
     """Change to a different category (only during playing phase with just reference card)."""
@@ -197,12 +327,11 @@ def change_category():
 
     # Pick a different category
     old_category = game_state["category"]
-    available = [c for c in CATEGORIES if c != old_category]
-    new_category = random.choice(available)
+    new_category = pick_random_category(exclude=old_category)
 
     game_state["category"] = new_category
-    game_state["category_label"] = CATEGORY_LABELS[new_category]
-    game_state["message"] = f"Nouvelle catégorie : {CATEGORY_LABELS[new_category]}"
+    game_state["category_label"] = get_category_label(new_category, get_language())
+    set_message("new_category", category_id=new_category)
 
     return get_state()
 
@@ -232,7 +361,7 @@ def play_card(player, card_name):
     # Default position: rightmost (after all existing cards)
     game_state["pending_position"] = len(game_state["board"])
     game_state["phase"] = "placing"
-    game_state["message"] = "Choisissez la position puis validez"
+    set_message("choose_position")
 
     return get_state()
 
@@ -276,13 +405,13 @@ def validate_placement():
         game_state["phase"] = "final_validation"
         game_state["final_player"] = player  # Player who placed last card
         game_state["capital_card"] = card  # Store for capital check later
-        game_state["message"] = "Validation finale - cliquez sur les cartes pour les révéler"
+        set_message("final_validation")
         return get_state()
 
     # Switch player
     game_state["current_player"] = 2 if player == 1 else 1
     game_state["phase"] = "playing"
-    game_state["message"] = None
+    clear_message()
 
     return get_state()
 
@@ -301,7 +430,7 @@ def cancel_placement():
     game_state["pending_card"] = None
     game_state["pending_position"] = None
     game_state["phase"] = "playing"
-    game_state["message"] = None
+    clear_message()
 
     return get_state()
 
@@ -324,7 +453,7 @@ def call_bluff(player):
     game_state["phase"] = "bluff_reveal"
     game_state["bluff_caller"] = player
     game_state["reveal_index"] = 0
-    game_state["message"] = "Cliquez sur les cartes pour les révéler"
+    set_message("reveal_cards")
 
     return get_state()
 
@@ -374,11 +503,11 @@ def check_bluff_result():
     if is_correct_order:
         # Order was correct, bluff caller loses
         loser = bluff_caller
-        game_state["message"] = f"Tout était en ordre ! L'équipe {bluff_caller} piochera 2 cartes."
+        set_message("bluff_correct", player=bluff_caller)
     else:
         # Order was wrong, bluff caller wins
         loser = 2 if bluff_caller == 1 else 1
-        game_state["message"] = f"Bien vu ! Le bluff est démasqué ! L'équipe {loser} piochera 2 cartes."
+        set_message("bluff_wrong", player=loser)
 
     # Enter result phase - wait for user to click continue
     game_state["phase"] = "bluff_result"
@@ -408,12 +537,12 @@ def check_final_validation_result():
         # Order correct - now ask for capital
         card = game_state["capital_card"]
         game_state["phase"] = "capital_check"
-        game_state["message"] = f"Ordre correct ! L'équipe {player} doit entrer la capitale de {card['name']}"
+        set_message("order_correct_capital", player=player, country=card["name"])
     else:
         # Order wrong - player draws 2 cards, enter result phase
         game_state["phase"] = "final_validation_result"
         game_state["final_validation_failed"] = True
-        game_state["message"] = f"Mauvais ordre ! L'équipe {player} piochera 2 cartes."
+        set_message("order_wrong", player=player)
 
     return get_state()
 
@@ -471,7 +600,7 @@ def continue_after_bluff():
         if len(game_state[f"player{player}_cards"]) == 0:
             game_state["phase"] = "game_over"
             game_state["winner"] = player
-            game_state["message"] = f"L'équipe {player} gagne la partie !"
+            set_message("game_over_win", player=player)
             return get_state()
 
     # Start new round with new category and new reference card
@@ -500,10 +629,8 @@ def start_new_round(starting_player):
     """Start a new round with a new category."""
     global game_state
 
-    # Pick new category (different from current)
-    old_category = game_state["category"]
-    available = [c for c in CATEGORIES if c != old_category]
-    new_category = random.choice(available)
+    # Pick new category (pure random, repetition allowed)
+    new_category = pick_random_category()
 
     # Pick a reference card from remaining countries (not in players' hands)
     player_cards = set(c["name"] for c in game_state["player1_cards"] + game_state["player2_cards"])
@@ -517,12 +644,12 @@ def start_new_round(starting_player):
 
     game_state["board"] = [reference_card]
     game_state["category"] = new_category
-    game_state["category_label"] = CATEGORY_LABELS[new_category]
+    game_state["category_label"] = get_category_label(new_category, get_language())
     game_state["current_player"] = starting_player
     game_state["phase"] = "playing"
     game_state["bluff_caller"] = None
     game_state["reveal_index"] = 0
-    game_state["message"] += f" Nouvelle catégorie : {CATEGORY_LABELS[new_category]}"
+    append_message("new_category", category_id=new_category)
 
 def check_capital_answer(player, answer):
     """Check if the capital answer is correct."""
@@ -541,13 +668,13 @@ def check_capital_answer(player, answer):
     if check_capital(answer, correct_capital):
         game_state["phase"] = "game_over"
         game_state["winner"] = player
-        game_state["message"] = f"Bravo ! {correct_capital} est correct. L'équipe {player} gagne !"
+        set_message("capital_correct", capital=correct_capital, player=player)
     else:
         # Wrong answer - enter validation phase where opponent can accept or refuse
         game_state["phase"] = "capital_validation"
         game_state["capital_answer"] = answer
         game_state["capital_player"] = player
-        game_state["message"] = f"Reponse: '{answer}'. La vraie capitale est '{correct_capital}'. L'adversaire peut accepter ou refuser."
+        set_message("capital_incorrect", answer=answer, capital=correct_capital)
 
     return get_state()
 
@@ -571,7 +698,7 @@ def validate_capital_decision(accepted):
         # Opponent accepts the answer
         game_state["phase"] = "game_over"
         game_state["winner"] = player
-        game_state["message"] = f"L'adversaire a accepte ! L'équipe {player} gagne !"
+        set_message("capital_accepted", player=player)
     else:
         # Opponent refuses - remove the capital_card from board and player draws 2 new cards
         if game_state.get("capital_card"):
@@ -582,7 +709,7 @@ def validate_capital_decision(accepted):
         draw_new_cards(player, 2)
         game_state["phase"] = "playing"
         game_state["current_player"] = 2 if player == 1 else 1
-        game_state["message"] = f"Refuse ! La capitale etait {correct_capital}. L'équipe {player} pioche 2 cartes."
+        set_message("capital_refused", capital=correct_capital, player=player)
 
     # Clear validation state
     game_state["capital_answer"] = None

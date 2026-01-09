@@ -43,6 +43,150 @@ const continueBtn = document.getElementById('continue-btn');
 const homeBtn = document.getElementById('home-btn');
 const cardsCountSelect = document.getElementById('cards-count');
 const lastCapitalDiv = document.getElementById('last-capital');
+const languageBtn = document.getElementById('language-btn');
+
+let currentLanguage = 'fr';
+
+const translations = {
+    fr: {
+        subtitle: 'Jeu de géographie pour deux équipes',
+        start_description: 'Placez vos cartes du plus grand au plus petit et appelez le bluff au bon moment.',
+        chip_population: '👥 Population',
+        chip_area: '📐 Superficie',
+        chip_gdp: '💰 PIB',
+        chip_life_expectancy: '❤️ Espérance de vie',
+        chip_density: '🏘️ Densité',
+        chip_internet: '🌐 Internet',
+        chip_electricity: '💡 Électricité',
+        chip_unemployment: '📉 Chômage',
+        chip_north_south: '🧭 Nord/Sud',
+        chip_east_west: '🧭 Est/Ouest',
+        cards_label: 'Cartes par équipe :',
+        start_button: 'Nouvelle Partie',
+        home_title: 'Retour au menu',
+        restart_title: 'Recommencer',
+        rules_title: 'Règles',
+        change_category_title: 'Changer de catégorie',
+        team_1_label: 'équipe 1',
+        team_2_label: 'équipe 2',
+        bluff_button: 'BLUFF !',
+        bluff_title: "Posez d'abord une carte",
+        turn_indicator: 'Tour: équipe {team}',
+        cancel_button: 'Annuler',
+        placing_hint: 'Cliquez entre les cartes',
+        validate_button: 'Valider',
+        continue_button: 'Continuer',
+        capital_prompt: 'Entrez la capitale',
+        capital_placeholder: 'Capitale...',
+        replay_button: 'Rejouer',
+        capital_validation_title: 'Validation de la capitale',
+        accept_button: 'Accepter',
+        refuse_button: 'Refuser',
+        rules_title_text: 'Regles du jeu',
+        close_rules_button: 'Compris !',
+        small: 'Petit',
+        big: 'Grand',
+        north: 'Nord',
+        south: 'Sud',
+        east: 'Est',
+        west: 'Ouest',
+        switch_to_en: 'Passer en anglais',
+        switch_to_fr: 'Passer en français',
+        winner_text: "L'équipe {team} gagne !"
+    },
+    en: {
+        subtitle: 'Geography game for two teams',
+        start_description: 'Place your cards from largest to smallest and call the bluff at the right time.',
+        chip_population: '👥 Population',
+        chip_area: '📐 Area',
+        chip_gdp: '💰 GDP',
+        chip_life_expectancy: '❤️ Life expectancy',
+        chip_density: '🏘️ Density',
+        chip_internet: '🌐 Internet',
+        chip_electricity: '💡 Electricity',
+        chip_unemployment: '📉 Unemployment',
+        chip_north_south: '🧭 North/South',
+        chip_east_west: '🧭 East/West',
+        cards_label: 'Cards per team:',
+        start_button: 'New Game',
+        home_title: 'Back to menu',
+        restart_title: 'Restart',
+        rules_title: 'Rules',
+        change_category_title: 'Change category',
+        team_1_label: 'team 1',
+        team_2_label: 'team 2',
+        bluff_button: 'BLUFF!',
+        bluff_title: 'Play a card first',
+        turn_indicator: 'Turn: team {team}',
+        cancel_button: 'Cancel',
+        placing_hint: 'Click between cards',
+        validate_button: 'Confirm',
+        continue_button: 'Continue',
+        capital_prompt: 'Enter the capital',
+        capital_placeholder: 'Capital...',
+        replay_button: 'Play again',
+        capital_validation_title: 'Capital validation',
+        accept_button: 'Accept',
+        refuse_button: 'Refuse',
+        rules_title_text: 'Game rules',
+        close_rules_button: 'Got it!',
+        small: 'Small',
+        big: 'Big',
+        north: 'North',
+        south: 'South',
+        east: 'East',
+        west: 'West',
+        switch_to_en: 'Switch to English',
+        switch_to_fr: 'Switch to French',
+        winner_text: 'Team {team} wins!'
+    }
+};
+
+function t(key, params = {}) {
+    const bundle = translations[currentLanguage] || translations.fr;
+    const template = bundle[key] || translations.fr[key] || key;
+    return template.replace(/\{(\w+)\}/g, (_, token) => {
+        return params[token] !== undefined ? params[token] : `{${token}}`;
+    });
+}
+
+function applyTranslations() {
+    document.documentElement.lang = currentLanguage;
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+        el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+        el.title = t(el.dataset.i18nTitle);
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+        el.placeholder = t(el.dataset.i18nPlaceholder);
+    });
+
+    if (languageBtn) {
+        const target = currentLanguage === 'fr' ? 'en' : 'fr';
+        languageBtn.textContent = target === 'en' ? '🇬🇧' : '🇫🇷';
+        languageBtn.title = currentLanguage === 'fr' ? t('switch_to_en') : t('switch_to_fr');
+    }
+}
+
+async function syncLanguage() {
+    try {
+        const result = await api('set-language', 'POST', { language: currentLanguage });
+        if (result && result.category) {
+            gameState = result;
+            render();
+        }
+    } catch (err) {
+        console.error('Error setting language:', err);
+    }
+}
+
+function setLanguage(language) {
+    currentLanguage = language;
+    localStorage.setItem('language', language);
+    applyTranslations();
+    syncLanguage();
+}
 
 // API calls
 async function api(endpoint, method = 'GET', body = null) {
@@ -66,43 +210,61 @@ function formatHemisphere(value, positiveLabel, negativeLabel) {
 // Format numbers for display
 function formatValue(value, category) {
     const num = Number(value);
+    const units = currentLanguage === 'en' ? {
+        population: { billion: ' B', million: ' M', thousand: ' k' },
+        area: { million: ' M km²', thousand: 'k km²', unit: ' km²' },
+        gdp: { trillion: ' T$', billion: ' B$', million: ' M$', unit: ' $' },
+        life_expectancy: ' yrs',
+        co2_per_capita: ' t',
+        population_density: ' people/km²',
+        percent: ' %'
+    } : {
+        population: { billion: ' Mrd', million: ' M', thousand: ' k' },
+        area: { million: ' M km²', thousand: 'k km²', unit: ' km²' },
+        gdp: { trillion: ' T$', billion: ' Mrd$', million: ' M$', unit: ' $' },
+        life_expectancy: ' ans',
+        co2_per_capita: ' t',
+        population_density: ' hab/km²',
+        percent: ' %'
+    };
+
     if (category === 'population') {
-        if (num >= 1e9) return (num / 1e9).toFixed(1) + ' Mrd';
-        if (num >= 1e6) return (num / 1e6).toFixed(1) + ' M';
-        if (num >= 1e3) return (num / 1e3).toFixed(0) + ' k';
+        if (num >= 1e9) return (num / 1e9).toFixed(1) + units.population.billion;
+        if (num >= 1e6) return (num / 1e6).toFixed(1) + units.population.million;
+        if (num >= 1e3) return (num / 1e3).toFixed(0) + units.population.thousand;
         return num.toString();
     }
     if (category === 'area') {
-        if (num >= 1e6) return (num / 1e6).toFixed(2) + ' M km²';
-        if (num >= 1e3) return (num / 1e3).toFixed(0) + 'k km²';
-        return num + ' km²';
+        if (num >= 1e6) return (num / 1e6).toFixed(2) + units.area.million;
+        if (num >= 1e3) return (num / 1e3).toFixed(0) + units.area.thousand;
+        return num + units.area.unit;
     }
     if (category === 'gdp') {
-        if (num >= 1e12) return (num / 1e12).toFixed(1) + ' T$';
-        if (num >= 1e9) return (num / 1e9).toFixed(0) + ' Mrd$';
-        if (num >= 1e6) return (num / 1e6).toFixed(0) + ' M$';
-        return num + ' $';
+        if (num >= 1e12) return (num / 1e12).toFixed(1) + units.gdp.trillion;
+        if (num >= 1e9) return (num / 1e9).toFixed(0) + units.gdp.billion;
+        if (num >= 1e6) return (num / 1e6).toFixed(0) + units.gdp.million;
+        return num + units.gdp.unit;
     }
     if (category === 'life_expectancy') {
-        return num.toFixed(1) + ' ans';
+        return num.toFixed(1) + units.life_expectancy;
     }
     if (category === 'co2_per_capita') {
-        return num.toFixed(2) + ' t';
+        return num.toFixed(2) + units.co2_per_capita;
     }
     if (category === 'population_density') {
-        return num.toFixed(1) + ' hab/km²';
+        return num.toFixed(1) + units.population_density;
     }
     if (category === 'inflation') {
-        return num.toFixed(1) + ' %';
+        return num.toFixed(1) + units.percent;
     }
     if (category === 'internet_users') {
-        return num.toFixed(1) + ' %';
+        return num.toFixed(1) + units.percent;
     }
     if (category === 'electricity_access') {
-        return num.toFixed(1) + ' %';
+        return num.toFixed(1) + units.percent;
     }
     if (category === 'unemployment') {
-        return num.toFixed(1) + ' %';
+        return num.toFixed(1) + units.percent;
     }
     if (category === 'north_south') {
         return formatHemisphere(value, 'N', 'S');
@@ -316,26 +478,26 @@ function render() {
 
     if (gameState.category === 'north_south') {
         minusIndicator.querySelector('.icon').textContent = '↓';
-        minusIndicator.querySelector('.label').textContent = 'Sud';
+        minusIndicator.querySelector('.label').textContent = t('south');
         plusIndicator.querySelector('.icon').textContent = '↑';
-        plusIndicator.querySelector('.label').textContent = 'Nord';
+        plusIndicator.querySelector('.label').textContent = t('north');
     } else if (gameState.category === 'east_west') {
         minusIndicator.querySelector('.icon').textContent = '←';
-        minusIndicator.querySelector('.label').textContent = 'Ouest';
+        minusIndicator.querySelector('.label').textContent = t('west');
         plusIndicator.querySelector('.icon').textContent = '→';
-        plusIndicator.querySelector('.label').textContent = 'Est';
+        plusIndicator.querySelector('.label').textContent = t('east');
     } else {
         minusIndicator.querySelector('.icon').textContent = '-';
-        minusIndicator.querySelector('.label').textContent = 'Petit';
+        minusIndicator.querySelector('.label').textContent = t('small');
         plusIndicator.querySelector('.icon').textContent = '+';
-        plusIndicator.querySelector('.label').textContent = 'Grand';
+        plusIndicator.querySelector('.label').textContent = t('big');
     }
 
     // Clear last capital display (not used anymore)
     lastCapitalDiv.textContent = '';
 
     // Update turn indicator
-    turnIndicator.textContent = `Tour: équipe ${gameState.current_player}`;
+    turnIndicator.textContent = t('turn_indicator', { team: gameState.current_player });
     turnIndicator.className = gameState.current_player === 2 ? 'player2' : '';
 
     // Update player areas
@@ -473,7 +635,7 @@ function render() {
     }
 
     if (gameState.phase === 'game_over') {
-        winnerText.textContent = `L'équipe ${gameState.winner} gagne !`;
+        winnerText.textContent = t('winner_text', { team: gameState.winner });
         gameoverMessage.textContent = gameState.message;
         gameoverModal.classList.remove('hidden');
     } else {
@@ -516,7 +678,7 @@ function hideToast() {
 async function startGame() {
     const cardsCount = cardsCountSelect ? parseInt(cardsCountSelect.value) : 7;
     try {
-        gameState = await api('new-game', 'POST', { cards_per_player: cardsCount });
+        gameState = await api('new-game', 'POST', { cards_per_player: cardsCount, language: currentLanguage });
         startScreen.classList.add('hidden');
         gameScreen.classList.remove('hidden');
         render();
@@ -537,6 +699,11 @@ startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', startGame);
 restartGameBtn.addEventListener('click', startGame);
 if (homeBtn) homeBtn.addEventListener('click', goHome);
+if (languageBtn) {
+    languageBtn.addEventListener('click', () => {
+        setLanguage(currentLanguage === 'fr' ? 'en' : 'fr');
+    });
+}
 bluffBtn.addEventListener('click', callBluff);
 capitalSubmit.addEventListener('click', submitCapital);
 capitalInput.addEventListener('keypress', (e) => {
@@ -559,7 +726,7 @@ continueBtn.addEventListener('click', continueAfterResult);
 
 // Rules modal - load from file
 async function loadRules() {
-    const res = await fetch('/api/rules');
+    const res = await fetch(`/api/rules?lang=${currentLanguage}`);
     const text = await res.text();
     // Simple markdown to HTML conversion
     const html = text
@@ -590,3 +757,9 @@ rulesModal.addEventListener('click', (e) => {
         rulesModal.classList.add('hidden');
     }
 });
+
+const storedLanguage = localStorage.getItem('language');
+const browserLanguage = navigator.language || '';
+currentLanguage = storedLanguage || (browserLanguage.startsWith('en') ? 'en' : 'fr');
+applyTranslations();
+syncLanguage();

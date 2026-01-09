@@ -8,25 +8,28 @@
 </head>
 <body>
     <div id="app">
+        <div class="language-toggle">
+            <button id="language-btn" class="icon-btn language-btn" title="Passer en anglais">🇬🇧</button>
+        </div>
         <!-- Start screen -->
         <div id="start-screen" class="screen">
             <h1>🌍 GeoBluff</h1>
-            <p class="subtitle">Jeu de géographie pour deux équipes</p>
-            <p>Placez vos cartes du plus grand au plus petit et appelez le bluff au bon moment.</p>
+            <p class="subtitle" data-i18n="subtitle">Jeu de géographie pour deux équipes</p>
+            <p data-i18n="start_description">Placez vos cartes du plus grand au plus petit et appelez le bluff au bon moment.</p>
             <div class="categories">
-                <span class="category-chip">👥 Population</span>
-                <span class="category-chip">📐 Superficie</span>
-                <span class="category-chip">💰 PIB</span>
-                <span class="category-chip">❤️ Espérance de vie</span>
-                <span class="category-chip">🏘️ Densité</span>
-                <span class="category-chip">🌐 Internet</span>
-                <span class="category-chip">💡 Électricité</span>
-                <span class="category-chip">📉 Chômage</span>
-                <span class="category-chip">🧭 Nord/Sud</span>
-                <span class="category-chip">🧭 Est/Ouest</span>
+                <span class="category-chip" data-i18n="chip_population">👥 Population</span>
+                <span class="category-chip" data-i18n="chip_area">📐 Superficie</span>
+                <span class="category-chip" data-i18n="chip_gdp">💰 PIB</span>
+                <span class="category-chip" data-i18n="chip_life_expectancy">❤️ Espérance de vie</span>
+                <span class="category-chip" data-i18n="chip_density">🏘️ Densité</span>
+                <span class="category-chip" data-i18n="chip_internet">🌐 Internet</span>
+                <span class="category-chip" data-i18n="chip_electricity">💡 Électricité</span>
+                <span class="category-chip" data-i18n="chip_unemployment">📉 Chômage</span>
+                <span class="category-chip" data-i18n="chip_north_south">🧭 Nord/Sud</span>
+                <span class="category-chip" data-i18n="chip_east_west">🧭 Est/Ouest</span>
             </div>
             <div class="cards-selector">
-                <label for="cards-count">Cartes par équipe :</label>
+                <label for="cards-count" data-i18n="cards_label">Cartes par équipe :</label>
                 <select id="cards-count">
                     <option value="3">3</option>
                     <option value="5">5</option>
@@ -34,21 +37,21 @@
                     <option value="10">10</option>
                 </select>
             </div>
-            <button id="start-btn" class="btn-primary">Nouvelle Partie</button>
+            <button id="start-btn" class="btn-primary" data-i18n="start_button">Nouvelle Partie</button>
         </div>
 
         <!-- Game screen -->
         <div id="game-screen" class="screen hidden">
             <!-- Top right buttons -->
             <div class="top-buttons">
-                <button id="home-btn" class="icon-btn" title="Retour au menu">🏠</button>
-                <button id="restart-game-btn" class="icon-btn" title="Recommencer">⟲</button>
-                <button id="rules-btn" class="icon-btn" title="Règles">?</button>
+                <button id="home-btn" class="icon-btn" data-i18n-title="home_title" title="Retour au menu">🏠</button>
+                <button id="restart-game-btn" class="icon-btn" data-i18n-title="restart_title" title="Recommencer">⟲</button>
+                <button id="rules-btn" class="icon-btn" data-i18n-title="rules_title" title="Règles">?</button>
             </div>
 
             <!-- Player 2 area (opponent, top) -->
             <div class="player-area player2-area">
-                <div class="player-label">équipe 2</div>
+                <div class="player-label" data-i18n="team_2_label">équipe 2</div>
                 <div id="player2-cards" class="cards-container opponent-cards"></div>
             </div>
 
@@ -56,7 +59,7 @@
             <div id="board-area">
                 <div class="category-header">
                     <span id="category-name" class="category-label"></span>
-                    <button id="change-category-btn" class="btn-change-category" title="Changer de catégorie">🔄</button>
+                    <button id="change-category-btn" class="btn-change-category" data-i18n-title="change_category_title" title="Changer de catégorie">🔄</button>
                 </div>
                 <div class="board-wrapper">
                     <div class="board-indicator minus">
@@ -75,26 +78,26 @@
             <!-- Player 1 area (current, bottom) -->
             <div class="player-area player1-area">
                 <div id="player1-cards" class="cards-container active-cards"></div>
-                <div class="player-label">équipe 1</div>
+                <div class="player-label" data-i18n="team_1_label">équipe 1</div>
             </div>
 
             <!-- Action bar - playing phase -->
             <div id="action-bar">
-                <button id="bluff-btn" class="btn-danger" title="Posez d'abord une carte">BLUFF !</button>
+                <button id="bluff-btn" class="btn-danger" data-i18n="bluff_button" data-i18n-title="bluff_title" title="Posez d'abord une carte">BLUFF !</button>
                 <div id="turn-indicator">Tour: équipe 1</div>
             </div>
 
             <!-- Action bar - placing phase -->
             <div id="placing-bar" class="hidden">
-                <button id="cancel-btn" class="btn-secondary">Annuler</button>
-                <span class="placing-hint">Cliquez entre les cartes</span>
-                <button id="validate-btn" class="btn-primary">Valider</button>
+                <button id="cancel-btn" class="btn-secondary" data-i18n="cancel_button">Annuler</button>
+                <span class="placing-hint" data-i18n="placing_hint">Cliquez entre les cartes</span>
+                <button id="validate-btn" class="btn-primary" data-i18n="validate_button">Valider</button>
             </div>
 
             <!-- Action bar - bluff result phase -->
             <div id="bluff-result-bar" class="hidden">
                 <span id="bluff-result-message" class="bluff-result-text"></span>
-                <button id="continue-btn" class="btn-primary">Continuer</button>
+                <button id="continue-btn" class="btn-primary" data-i18n="continue_button">Continuer</button>
             </div>
 
             <!-- Message area -->
@@ -104,10 +107,10 @@
         <!-- Capital modal -->
         <div id="capital-modal" class="modal hidden">
             <div class="modal-content">
-                <h2>Entrez la capitale</h2>
+                <h2 data-i18n="capital_prompt">Entrez la capitale</h2>
                 <p id="capital-country"></p>
-                <input type="text" id="capital-input" placeholder="Capitale...">
-                <button id="capital-submit" class="btn-primary">Valider</button>
+                <input type="text" id="capital-input" data-i18n-placeholder="capital_placeholder" placeholder="Capitale...">
+                <button id="capital-submit" class="btn-primary" data-i18n="validate_button">Valider</button>
             </div>
         </div>
 
@@ -116,18 +119,18 @@
             <div class="modal-content">
                 <h2 id="winner-text"></h2>
                 <p id="gameover-message"></p>
-                <button id="restart-btn" class="btn-primary">Rejouer</button>
+                <button id="restart-btn" class="btn-primary" data-i18n="replay_button">Rejouer</button>
             </div>
         </div>
 
         <!-- Capital validation modal -->
         <div id="capital-validation-modal" class="modal hidden">
             <div class="modal-content">
-                <h2>Validation de la capitale</h2>
+                <h2 data-i18n="capital_validation_title">Validation de la capitale</h2>
                 <p id="capital-validation-text"></p>
                 <div class="validation-buttons">
-                    <button id="capital-accept-btn" class="btn-primary">Accepter</button>
-                    <button id="capital-refuse-btn" class="btn-danger">Refuser</button>
+                    <button id="capital-accept-btn" class="btn-primary" data-i18n="accept_button">Accepter</button>
+                    <button id="capital-refuse-btn" class="btn-danger" data-i18n="refuse_button">Refuser</button>
                 </div>
             </div>
         </div>
@@ -135,9 +138,9 @@
         <!-- Rules modal -->
         <div id="rules-modal" class="modal hidden">
             <div class="modal-content rules-modal-content">
-                <h2>Regles du jeu</h2>
+                <h2 data-i18n="rules_title_text">Regles du jeu</h2>
                 <div id="rules-content" class="rules-text"></div>
-                <button id="close-rules-btn" class="btn-primary">Compris !</button>
+                <button id="close-rules-btn" class="btn-primary" data-i18n="close_rules_button">Compris !</button>
             </div>
         </div>
     </div>

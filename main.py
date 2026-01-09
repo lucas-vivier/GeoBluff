@@ -9,7 +9,10 @@ from pydantic import BaseModel
 
 import game
 
-RULES_FILE = Path(__file__).parent / "rules.md"
+RULES_FILES = {
+    "fr": Path(__file__).parent / "rules.md",
+    "en": Path(__file__).parent / "rules_en.md"
+}
 
 app = FastAPI(title="GeoBluff")
 
@@ -45,6 +48,7 @@ class RevealCardRequest(BaseModel):
 
 class NewGameRequest(BaseModel):
     cards_per_player: int = 7
+    language: Optional[str] = None
 
 
 @app.get("/")
@@ -54,19 +58,29 @@ async def index(request: Request):
 
 
 @app.get("/api/rules")
-async def get_rules():
+async def get_rules(lang: Optional[str] = None):
     """Get game rules from markdown file."""
-    if RULES_FILE.exists():
-        content = RULES_FILE.read_text(encoding="utf-8")
+    language = game.normalize_language(lang)
+    rules_file = RULES_FILES.get(language, RULES_FILES["fr"])
+    if rules_file.exists():
+        content = rules_file.read_text(encoding="utf-8")
         return PlainTextResponse(content)
-    return PlainTextResponse("Regles non disponibles")
+    fallback = "Regles non disponibles" if language == "fr" else "Rules not available"
+    return PlainTextResponse(fallback)
 
 
 @app.post("/api/new-game")
 async def new_game(req: Optional[NewGameRequest] = Body(default=None)):
     """Start a new game."""
     cards = req.cards_per_player if req else 7
-    return game.new_game(cards)
+    language = req.language if req else None
+    return game.new_game(cards, language=language)
+
+@app.post("/api/set-language")
+async def set_language(payload: dict = Body(...)):
+    """Set current language for the game."""
+    language = payload.get("language")
+    return game.set_language(language)
 
 
 @app.get("/api/game-state")
