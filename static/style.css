@@ -370,15 +370,19 @@ body {
 
 .board-cards {
     flex: 1;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: nowrap;
     min-height: 110px;
+    overflow-x: auto;
+    padding: 0.25rem 0.5rem;
+    scroll-behavior: smooth;
 }
 
 .board-cards .card {
     background: #fef3c7;
     border-color: #fbbf24;
+    touch-action: pan-x;
 }
 
 /* Reference card - no special styling, just normal card */
@@ -728,6 +732,29 @@ body {
 
 .rules-btn:hover {
     background: var(--primary);
+    color: white;
+}
+
+/* Restart button */
+.restart-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 3rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 50;
+    transition: all 0.2s;
+}
+
+.restart-btn:hover {
+    background: var(--text);
     color: white;
 }
 

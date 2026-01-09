@@ -1,199 +1,3962 @@
 [
-  {"name": "Chine", "capital": "Pékin", "flag": "🇨🇳", "population": 1411778724, "area": 9596961, "gdp": 17963171000000},
-  {"name": "Inde", "capital": "New Delhi", "flag": "🇮🇳", "population": 1380004385, "area": 3287263, "gdp": 3385089000000},
-  {"name": "États-Unis", "capital": "Washington", "flag": "🇺🇸", "population": 331002651, "area": 9833520, "gdp": 25462700000000},
-  {"name": "Indonésie", "capital": "Jakarta", "flag": "🇮🇩", "population": 273523615, "area": 1904569, "gdp": 1319100000000},
-  {"name": "Pakistan", "capital": "Islamabad", "flag": "🇵🇰", "population": 220892340, "area": 881913, "gdp": 376532000000},
-  {"name": "Brésil", "capital": "Brasilia", "flag": "🇧🇷", "population": 212559417, "area": 8515767, "gdp": 1920096000000},
-  {"name": "Nigeria", "capital": "Abuja", "flag": "🇳🇬", "population": 206139589, "area": 923768, "gdp": 477386000000},
-  {"name": "Bangladesh", "capital": "Dacca", "flag": "🇧🇩", "population": 164689383, "area": 147570, "gdp": 416265000000},
-  {"name": "Russie", "capital": "Moscou", "flag": "🇷🇺", "population": 145934462, "area": 17098242, "gdp": 1775800000000},
-  {"name": "Mexique", "capital": "Mexico", "flag": "🇲🇽", "population": 128932753, "area": 1964375, "gdp": 1293038000000},
-  {"name": "Japon", "capital": "Tokyo", "flag": "🇯🇵", "population": 126476461, "area": 377975, "gdp": 4231141000000},
-  {"name": "Éthiopie", "capital": "Addis-Abeba", "flag": "🇪🇹", "population": 114963588, "area": 1104300, "gdp": 126783000000},
-  {"name": "Philippines", "capital": "Manille", "flag": "🇵🇭", "population": 109581078, "area": 300000, "gdp": 404284000000},
-  {"name": "Égypte", "capital": "Le Caire", "flag": "🇪🇬", "population": 102334404, "area": 1002450, "gdp": 476748000000},
-  {"name": "Viêt Nam", "capital": "Hanoï", "flag": "🇻🇳", "population": 97338579, "area": 331212, "gdp": 408802000000},
-  {"name": "République démocratique du Congo", "capital": "Kinshasa", "flag": "🇨🇩", "population": 89561403, "area": 2344858, "gdp": 55351000000},
-  {"name": "Turquie", "capital": "Ankara", "flag": "🇹🇷", "population": 84339067, "area": 783562, "gdp": 905988000000},
-  {"name": "Iran", "capital": "Téhéran", "flag": "🇮🇷", "population": 83992949, "area": 1648195, "gdp": 388000000000},
-  {"name": "Allemagne", "capital": "Berlin", "flag": "🇩🇪", "population": 83783942, "area": 357022, "gdp": 4072192000000},
-  {"name": "Thaïlande", "capital": "Bangkok", "flag": "🇹🇭", "population": 69799978, "area": 513120, "gdp": 495341000000},
-  {"name": "Royaume-Uni", "capital": "Londres", "flag": "🇬🇧", "population": 67886011, "area": 242495, "gdp": 3070668000000},
-  {"name": "France", "capital": "Paris", "flag": "🇫🇷", "population": 65273511, "area": 643801, "gdp": 2782905000000},
-  {"name": "Italie", "capital": "Rome", "flag": "🇮🇹", "population": 60461826, "area": 301340, "gdp": 2010432000000},
-  {"name": "Tanzanie", "capital": "Dodoma", "flag": "🇹🇿", "population": 59734218, "area": 945087, "gdp": 75710000000},
-  {"name": "Afrique du Sud", "capital": "Pretoria", "flag": "🇿🇦", "population": 59308690, "area": 1221037, "gdp": 405870000000},
-  {"name": "Myanmar", "capital": "Naypyidaw", "flag": "🇲🇲", "population": 54409800, "area": 676578, "gdp": 59367000000},
-  {"name": "Kenya", "capital": "Nairobi", "flag": "🇰🇪", "population": 53771296, "area": 580367, "gdp": 113420000000},
-  {"name": "Corée du Sud", "capital": "Séoul", "flag": "🇰🇷", "population": 51269185, "area": 100210, "gdp": 1673916000000},
-  {"name": "Colombie", "capital": "Bogota", "flag": "🇨🇴", "population": 50882891, "area": 1141748, "gdp": 343939000000},
-  {"name": "Espagne", "capital": "Madrid", "flag": "🇪🇸", "population": 46754778, "area": 505990, "gdp": 1397509000000},
-  {"name": "Ouganda", "capital": "Kampala", "flag": "🇺🇬", "population": 45741007, "area": 241550, "gdp": 45571000000},
-  {"name": "Argentine", "capital": "Buenos Aires", "flag": "🇦🇷", "population": 45195774, "area": 2780400, "gdp": 632770000000},
-  {"name": "Algérie", "capital": "Alger", "flag": "🇩🇿", "population": 43851044, "area": 2381741, "gdp": 193062000000},
-  {"name": "Soudan", "capital": "Khartoum", "flag": "🇸🇩", "population": 43849260, "area": 1861484, "gdp": 34326000000},
-  {"name": "Ukraine", "capital": "Kiev", "flag": "🇺🇦", "population": 43733762, "area": 603550, "gdp": 160502000000},
-  {"name": "Irak", "capital": "Bagdad", "flag": "🇮🇶", "population": 40222493, "area": 438317, "gdp": 207889000000},
-  {"name": "Afghanistan", "capital": "Kaboul", "flag": "🇦🇫", "population": 38928346, "area": 652230, "gdp": 14266000000},
-  {"name": "Pologne", "capital": "Varsovie", "flag": "🇵🇱", "population": 37846611, "area": 312696, "gdp": 688177000000},
-  {"name": "Canada", "capital": "Ottawa", "flag": "🇨🇦", "population": 37742154, "area": 9984670, "gdp": 2139840000000},
-  {"name": "Maroc", "capital": "Rabat", "flag": "🇲🇦", "population": 36910560, "area": 446550, "gdp": 134180000000},
-  {"name": "Arabie saoudite", "capital": "Riyad", "flag": "🇸🇦", "population": 34813871, "area": 2149690, "gdp": 1061902000000},
-  {"name": "Ouzbékistan", "capital": "Tachkent", "flag": "🇺🇿", "population": 33469203, "area": 448978, "gdp": 80392000000},
-  {"name": "Pérou", "capital": "Lima", "flag": "🇵🇪", "population": 32971854, "area": 1285216, "gdp": 242632000000},
-  {"name": "Angola", "capital": "Luanda", "flag": "🇦🇴", "population": 32866272, "area": 1246700, "gdp": 124863000000},
-  {"name": "Malaisie", "capital": "Kuala Lumpur", "flag": "🇲🇾", "population": 32365999, "area": 330803, "gdp": 406306000000},
-  {"name": "Mozambique", "capital": "Maputo", "flag": "🇲🇿", "population": 31255435, "area": 801590, "gdp": 17855000000},
-  {"name": "Ghana", "capital": "Accra", "flag": "🇬🇭", "population": 31072940, "area": 238533, "gdp": 77594000000},
-  {"name": "Yémen", "capital": "Sanaa", "flag": "🇾🇪", "population": 29825964, "area": 527968, "gdp": 21606000000},
-  {"name": "Népal", "capital": "Katmandou", "flag": "🇳🇵", "population": 29136808, "area": 147181, "gdp": 40828000000},
-  {"name": "Venezuela", "capital": "Caracas", "flag": "🇻🇪", "population": 28435940, "area": 916445, "gdp": 482359000000},
-  {"name": "Madagascar", "capital": "Antananarivo", "flag": "🇲🇬", "population": 27691018, "area": 587041, "gdp": 14472000000},
-  {"name": "Cameroun", "capital": "Yaoundé", "flag": "🇨🇲", "population": 26545863, "area": 475442, "gdp": 45335000000},
-  {"name": "Côte d'Ivoire", "capital": "Yamoussoukro", "flag": "🇨🇮", "population": 26378274, "area": 322463, "gdp": 70019000000},
-  {"name": "Corée du Nord", "capital": "Pyongyang", "flag": "🇰🇵", "population": 25778816, "area": 120538, "gdp": 18000000000},
-  {"name": "Australie", "capital": "Canberra", "flag": "🇦🇺", "population": 25499884, "area": 7692024, "gdp": 1675419000000},
-  {"name": "Niger", "capital": "Niamey", "flag": "🇳🇪", "population": 24206644, "area": 1267000, "gdp": 14915000000},
-  {"name": "Taïwan", "capital": "Taipei", "flag": "🇹🇼", "population": 23816775, "area": 36193, "gdp": 790728000000},
-  {"name": "Sri Lanka", "capital": "Sri Jayawardenapura", "flag": "🇱🇰", "population": 21413249, "area": 65610, "gdp": 88927000000},
-  {"name": "Burkina Faso", "capital": "Ouagadougou", "flag": "🇧🇫", "population": 20903273, "area": 274222, "gdp": 19737000000},
-  {"name": "Mali", "capital": "Bamako", "flag": "🇲🇱", "population": 20250833, "area": 1240192, "gdp": 19329000000},
-  {"name": "Roumanie", "capital": "Bucarest", "flag": "🇷🇴", "population": 19237691, "area": 238391, "gdp": 301295000000},
-  {"name": "Malawi", "capital": "Lilongwe", "flag": "🇲🇼", "population": 19129952, "area": 118484, "gdp": 12627000000},
-  {"name": "Chili", "capital": "Santiago", "flag": "🇨🇱", "population": 19116201, "area": 756102, "gdp": 301025000000},
-  {"name": "Kazakhstan", "capital": "Astana", "flag": "🇰🇿", "population": 18776707, "area": 2724900, "gdp": 220623000000},
-  {"name": "Zambie", "capital": "Lusaka", "flag": "🇿🇲", "population": 18383955, "area": 752612, "gdp": 22148000000},
-  {"name": "Guatemala", "capital": "Guatemala", "flag": "🇬🇹", "population": 17915568, "area": 108889, "gdp": 85986000000},
-  {"name": "Équateur", "capital": "Quito", "flag": "🇪🇨", "population": 17643054, "area": 276841, "gdp": 115049000000},
-  {"name": "Syrie", "capital": "Damas", "flag": "🇸🇾", "population": 17500658, "area": 185180, "gdp": 22000000000},
-  {"name": "Pays-Bas", "capital": "Amsterdam", "flag": "🇳🇱", "population": 17134872, "area": 41850, "gdp": 991512000000},
-  {"name": "Sénégal", "capital": "Dakar", "flag": "🇸🇳", "population": 16743927, "area": 196722, "gdp": 27684000000},
-  {"name": "Cambodge", "capital": "Phnom Penh", "flag": "🇰🇭", "population": 16718965, "area": 181035, "gdp": 29959000000},
-  {"name": "Tchad", "capital": "N'Djamena", "flag": "🇹🇩", "population": 16425864, "area": 1284000, "gdp": 11780000000},
-  {"name": "Somalie", "capital": "Mogadiscio", "flag": "🇸🇴", "population": 15893222, "area": 637657, "gdp": 8128000000},
-  {"name": "Zimbabwe", "capital": "Harare", "flag": "🇿🇼", "population": 14862924, "area": 390757, "gdp": 28371000000},
-  {"name": "Guinée", "capital": "Conakry", "flag": "🇬🇳", "population": 13132795, "area": 245857, "gdp": 16091000000},
-  {"name": "Rwanda", "capital": "Kigali", "flag": "🇷🇼", "population": 12952218, "area": 26338, "gdp": 13310000000},
-  {"name": "Bénin", "capital": "Porto-Novo", "flag": "🇧🇯", "population": 12123200, "area": 114763, "gdp": 17399000000},
-  {"name": "Burundi", "capital": "Gitega", "flag": "🇧🇮", "population": 11890784, "area": 27834, "gdp": 2779000000},
-  {"name": "Tunisie", "capital": "Tunis", "flag": "🇹🇳", "population": 11818619, "area": 163610, "gdp": 46839000000},
-  {"name": "Bolivie", "capital": "Sucre", "flag": "🇧🇴", "population": 11673021, "area": 1098581, "gdp": 44009000000},
-  {"name": "Belgique", "capital": "Bruxelles", "flag": "🇧🇪", "population": 11589623, "area": 30528, "gdp": 578604000000},
-  {"name": "Haïti", "capital": "Port-au-Prince", "flag": "🇭🇹", "population": 11402528, "area": 27750, "gdp": 21174000000},
-  {"name": "Cuba", "capital": "La Havane", "flag": "🇨🇺", "population": 11326616, "area": 109884, "gdp": 107352000000},
-  {"name": "Soudan du Sud", "capital": "Djouba", "flag": "🇸🇸", "population": 11193725, "area": 644329, "gdp": 11998000000},
-  {"name": "République dominicaine", "capital": "Saint-Domingue", "flag": "🇩🇴", "population": 10847910, "area": 48671, "gdp": 113641000000},
-  {"name": "Tchéquie", "capital": "Prague", "flag": "🇨🇿", "population": 10708981, "area": 78865, "gdp": 290923000000},
-  {"name": "Grèce", "capital": "Athènes", "flag": "🇬🇷", "population": 10423054, "area": 131957, "gdp": 218015000000},
-  {"name": "Jordanie", "capital": "Amman", "flag": "🇯🇴", "population": 10203134, "area": 89342, "gdp": 47745000000},
-  {"name": "Portugal", "capital": "Lisbonne", "flag": "🇵🇹", "population": 10196709, "area": 92212, "gdp": 255854000000},
-  {"name": "Azerbaïdjan", "capital": "Bakou", "flag": "🇦🇿", "population": 10139177, "area": 86600, "gdp": 78717000000},
-  {"name": "Suède", "capital": "Stockholm", "flag": "🇸🇪", "population": 10099265, "area": 450295, "gdp": 585939000000},
-  {"name": "Honduras", "capital": "Tegucigalpa", "flag": "🇭🇳", "population": 9904607, "area": 112492, "gdp": 31718000000},
-  {"name": "Émirats arabes unis", "capital": "Abou Dabi", "flag": "🇦🇪", "population": 9890402, "area": 83600, "gdp": 507535000000},
-  {"name": "Hongrie", "capital": "Budapest", "flag": "🇭🇺", "population": 9660351, "area": 93028, "gdp": 182280000000},
-  {"name": "Tadjikistan", "capital": "Douchanbé", "flag": "🇹🇯", "population": 9537645, "area": 143100, "gdp": 8746000000},
-  {"name": "Biélorussie", "capital": "Minsk", "flag": "🇧🇾", "population": 9449323, "area": 207600, "gdp": 68219000000},
-  {"name": "Autriche", "capital": "Vienne", "flag": "🇦🇹", "population": 9006398, "area": 83879, "gdp": 471400000000},
-  {"name": "Papouasie-Nouvelle-Guinée", "capital": "Port Moresby", "flag": "🇵🇬", "population": 8947024, "area": 462840, "gdp": 30691000000},
-  {"name": "Serbie", "capital": "Belgrade", "flag": "🇷🇸", "population": 8737371, "area": 88361, "gdp": 63068000000},
-  {"name": "Israël", "capital": "Jérusalem", "flag": "🇮🇱", "population": 8655535, "area": 20770, "gdp": 525004000000},
-  {"name": "Suisse", "capital": "Berne", "flag": "🇨🇭", "population": 8654622, "area": 41284, "gdp": 807706000000},
-  {"name": "Togo", "capital": "Lomé", "flag": "🇹🇬", "population": 8278724, "area": 56785, "gdp": 8413000000},
-  {"name": "Sierra Leone", "capital": "Freetown", "flag": "🇸🇱", "population": 7976983, "area": 71740, "gdp": 4042000000},
-  {"name": "Laos", "capital": "Vientiane", "flag": "🇱🇦", "population": 7275560, "area": 236800, "gdp": 18827000000},
-  {"name": "Paraguay", "capital": "Asuncion", "flag": "🇵🇾", "population": 7132538, "area": 406752, "gdp": 41935000000},
-  {"name": "Bulgarie", "capital": "Sofia", "flag": "🇧🇬", "population": 6948445, "area": 110879, "gdp": 89041000000},
-  {"name": "Libye", "capital": "Tripoli", "flag": "🇱🇾", "population": 6871292, "area": 1759540, "gdp": 50492000000},
-  {"name": "Liban", "capital": "Beyrouth", "flag": "🇱🇧", "population": 6825445, "area": 10452, "gdp": 23132000000},
-  {"name": "Nicaragua", "capital": "Managua", "flag": "🇳🇮", "population": 6624554, "area": 130373, "gdp": 15092000000},
-  {"name": "Kirghizistan", "capital": "Bichkek", "flag": "🇰🇬", "population": 6524195, "area": 199951, "gdp": 10940000000},
-  {"name": "El Salvador", "capital": "San Salvador", "flag": "🇸🇻", "population": 6486205, "area": 21041, "gdp": 32489000000},
-  {"name": "Turkménistan", "capital": "Achgabat", "flag": "🇹🇲", "population": 6031200, "area": 488100, "gdp": 45231000000},
-  {"name": "Singapour", "capital": "Singapour", "flag": "🇸🇬", "population": 5850342, "area": 728, "gdp": 466789000000},
-  {"name": "Danemark", "capital": "Copenhague", "flag": "🇩🇰", "population": 5792202, "area": 43094, "gdp": 395404000000},
-  {"name": "Finlande", "capital": "Helsinki", "flag": "🇫🇮", "population": 5540720, "area": 338424, "gdp": 297302000000},
-  {"name": "République du Congo", "capital": "Brazzaville", "flag": "🇨🇬", "population": 5518087, "area": 342000, "gdp": 14541000000},
-  {"name": "Slovaquie", "capital": "Bratislava", "flag": "🇸🇰", "population": 5459642, "area": 49035, "gdp": 115469000000},
-  {"name": "Norvège", "capital": "Oslo", "flag": "🇳🇴", "population": 5421241, "area": 323802, "gdp": 579267000000},
-  {"name": "Oman", "capital": "Mascate", "flag": "🇴🇲", "population": 5106626, "area": 309500, "gdp": 88192000000},
-  {"name": "Palestine", "capital": "Ramallah", "flag": "🇵🇸", "population": 5101414, "area": 6020, "gdp": 18037000000},
-  {"name": "Costa Rica", "capital": "San José", "flag": "🇨🇷", "population": 5094118, "area": 51100, "gdp": 68379000000},
-  {"name": "Liberia", "capital": "Monrovia", "flag": "🇱🇷", "population": 5057681, "area": 111369, "gdp": 3509000000},
-  {"name": "Irlande", "capital": "Dublin", "flag": "🇮🇪", "population": 4937786, "area": 70273, "gdp": 504182000000},
-  {"name": "République centrafricaine", "capital": "Bangui", "flag": "🇨🇫", "population": 4829767, "area": 622984, "gdp": 2517000000},
-  {"name": "Nouvelle-Zélande", "capital": "Wellington", "flag": "🇳🇿", "population": 4822233, "area": 270467, "gdp": 249886000000},
-  {"name": "Mauritanie", "capital": "Nouakchott", "flag": "🇲🇷", "population": 4649658, "area": 1030700, "gdp": 9996000000},
-  {"name": "Panama", "capital": "Panama", "flag": "🇵🇦", "population": 4314767, "area": 75417, "gdp": 76522000000},
-  {"name": "Koweït", "capital": "Koweït", "flag": "🇰🇼", "population": 4270571, "area": 17818, "gdp": 184618000000},
-  {"name": "Croatie", "capital": "Zagreb", "flag": "🇭🇷", "population": 4105267, "area": 56594, "gdp": 70965000000},
-  {"name": "Moldavie", "capital": "Chișinău", "flag": "🇲🇩", "population": 4033963, "area": 33846, "gdp": 14457000000},
-  {"name": "Géorgie", "capital": "Tbilissi", "flag": "🇬🇪", "population": 3989167, "area": 69700, "gdp": 24605000000},
-  {"name": "Érythrée", "capital": "Asmara", "flag": "🇪🇷", "population": 3546421, "area": 117600, "gdp": 2065000000},
-  {"name": "Uruguay", "capital": "Montevideo", "flag": "🇺🇾", "population": 3473730, "area": 176215, "gdp": 71177000000},
-  {"name": "Bosnie-Herzégovine", "capital": "Sarajevo", "flag": "🇧🇦", "population": 3280819, "area": 51197, "gdp": 24028000000},
-  {"name": "Mongolie", "capital": "Oulan-Bator", "flag": "🇲🇳", "population": 3278290, "area": 1564116, "gdp": 17848000000},
-  {"name": "Arménie", "capital": "Erevan", "flag": "🇦🇲", "population": 2963243, "area": 29743, "gdp": 19500000000},
-  {"name": "Jamaïque", "capital": "Kingston", "flag": "🇯🇲", "population": 2961167, "area": 10991, "gdp": 17095000000},
-  {"name": "Qatar", "capital": "Doha", "flag": "🇶🇦", "population": 2881053, "area": 11586, "gdp": 237296000000},
-  {"name": "Albanie", "capital": "Tirana", "flag": "🇦🇱", "population": 2877797, "area": 28748, "gdp": 18882000000},
-  {"name": "Porto Rico", "capital": "San Juan", "flag": "🇵🇷", "population": 2860853, "area": 9104, "gdp": 113465000000},
-  {"name": "Lituanie", "capital": "Vilnius", "flag": "🇱🇹", "population": 2722289, "area": 65300, "gdp": 70850000000},
-  {"name": "Namibie", "capital": "Windhoek", "flag": "🇳🇦", "population": 2540905, "area": 825615, "gdp": 12236000000},
-  {"name": "Gambie", "capital": "Banjul", "flag": "🇬🇲", "population": 2416668, "area": 10689, "gdp": 2078000000},
-  {"name": "Botswana", "capital": "Gaborone", "flag": "🇧🇼", "population": 2351627, "area": 581730, "gdp": 18340000000},
-  {"name": "Gabon", "capital": "Libreville", "flag": "🇬🇦", "population": 2225734, "area": 267668, "gdp": 21072000000},
-  {"name": "Lesotho", "capital": "Maseru", "flag": "🇱🇸", "population": 2142249, "area": 30355, "gdp": 2496000000},
-  {"name": "Macédoine du Nord", "capital": "Skopje", "flag": "🇲🇰", "population": 2083374, "area": 25713, "gdp": 14167000000},
-  {"name": "Slovénie", "capital": "Ljubljana", "flag": "🇸🇮", "population": 2078938, "area": 20273, "gdp": 62118000000},
-  {"name": "Guinée-Bissau", "capital": "Bissau", "flag": "🇬🇼", "population": 1968001, "area": 36125, "gdp": 1639000000},
-  {"name": "Lettonie", "capital": "Riga", "flag": "🇱🇻", "population": 1886198, "area": 64589, "gdp": 40270000000},
-  {"name": "Bahreïn", "capital": "Manama", "flag": "🇧🇭", "population": 1701575, "area": 765, "gdp": 44169000000},
-  {"name": "Guinée équatoriale", "capital": "Malabo", "flag": "🇬🇶", "population": 1402985, "area": 28051, "gdp": 11026000000},
-  {"name": "Trinité-et-Tobago", "capital": "Port-d'Espagne", "flag": "🇹🇹", "population": 1399488, "area": 5130, "gdp": 27369000000},
-  {"name": "Estonie", "capital": "Tallinn", "flag": "🇪🇪", "population": 1326535, "area": 45227, "gdp": 38100000000},
-  {"name": "Timor oriental", "capital": "Dili", "flag": "🇹🇱", "population": 1318445, "area": 14874, "gdp": 1958000000},
-  {"name": "Maurice", "capital": "Port-Louis", "flag": "🇲🇺", "population": 1271768, "area": 2040, "gdp": 12216000000},
-  {"name": "Chypre", "capital": "Nicosie", "flag": "🇨🇾", "population": 1207359, "area": 9251, "gdp": 27727000000},
-  {"name": "Eswatini", "capital": "Mbabane", "flag": "🇸🇿", "population": 1160164, "area": 17364, "gdp": 4941000000},
-  {"name": "Djibouti", "capital": "Djibouti", "flag": "🇩🇯", "population": 988000, "area": 23200, "gdp": 3484000000},
-  {"name": "Fidji", "capital": "Suva", "flag": "🇫🇯", "population": 896445, "area": 18274, "gdp": 4940000000},
-  {"name": "Comores", "capital": "Moroni", "flag": "🇰🇲", "population": 869601, "area": 2235, "gdp": 1299000000},
-  {"name": "Guyana", "capital": "Georgetown", "flag": "🇬🇾", "population": 786552, "area": 214969, "gdp": 14718000000},
-  {"name": "Bhoutan", "capital": "Thimphou", "flag": "🇧🇹", "population": 771608, "area": 38394, "gdp": 2707000000},
-  {"name": "Îles Salomon", "capital": "Honiara", "flag": "🇸🇧", "population": 686884, "area": 28896, "gdp": 1636000000},
-  {"name": "Luxembourg", "capital": "Luxembourg", "flag": "🇱🇺", "population": 625978, "area": 2586, "gdp": 86898000000},
-  {"name": "Monténégro", "capital": "Podgorica", "flag": "🇲🇪", "population": 628066, "area": 13812, "gdp": 6100000000},
-  {"name": "Suriname", "capital": "Paramaribo", "flag": "🇸🇷", "population": 586632, "area": 163820, "gdp": 3620000000},
-  {"name": "Cap-Vert", "capital": "Praia", "flag": "🇨🇻", "population": 555987, "area": 4033, "gdp": 1936000000},
-  {"name": "Maldives", "capital": "Malé", "flag": "🇲🇻", "population": 540544, "area": 300, "gdp": 6217000000},
-  {"name": "Malte", "capital": "La Valette", "flag": "🇲🇹", "population": 441543, "area": 316, "gdp": 17364000000},
-  {"name": "Brunei", "capital": "Bandar Seri Begawan", "flag": "🇧🇳", "population": 437479, "area": 5765, "gdp": 14007000000},
-  {"name": "Bahamas", "capital": "Nassau", "flag": "🇧🇸", "population": 393244, "area": 13943, "gdp": 12434000000},
-  {"name": "Belize", "capital": "Belmopan", "flag": "🇧🇿", "population": 397628, "area": 22966, "gdp": 2816000000},
-  {"name": "Islande", "capital": "Reykjavik", "flag": "🇮🇸", "population": 341243, "area": 103000, "gdp": 27865000000},
-  {"name": "Vanuatu", "capital": "Port-Vila", "flag": "🇻🇺", "population": 307145, "area": 12189, "gdp": 956000000},
-  {"name": "Barbade", "capital": "Bridgetown", "flag": "🇧🇧", "population": 287375, "area": 430, "gdp": 5398000000},
-  {"name": "Sainte-Lucie", "capital": "Castries", "flag": "🇱🇨", "population": 183627, "area": 616, "gdp": 2083000000},
-  {"name": "Grenade", "capital": "Saint-Georges", "flag": "🇬🇩", "population": 112523, "area": 344, "gdp": 1258000000},
-  {"name": "Saint-Vincent-et-les-Grenadines", "capital": "Kingstown", "flag": "🇻🇨", "population": 110940, "area": 389, "gdp": 903000000},
-  {"name": "Micronésie", "capital": "Palikir", "flag": "🇫🇲", "population": 115023, "area": 702, "gdp": 404000000},
-  {"name": "Kiribati", "capital": "Tarawa-Sud", "flag": "🇰🇮", "population": 119449, "area": 811, "gdp": 223000000},
-  {"name": "Tonga", "capital": "Nukualofa", "flag": "🇹🇴", "population": 105695, "area": 747, "gdp": 469000000},
-  {"name": "Sao Tomé-et-Príncipe", "capital": "São Tomé", "flag": "🇸🇹", "population": 219159, "area": 964, "gdp": 527000000},
-  {"name": "Samoa", "capital": "Apia", "flag": "🇼🇸", "population": 198414, "area": 2842, "gdp": 844000000},
-  {"name": "Dominique", "capital": "Roseau", "flag": "🇩🇲", "population": 71986, "area": 751, "gdp": 612000000},
-  {"name": "Antigua-et-Barbuda", "capital": "Saint John's", "flag": "🇦🇬", "population": 97929, "area": 442, "gdp": 1757000000},
-  {"name": "Andorre", "capital": "Andorre-la-Vieille", "flag": "🇦🇩", "population": 77265, "area": 468, "gdp": 3352000000},
-  {"name": "Seychelles", "capital": "Victoria", "flag": "🇸🇨", "population": 98347, "area": 452, "gdp": 1567000000},
-  {"name": "Îles Marshall", "capital": "Majuro", "flag": "🇲🇭", "population": 59190, "area": 181, "gdp": 250000000},
-  {"name": "Saint-Kitts-et-Nevis", "capital": "Basseterre", "flag": "🇰🇳", "population": 53199, "area": 261, "gdp": 976000000},
-  {"name": "Liechtenstein", "capital": "Vaduz", "flag": "🇱🇮", "population": 38128, "area": 160, "gdp": 6427000000},
-  {"name": "Monaco", "capital": "Monaco", "flag": "🇲🇨", "population": 39242, "area": 2, "gdp": 7918000000},
-  {"name": "Saint-Marin", "capital": "Saint-Marin", "flag": "🇸🇲", "population": 33931, "area": 61, "gdp": 1855000000},
-  {"name": "Palaos", "capital": "Ngerulmud", "flag": "🇵🇼", "population": 18094, "area": 459, "gdp": 218000000},
-  {"name": "Tuvalu", "capital": "Funafuti", "flag": "🇹🇻", "population": 11792, "area": 26, "gdp": 63000000},
-  {"name": "Nauru", "capital": "Yaren", "flag": "🇳🇷", "population": 10824, "area": 21, "gdp": 133000000},
-  {"name": "Vatican", "capital": "Vatican", "flag": "🇻🇦", "population": 801, "area": 0.44, "gdp": 21000000}
+  {
+    "nom": "Afghanistan",
+    "nom_en": "Afghanistan",
+    "capitale": "Kaboul",
+    "drapeau": "🇦🇫",
+    "iso2": "AF",
+    "iso3": "AFG",
+    "region": "Asia",
+    "superficie": 652230.0,
+    "population": 43844000,
+    "pib": 17152234636,
+    "capitale_en": "Kabul",
+    "capitale_variantes": [
+      "Kaboul",
+      "Kabul"
+    ]
+  },
+  {
+    "nom": "Afrique du Sud",
+    "nom_en": "South Africa",
+    "capitale": "Pretoria",
+    "drapeau": "🇿🇦",
+    "iso2": "ZA",
+    "iso3": "ZAF",
+    "region": "Africa",
+    "superficie": 1221037.0,
+    "population": 63100945,
+    "pib": 401144998373,
+    "capitale_en": "Pretoria",
+    "capitale_variantes": [
+      "Pretoria"
+    ]
+  },
+  {
+    "nom": "Ahvenanmaa",
+    "nom_en": "Åland Islands",
+    "capitale": "Mariehamn",
+    "drapeau": "🇦🇽",
+    "iso2": "AX",
+    "iso3": "ALA",
+    "region": "Europe",
+    "superficie": 1580.0,
+    "population": 30654,
+    "pib": null,
+    "capitale_en": "Mariehamn",
+    "capitale_variantes": [
+      "Mariehamn"
+    ]
+  },
+  {
+    "nom": "Albanie",
+    "nom_en": "Albania",
+    "capitale": "Tirana",
+    "drapeau": "🇦🇱",
+    "iso2": "AL",
+    "iso3": "ALB",
+    "region": "Europe",
+    "superficie": 28748.0,
+    "population": 2363314,
+    "pib": 27046429296,
+    "capitale_en": "Tirana",
+    "capitale_variantes": [
+      "Tirana"
+    ]
+  },
+  {
+    "nom": "Algérie",
+    "nom_en": "Algeria",
+    "capitale": "Alger",
+    "drapeau": "🇩🇿",
+    "iso2": "DZ",
+    "iso3": "DZA",
+    "region": "Africa",
+    "superficie": 2381741.0,
+    "population": 47400000,
+    "pib": 269322281664,
+    "capitale_en": "Algiers",
+    "capitale_variantes": [
+      "Alger",
+      "Algiers"
+    ]
+  },
+  {
+    "nom": "Allemagne",
+    "nom_en": "Germany",
+    "capitale": "Berlin",
+    "drapeau": "🇩🇪",
+    "iso2": "DE",
+    "iso3": "DEU",
+    "region": "Europe",
+    "superficie": 357114.0,
+    "population": 83491249,
+    "pib": 4685592577804,
+    "capitale_en": "Berlin",
+    "capitale_variantes": [
+      "Berlin"
+    ]
+  },
+  {
+    "nom": "Andorre",
+    "nom_en": "Andorra",
+    "capitale": "Andorra la Vella",
+    "drapeau": "🇦🇩",
+    "iso2": "AD",
+    "iso3": "AND",
+    "region": "Europe",
+    "superficie": 468.0,
+    "population": 88406,
+    "pib": 4039842405,
+    "capitale_en": "Andorra la Vella",
+    "capitale_variantes": [
+      "Andorra la Vella"
+    ]
+  },
+  {
+    "nom": "Angola",
+    "nom_en": "Angola",
+    "capitale": "Luanda",
+    "drapeau": "🇦🇴",
+    "iso2": "AO",
+    "iso3": "AGO",
+    "region": "Africa",
+    "superficie": 1246700.0,
+    "population": 36170961,
+    "pib": 100998916781,
+    "capitale_en": "Luanda",
+    "capitale_variantes": [
+      "Luanda"
+    ]
+  },
+  {
+    "nom": "Anguilla",
+    "nom_en": "Anguilla",
+    "capitale": "The Valley",
+    "drapeau": "🇦🇮",
+    "iso2": "AI",
+    "iso3": "AIA",
+    "region": "Americas",
+    "superficie": 91.0,
+    "population": 16010,
+    "pib": null,
+    "capitale_en": "The Valley",
+    "capitale_variantes": [
+      "The Valley"
+    ]
+  },
+  {
+    "nom": "Antarctique",
+    "nom_en": "Antarctica",
+    "capitale": "",
+    "drapeau": "🇦🇶",
+    "iso2": "AQ",
+    "iso3": "ATA",
+    "region": "Antarctic",
+    "superficie": 14000000.0,
+    "population": 1300,
+    "pib": null,
+    "capitale_en": "",
+    "capitale_variantes": []
+  },
+  {
+    "nom": "Antigua-et-Barbuda",
+    "nom_en": "Antigua and Barbuda",
+    "capitale": "Saint John's",
+    "drapeau": "🇦🇬",
+    "iso2": "AG",
+    "iso3": "ATG",
+    "region": "Americas",
+    "superficie": 442.0,
+    "population": 103603,
+    "pib": 2207622874,
+    "capitale_en": "Saint John's",
+    "capitale_variantes": [
+      "Saint John's"
+    ]
+  },
+  {
+    "nom": "Arabie Saoudite",
+    "nom_en": "Saudi Arabia",
+    "capitale": "Riyad",
+    "drapeau": "🇸🇦",
+    "iso2": "SA",
+    "iso3": "SAU",
+    "region": "Asia",
+    "superficie": 2149690.0,
+    "population": 35300280,
+    "pib": 1239804533333,
+    "capitale_en": "Riyadh",
+    "capitale_variantes": [
+      "Riyadh",
+      "Riyad"
+    ]
+  },
+  {
+    "nom": "Argentine",
+    "nom_en": "Argentina",
+    "capitale": "Buenos Aires",
+    "drapeau": "🇦🇷",
+    "iso2": "AR",
+    "iso3": "ARG",
+    "region": "Americas",
+    "superficie": 2780400.0,
+    "population": 46735004,
+    "pib": 638365455340,
+    "capitale_en": "Buenos Aires",
+    "capitale_variantes": [
+      "Buenos Aires"
+    ]
+  },
+  {
+    "nom": "Arménie",
+    "nom_en": "Armenia",
+    "capitale": "Yerevan",
+    "drapeau": "🇦🇲",
+    "iso2": "AM",
+    "iso3": "ARM",
+    "region": "Asia",
+    "superficie": 29743.0,
+    "population": 3076200,
+    "pib": 25955275380,
+    "capitale_en": "Yerevan",
+    "capitale_variantes": [
+      "Yerevan"
+    ]
+  },
+  {
+    "nom": "Aruba",
+    "nom_en": "Aruba",
+    "capitale": "Oranjestad",
+    "drapeau": "🇦🇼",
+    "iso2": "AW",
+    "iso3": "ABW",
+    "region": "Americas",
+    "superficie": 180.0,
+    "population": 107566,
+    "pib": 4265650673,
+    "capitale_en": "Oranjestad",
+    "capitale_variantes": [
+      "Oranjestad"
+    ]
+  },
+  {
+    "nom": "Australie",
+    "nom_en": "Australia",
+    "capitale": "Canberra",
+    "drapeau": "🇦🇺",
+    "iso2": "AU",
+    "iso3": "AUS",
+    "region": "Oceania",
+    "superficie": 7692024.0,
+    "population": 27536874,
+    "pib": 1757022451652,
+    "capitale_en": "Canberra",
+    "capitale_variantes": [
+      "Canberra"
+    ]
+  },
+  {
+    "nom": "Autriche",
+    "nom_en": "Austria",
+    "capitale": "Vienne",
+    "drapeau": "🇦🇹",
+    "iso2": "AT",
+    "iso3": "AUT",
+    "region": "Europe",
+    "superficie": 83871.0,
+    "population": 9200931,
+    "pib": 534790720466,
+    "capitale_en": "Vienna",
+    "capitale_variantes": [
+      "Wien",
+      "Vienna",
+      "Vienne"
+    ]
+  },
+  {
+    "nom": "Azerbaïdjan",
+    "nom_en": "Azerbaijan",
+    "capitale": "Baku",
+    "drapeau": "🇦🇿",
+    "iso2": "AZ",
+    "iso3": "AZE",
+    "region": "Asia",
+    "superficie": 86600.0,
+    "population": 10241722,
+    "pib": 74315882352,
+    "capitale_en": "Baku",
+    "capitale_variantes": [
+      "Baku"
+    ]
+  },
+  {
+    "nom": "Bahamas",
+    "nom_en": "Bahamas",
+    "capitale": "Nassau",
+    "drapeau": "🇧🇸",
+    "iso2": "BS",
+    "iso3": "BHS",
+    "region": "Americas",
+    "superficie": 13943.0,
+    "population": 398165,
+    "pib": 15832800000,
+    "capitale_en": "Nassau",
+    "capitale_variantes": [
+      "Nassau"
+    ]
+  },
+  {
+    "nom": "Bahreïn",
+    "nom_en": "Bahrain",
+    "capitale": "Manama",
+    "drapeau": "🇧🇭",
+    "iso2": "BH",
+    "iso3": "BHR",
+    "region": "Asia",
+    "superficie": 765.0,
+    "population": 1594654,
+    "pib": 47109734308,
+    "capitale_en": "Manama",
+    "capitale_variantes": [
+      "Manama"
+    ]
+  },
+  {
+    "nom": "Bangladesh",
+    "nom_en": "Bangladesh",
+    "capitale": "Dacca",
+    "drapeau": "🇧🇩",
+    "iso2": "BD",
+    "iso3": "BGD",
+    "region": "Asia",
+    "superficie": 147570.0,
+    "population": 169828911,
+    "pib": 450119432068,
+    "capitale_en": "Dhaka",
+    "capitale_variantes": [
+      "Dhaka",
+      "Dacca"
+    ]
+  },
+  {
+    "nom": "Barbade",
+    "nom_en": "Barbados",
+    "capitale": "Bridgetown",
+    "drapeau": "🇧🇧",
+    "iso2": "BB",
+    "iso3": "BRB",
+    "region": "Americas",
+    "superficie": 430.0,
+    "population": 267800,
+    "pib": 7498050000,
+    "capitale_en": "Bridgetown",
+    "capitale_variantes": [
+      "Bridgetown"
+    ]
+  },
+  {
+    "nom": "Belgique",
+    "nom_en": "Belgium",
+    "capitale": "Bruxelles",
+    "drapeau": "🇧🇪",
+    "iso2": "BE",
+    "iso3": "BEL",
+    "region": "Europe",
+    "superficie": 30528.0,
+    "population": 11825551,
+    "pib": 671370081636,
+    "capitale_en": "Brussels",
+    "capitale_variantes": [
+      "Brussels",
+      "Bruxelles"
+    ]
+  },
+  {
+    "nom": "Belize",
+    "nom_en": "Belize",
+    "capitale": "Belmopan",
+    "drapeau": "🇧🇿",
+    "iso2": "BZ",
+    "iso3": "BLZ",
+    "region": "Americas",
+    "superficie": 22966.0,
+    "population": 417634,
+    "pib": 3203631800,
+    "capitale_en": "Belmopan",
+    "capitale_variantes": [
+      "Belmopan"
+    ]
+  },
+  {
+    "nom": "Bermudes",
+    "nom_en": "Bermuda",
+    "capitale": "Hamilton",
+    "drapeau": "🇧🇲",
+    "iso2": "BM",
+    "iso3": "BMU",
+    "region": "Americas",
+    "superficie": 54.0,
+    "population": 64055,
+    "pib": 9233600000,
+    "capitale_en": "Hamilton",
+    "capitale_variantes": [
+      "Hamilton"
+    ]
+  },
+  {
+    "nom": "Bhoutan",
+    "nom_en": "Bhutan",
+    "capitale": "Thimphu",
+    "drapeau": "🇧🇹",
+    "iso2": "BT",
+    "iso3": "BTN",
+    "region": "Asia",
+    "superficie": 38394.0,
+    "population": 784043,
+    "pib": 3012896789,
+    "capitale_en": "Thimphu",
+    "capitale_variantes": [
+      "Thimphu"
+    ]
+  },
+  {
+    "nom": "Birmanie",
+    "nom_en": "Myanmar",
+    "capitale": "Naypyidaw",
+    "drapeau": "🇲🇲",
+    "iso2": "MM",
+    "iso3": "MMR",
+    "region": "Asia",
+    "superficie": 676578.0,
+    "population": 51316756,
+    "pib": 74068349523,
+    "capitale_en": "Naypyidaw",
+    "capitale_variantes": [
+      "Naypyidaw"
+    ]
+  },
+  {
+    "nom": "Biélorussie",
+    "nom_en": "Belarus",
+    "capitale": "Minsk",
+    "drapeau": "🇧🇾",
+    "iso2": "BY",
+    "iso3": "BLR",
+    "region": "Europe",
+    "superficie": 207600.0,
+    "population": 9109280,
+    "pib": 75961865471,
+    "capitale_en": "Minsk",
+    "capitale_variantes": [
+      "Minsk"
+    ]
+  },
+  {
+    "nom": "Bolivie",
+    "nom_en": "Bolivia",
+    "capitale": "Sucre",
+    "drapeau": "🇧🇴",
+    "iso2": "BO",
+    "iso3": "BOL",
+    "region": "Americas",
+    "superficie": 1098581.0,
+    "population": 11365333,
+    "pib": 54881327452,
+    "capitale_en": "Sucre",
+    "capitale_variantes": [
+      "Sucre"
+    ]
+  },
+  {
+    "nom": "Bosnie-Herzégovine",
+    "nom_en": "Bosnia and Herzegovina",
+    "capitale": "Sarajevo",
+    "drapeau": "🇧🇦",
+    "iso2": "BA",
+    "iso3": "BIH",
+    "region": "Europe",
+    "superficie": 51209.0,
+    "population": 3422000,
+    "pib": 29613572022,
+    "capitale_en": "Sarajevo",
+    "capitale_variantes": [
+      "Sarajevo"
+    ]
+  },
+  {
+    "nom": "Botswana",
+    "nom_en": "Botswana",
+    "capitale": "Gaborone",
+    "drapeau": "🇧🇼",
+    "iso2": "BW",
+    "iso3": "BWA",
+    "region": "Africa",
+    "superficie": 582000.0,
+    "population": 2359609,
+    "pib": 19402063512,
+    "capitale_en": "Gaborone",
+    "capitale_variantes": [
+      "Gaborone"
+    ]
+  },
+  {
+    "nom": "Brunei",
+    "nom_en": "Brunei",
+    "capitale": "Bandar Seri Begawan",
+    "drapeau": "🇧🇳",
+    "iso2": "BN",
+    "iso3": "BRN",
+    "region": "Asia",
+    "superficie": 5765.0,
+    "population": 455500,
+    "pib": 15340808592,
+    "capitale_en": "Bandar Seri Begawan",
+    "capitale_variantes": [
+      "Bandar Seri Begawan"
+    ]
+  },
+  {
+    "nom": "Brésil",
+    "nom_en": "Brazil",
+    "capitale": "Brasilia",
+    "drapeau": "🇧🇷",
+    "iso2": "BR",
+    "iso3": "BRA",
+    "region": "Americas",
+    "superficie": 8515767.0,
+    "population": 213421037,
+    "pib": 2185821648943,
+    "capitale_en": "Brasília",
+    "capitale_variantes": [
+      "Brasilia",
+      "Brasília"
+    ]
+  },
+  {
+    "nom": "Bulgarie",
+    "nom_en": "Bulgaria",
+    "capitale": "Sofia",
+    "drapeau": "🇧🇬",
+    "iso2": "BG",
+    "iso3": "BGR",
+    "region": "Europe",
+    "superficie": 110879.0,
+    "population": 6437360,
+    "pib": 113343355779,
+    "capitale_en": "Sofia",
+    "capitale_variantes": [
+      "Sofia"
+    ]
+  },
+  {
+    "nom": "Burkina Faso",
+    "nom_en": "Burkina Faso",
+    "capitale": "Ouagadougou",
+    "drapeau": "🇧🇫",
+    "iso2": "BF",
+    "iso3": "BFA",
+    "region": "Africa",
+    "superficie": 272967.0,
+    "population": 24070553,
+    "pib": 23124729853,
+    "capitale_en": "Ouagadougou",
+    "capitale_variantes": [
+      "Ouagadougou"
+    ]
+  },
+  {
+    "nom": "Burundi",
+    "nom_en": "Burundi",
+    "capitale": "Gitega",
+    "drapeau": "🇧🇮",
+    "iso2": "BI",
+    "iso3": "BDI",
+    "region": "Africa",
+    "superficie": 27834.0,
+    "population": 12332788,
+    "pib": 3082433067,
+    "capitale_en": "Gitega",
+    "capitale_variantes": [
+      "Gitega"
+    ]
+  },
+  {
+    "nom": "Bénin",
+    "nom_en": "Benin",
+    "capitale": "Porto-Novo",
+    "drapeau": "🇧🇯",
+    "iso2": "BJ",
+    "iso3": "BEN",
+    "region": "Africa",
+    "superficie": 112622.0,
+    "population": 13224860,
+    "pib": 21482643706,
+    "capitale_en": "Porto-Novo",
+    "capitale_variantes": [
+      "Porto-Novo"
+    ]
+  },
+  {
+    "nom": "Cambodge",
+    "nom_en": "Cambodia",
+    "capitale": "Phnom Penh",
+    "drapeau": "🇰🇭",
+    "iso2": "KH",
+    "iso3": "KHM",
+    "region": "Asia",
+    "superficie": 181035.0,
+    "population": 17577760,
+    "pib": 46352647037,
+    "capitale_en": "Phnom Penh",
+    "capitale_variantes": [
+      "Phnom Penh"
+    ]
+  },
+  {
+    "nom": "Cameroun",
+    "nom_en": "Cameroon",
+    "capitale": "Yaoundé",
+    "drapeau": "🇨🇲",
+    "iso2": "CM",
+    "iso3": "CMR",
+    "region": "Africa",
+    "superficie": 475442.0,
+    "population": 29442327,
+    "pib": 53296694320,
+    "capitale_en": "Yaoundé",
+    "capitale_variantes": [
+      "Yaoundé"
+    ]
+  },
+  {
+    "nom": "Canada",
+    "nom_en": "Canada",
+    "capitale": "Ottawa",
+    "drapeau": "🇨🇦",
+    "iso2": "CA",
+    "iso3": "CAN",
+    "region": "Americas",
+    "superficie": 9984670.0,
+    "population": 41651653,
+    "pib": 2243636826633,
+    "capitale_en": "Ottawa",
+    "capitale_variantes": [
+      "Ottawa"
+    ]
+  },
+  {
+    "nom": "Chili",
+    "nom_en": "Chile",
+    "capitale": "Santiago",
+    "drapeau": "🇨🇱",
+    "iso2": "CL",
+    "iso3": "CHL",
+    "region": "Americas",
+    "superficie": 756102.0,
+    "population": 20206953,
+    "pib": 330267137371,
+    "capitale_en": "Santiago",
+    "capitale_variantes": [
+      "Santiago"
+    ]
+  },
+  {
+    "nom": "Chine",
+    "nom_en": "China",
+    "capitale": "Pékin",
+    "drapeau": "🇨🇳",
+    "iso2": "CN",
+    "iso3": "CHN",
+    "region": "Asia",
+    "superficie": 9706961.0,
+    "population": 1408280000,
+    "pib": 18743803170827,
+    "capitale_en": "Beijing",
+    "capitale_variantes": [
+      "Pékin",
+      "Pekin",
+      "Beijing"
+    ]
+  },
+  {
+    "nom": "Chypre",
+    "nom_en": "Cyprus",
+    "capitale": "Nicosia",
+    "drapeau": "🇨🇾",
+    "iso2": "CY",
+    "iso3": "CYP",
+    "region": "Europe",
+    "superficie": 9251.0,
+    "population": 1442614,
+    "pib": 37634533331,
+    "capitale_en": "Nicosia",
+    "capitale_variantes": [
+      "Nicosia"
+    ]
+  },
+  {
+    "nom": "Cité du Vatican",
+    "nom_en": "Vatican City",
+    "capitale": "Vatican City",
+    "drapeau": "🇻🇦",
+    "iso2": "VA",
+    "iso3": "VAT",
+    "region": "Europe",
+    "superficie": 0.49,
+    "population": 882,
+    "pib": null,
+    "capitale_en": "Vatican City",
+    "capitale_variantes": [
+      "Vatican City"
+    ]
+  },
+  {
+    "nom": "Colombie",
+    "nom_en": "Colombia",
+    "capitale": "Bogota",
+    "drapeau": "🇨🇴",
+    "iso2": "CO",
+    "iso3": "COL",
+    "region": "Americas",
+    "superficie": 1141748.0,
+    "population": 53057212,
+    "pib": 418818154879,
+    "capitale_en": "Bogotá",
+    "capitale_variantes": [
+      "Bogotá",
+      "Bogota"
+    ]
+  },
+  {
+    "nom": "Comores",
+    "nom_en": "Comoros",
+    "capitale": "Moroni",
+    "drapeau": "🇰🇲",
+    "iso2": "KM",
+    "iso3": "COM",
+    "region": "Africa",
+    "superficie": 1862.0,
+    "population": 919901,
+    "pib": 1440991455,
+    "capitale_en": "Moroni",
+    "capitale_variantes": [
+      "Moroni"
+    ]
+  },
+  {
+    "nom": "Congo",
+    "nom_en": "Republic of the Congo",
+    "capitale": "Brazzaville",
+    "drapeau": "🇨🇬",
+    "iso2": "CG",
+    "iso3": "COG",
+    "region": "Africa",
+    "superficie": 342000.0,
+    "population": 6142180,
+    "pib": 15719986076,
+    "capitale_en": "Brazzaville",
+    "capitale_variantes": [
+      "Brazzaville"
+    ]
+  },
+  {
+    "nom": "Congo (Rép. dém.)",
+    "nom_en": "DR Congo",
+    "capitale": "Kinshasa",
+    "drapeau": "🇨🇩",
+    "iso2": "CD",
+    "iso3": "COD",
+    "region": "Africa",
+    "superficie": 2344858.0,
+    "population": 112832000,
+    "pib": 70962185790,
+    "capitale_en": "Kinshasa",
+    "capitale_variantes": [
+      "Kinshasa"
+    ]
+  },
+  {
+    "nom": "Corée du Nord",
+    "nom_en": "North Korea",
+    "capitale": "Pyongyang",
+    "drapeau": "🇰🇵",
+    "iso2": "KP",
+    "iso3": "PRK",
+    "region": "Asia",
+    "superficie": 120538.0,
+    "population": 25950000,
+    "pib": null,
+    "capitale_en": "Pyongyang",
+    "capitale_variantes": [
+      "Pyongyang"
+    ]
+  },
+  {
+    "nom": "Corée du Sud",
+    "nom_en": "South Korea",
+    "capitale": "Séoul",
+    "drapeau": "🇰🇷",
+    "iso2": "KR",
+    "iso3": "KOR",
+    "region": "Asia",
+    "superficie": 100210.0,
+    "population": 51159889,
+    "pib": 1875388209406,
+    "capitale_en": "Seoul",
+    "capitale_variantes": [
+      "Séoul",
+      "Seoul"
+    ]
+  },
+  {
+    "nom": "Costa Rica",
+    "nom_en": "Costa Rica",
+    "capitale": "San José",
+    "drapeau": "🇨🇷",
+    "iso2": "CR",
+    "iso3": "CRI",
+    "region": "Americas",
+    "superficie": 51100.0,
+    "population": 5309625,
+    "pib": 95350423176,
+    "capitale_en": "San José",
+    "capitale_variantes": [
+      "San José"
+    ]
+  },
+  {
+    "nom": "Croatie",
+    "nom_en": "Croatia",
+    "capitale": "Zagreb",
+    "drapeau": "🇭🇷",
+    "iso2": "HR",
+    "iso3": "HRV",
+    "region": "Europe",
+    "superficie": 56594.0,
+    "population": 3866233,
+    "pib": 92983810328,
+    "capitale_en": "Zagreb",
+    "capitale_variantes": [
+      "Zagreb"
+    ]
+  },
+  {
+    "nom": "Cuba",
+    "nom_en": "Cuba",
+    "capitale": "Havana",
+    "drapeau": "🇨🇺",
+    "iso2": "CU",
+    "iso3": "CUB",
+    "region": "Americas",
+    "superficie": 109884.0,
+    "population": 9748007,
+    "pib": 107352000000,
+    "capitale_en": "Havana",
+    "capitale_variantes": [
+      "Havana"
+    ]
+  },
+  {
+    "nom": "Curaçao",
+    "nom_en": "Curaçao",
+    "capitale": "Willemstad",
+    "drapeau": "🇨🇼",
+    "iso2": "CW",
+    "iso3": "CUW",
+    "region": "Americas",
+    "superficie": 444.0,
+    "population": 156115,
+    "pib": 3561178196,
+    "capitale_en": "Willemstad",
+    "capitale_variantes": [
+      "Willemstad"
+    ]
+  },
+  {
+    "nom": "Côte d'Ivoire",
+    "nom_en": "Ivory Coast",
+    "capitale": "Yamoussoukro",
+    "drapeau": "🇨🇮",
+    "iso2": "CI",
+    "iso3": "CIV",
+    "region": "Africa",
+    "superficie": 322463.0,
+    "population": 31719275,
+    "pib": 87113179149,
+    "capitale_en": "Yamoussoukro",
+    "capitale_variantes": [
+      "Yamoussoukro"
+    ]
+  },
+  {
+    "nom": "Danemark",
+    "nom_en": "Denmark",
+    "capitale": "Copenhague",
+    "drapeau": "🇩🇰",
+    "iso2": "DK",
+    "iso3": "DNK",
+    "region": "Europe",
+    "superficie": 43094.0,
+    "population": 6011488,
+    "pib": 424524722037,
+    "capitale_en": "Copenhagen",
+    "capitale_variantes": [
+      "Copenhague",
+      "Kobenhavn",
+      "Copenhagen"
+    ]
+  },
+  {
+    "nom": "Djibouti",
+    "nom_en": "Djibouti",
+    "capitale": "Djibouti",
+    "drapeau": "🇩🇯",
+    "iso2": "DJ",
+    "iso3": "DJI",
+    "region": "Africa",
+    "superficie": 23200.0,
+    "population": 1066809,
+    "pib": 4152145939,
+    "capitale_en": "Djibouti",
+    "capitale_variantes": [
+      "Djibouti"
+    ]
+  },
+  {
+    "nom": "Dominique",
+    "nom_en": "Dominica",
+    "capitale": "Roseau",
+    "drapeau": "🇩🇲",
+    "iso2": "DM",
+    "iso3": "DMA",
+    "region": "Americas",
+    "superficie": 751.0,
+    "population": 67408,
+    "pib": 688881481,
+    "capitale_en": "Roseau",
+    "capitale_variantes": [
+      "Roseau"
+    ]
+  },
+  {
+    "nom": "Espagne",
+    "nom_en": "Spain",
+    "capitale": "Madrid",
+    "drapeau": "🇪🇸",
+    "iso2": "ES",
+    "iso3": "ESP",
+    "region": "Europe",
+    "superficie": 505992.0,
+    "population": 49315949,
+    "pib": 1725671652742,
+    "capitale_en": "Madrid",
+    "capitale_variantes": [
+      "Madrid"
+    ]
+  },
+  {
+    "nom": "Estonie",
+    "nom_en": "Estonia",
+    "capitale": "Tallinn",
+    "drapeau": "🇪🇪",
+    "iso2": "EE",
+    "iso3": "EST",
+    "region": "Europe",
+    "superficie": 45227.0,
+    "population": 1369995,
+    "pib": 43130419829,
+    "capitale_en": "Tallinn",
+    "capitale_variantes": [
+      "Tallinn"
+    ]
+  },
+  {
+    "nom": "Fidji",
+    "nom_en": "Fiji",
+    "capitale": "Suva",
+    "drapeau": "🇫🇯",
+    "iso2": "FJ",
+    "iso3": "FJI",
+    "region": "Oceania",
+    "superficie": 18272.0,
+    "population": 900869,
+    "pib": 5968125909,
+    "capitale_en": "Suva",
+    "capitale_variantes": [
+      "Suva"
+    ]
+  },
+  {
+    "nom": "Finlande",
+    "nom_en": "Finland",
+    "capitale": "Helsinki",
+    "drapeau": "🇫🇮",
+    "iso2": "FI",
+    "iso3": "FIN",
+    "region": "Europe",
+    "superficie": 338455.0,
+    "population": 5650325,
+    "pib": 298696961297,
+    "capitale_en": "Helsinki",
+    "capitale_variantes": [
+      "Helsinki"
+    ]
+  },
+  {
+    "nom": "France",
+    "nom_en": "France",
+    "capitale": "Paris",
+    "drapeau": "🇫🇷",
+    "iso2": "FR",
+    "iso3": "FRA",
+    "region": "Europe",
+    "superficie": 543908.0,
+    "population": 66351959,
+    "pib": 3160442622465,
+    "capitale_en": "Paris",
+    "capitale_variantes": [
+      "Paris"
+    ]
+  },
+  {
+    "nom": "Gabon",
+    "nom_en": "Gabon",
+    "capitale": "Libreville",
+    "drapeau": "🇬🇦",
+    "iso2": "GA",
+    "iso3": "GAB",
+    "region": "Africa",
+    "superficie": 267668.0,
+    "population": 2469296,
+    "pib": 20895684425,
+    "capitale_en": "Libreville",
+    "capitale_variantes": [
+      "Libreville"
+    ]
+  },
+  {
+    "nom": "Gambie",
+    "nom_en": "Gambia",
+    "capitale": "Banjul",
+    "drapeau": "🇬🇲",
+    "iso2": "GM",
+    "iso3": "GMB",
+    "region": "Africa",
+    "superficie": 10689.0,
+    "population": 2422712,
+    "pib": 2404888749,
+    "capitale_en": "Banjul",
+    "capitale_variantes": [
+      "Banjul"
+    ]
+  },
+  {
+    "nom": "Ghana",
+    "nom_en": "Ghana",
+    "capitale": "Accra",
+    "drapeau": "🇬🇭",
+    "iso2": "GH",
+    "iso3": "GHA",
+    "region": "Africa",
+    "superficie": 238533.0,
+    "population": 33742380,
+    "pib": 82308110386,
+    "capitale_en": "Accra",
+    "capitale_variantes": [
+      "Accra"
+    ]
+  },
+  {
+    "nom": "Gibraltar",
+    "nom_en": "Gibraltar",
+    "capitale": "Gibraltar",
+    "drapeau": "🇬🇮",
+    "iso2": "GI",
+    "iso3": "GIB",
+    "region": "Europe",
+    "superficie": 6.0,
+    "population": 38000,
+    "pib": null,
+    "capitale_en": "Gibraltar",
+    "capitale_variantes": [
+      "Gibraltar"
+    ]
+  },
+  {
+    "nom": "Grenade",
+    "nom_en": "Grenada",
+    "capitale": "St. George's",
+    "drapeau": "🇬🇩",
+    "iso2": "GD",
+    "iso3": "GRD",
+    "region": "Americas",
+    "superficie": 344.0,
+    "population": 109021,
+    "pib": 1371918518,
+    "capitale_en": "St. George's",
+    "capitale_variantes": [
+      "St. George's"
+    ]
+  },
+  {
+    "nom": "Groenland",
+    "nom_en": "Greenland",
+    "capitale": "Nuuk",
+    "drapeau": "🇬🇱",
+    "iso2": "GL",
+    "iso3": "GRL",
+    "region": "Americas",
+    "superficie": 2166086.0,
+    "population": 56542,
+    "pib": 3326543974,
+    "capitale_en": "Nuuk",
+    "capitale_variantes": [
+      "Nuuk"
+    ]
+  },
+  {
+    "nom": "Grèce",
+    "nom_en": "Greece",
+    "capitale": "Athènes",
+    "drapeau": "🇬🇷",
+    "iso2": "GR",
+    "iso3": "GRC",
+    "region": "Europe",
+    "superficie": 131990.0,
+    "population": 10400720,
+    "pib": 256238371778,
+    "capitale_en": "Athens",
+    "capitale_variantes": [
+      "Athènes",
+      "Athens",
+      "Athenes"
+    ]
+  },
+  {
+    "nom": "Guadeloupe",
+    "nom_en": "Guadeloupe",
+    "capitale": "Basse-Terre",
+    "drapeau": "🇬🇵",
+    "iso2": "GP",
+    "iso3": "GLP",
+    "region": "Americas",
+    "superficie": 1628.0,
+    "population": 378561,
+    "pib": null,
+    "capitale_en": "Basse-Terre",
+    "capitale_variantes": [
+      "Basse-Terre"
+    ]
+  },
+  {
+    "nom": "Guam",
+    "nom_en": "Guam",
+    "capitale": "Hagåtña",
+    "drapeau": "🇬🇺",
+    "iso2": "GU",
+    "iso3": "GUM",
+    "region": "Oceania",
+    "superficie": 549.0,
+    "population": 153836,
+    "pib": 6910000000,
+    "capitale_en": "Hagåtña",
+    "capitale_variantes": [
+      "Hagåtña"
+    ]
+  },
+  {
+    "nom": "Guatemala",
+    "nom_en": "Guatemala",
+    "capitale": "Guatemala City",
+    "drapeau": "🇬🇹",
+    "iso2": "GT",
+    "iso3": "GTM",
+    "region": "Americas",
+    "superficie": 108889.0,
+    "population": 18079810,
+    "pib": 113199581158,
+    "capitale_en": "Guatemala City",
+    "capitale_variantes": [
+      "Guatemala City"
+    ]
+  },
+  {
+    "nom": "Guernesey",
+    "nom_en": "Guernsey",
+    "capitale": "St. Peter Port",
+    "drapeau": "🇬🇬",
+    "iso2": "GG",
+    "iso3": "GGY",
+    "region": "Europe",
+    "superficie": 78.0,
+    "population": 64781,
+    "pib": null,
+    "capitale_en": "St. Peter Port",
+    "capitale_variantes": [
+      "St. Peter Port"
+    ]
+  },
+  {
+    "nom": "Guinée",
+    "nom_en": "Guinea",
+    "capitale": "Conakry",
+    "drapeau": "🇬🇳",
+    "iso2": "GN",
+    "iso3": "GIN",
+    "region": "Africa",
+    "superficie": 245857.0,
+    "population": 14363931,
+    "pib": 25008678293,
+    "capitale_en": "Conakry",
+    "capitale_variantes": [
+      "Conakry"
+    ]
+  },
+  {
+    "nom": "Guinée équatoriale",
+    "nom_en": "Equatorial Guinea",
+    "capitale": "Malabo",
+    "drapeau": "🇬🇶",
+    "iso2": "GQ",
+    "iso3": "GNQ",
+    "region": "Africa",
+    "superficie": 28051.0,
+    "population": 1668768,
+    "pib": 12765777677,
+    "capitale_en": "Malabo",
+    "capitale_variantes": [
+      "Malabo"
+    ]
+  },
+  {
+    "nom": "Guinée-Bissau",
+    "nom_en": "Guinea-Bissau",
+    "capitale": "Bissau",
+    "drapeau": "🇬🇼",
+    "iso2": "GW",
+    "iso3": "GNB",
+    "region": "Africa",
+    "superficie": 36125.0,
+    "population": 1781308,
+    "pib": 2218393804,
+    "capitale_en": "Bissau",
+    "capitale_variantes": [
+      "Bissau"
+    ]
+  },
+  {
+    "nom": "Guyana",
+    "nom_en": "Guyana",
+    "capitale": "Georgetown",
+    "drapeau": "🇬🇾",
+    "iso2": "GY",
+    "iso3": "GUY",
+    "region": "Americas",
+    "superficie": 214969.0,
+    "population": 772975,
+    "pib": 24662709832,
+    "capitale_en": "Georgetown",
+    "capitale_variantes": [
+      "Georgetown"
+    ]
+  },
+  {
+    "nom": "Guyane",
+    "nom_en": "French Guiana",
+    "capitale": "Cayenne",
+    "drapeau": "🇬🇫",
+    "iso2": "GF",
+    "iso3": "GUF",
+    "region": "Americas",
+    "superficie": 83534.0,
+    "population": 292354,
+    "pib": null,
+    "capitale_en": "Cayenne",
+    "capitale_variantes": [
+      "Cayenne"
+    ]
+  },
+  {
+    "nom": "Géorgie",
+    "nom_en": "Georgia",
+    "capitale": "Tbilisi",
+    "drapeau": "🇬🇪",
+    "iso2": "GE",
+    "iso3": "GEO",
+    "region": "Asia",
+    "superficie": 69700.0,
+    "population": 4000921,
+    "pib": 34189423544,
+    "capitale_en": "Tbilisi",
+    "capitale_variantes": [
+      "Tbilisi"
+    ]
+  },
+  {
+    "nom": "Haïti",
+    "nom_en": "Haiti",
+    "capitale": "Port-au-Prince",
+    "drapeau": "🇭🇹",
+    "iso2": "HT",
+    "iso3": "HTI",
+    "region": "Americas",
+    "superficie": 27750.0,
+    "population": 11867032,
+    "pib": 25224154990,
+    "capitale_en": "Port-au-Prince",
+    "capitale_variantes": [
+      "Port-au-Prince"
+    ]
+  },
+  {
+    "nom": "Honduras",
+    "nom_en": "Honduras",
+    "capitale": "Tegucigalpa",
+    "drapeau": "🇭🇳",
+    "iso2": "HN",
+    "iso3": "HND",
+    "region": "Americas",
+    "superficie": 112492.0,
+    "population": 9892632,
+    "pib": 37093565854,
+    "capitale_en": "Tegucigalpa",
+    "capitale_variantes": [
+      "Tegucigalpa"
+    ]
+  },
+  {
+    "nom": "Hong Kong",
+    "nom_en": "Hong Kong",
+    "capitale": "Hong Kong",
+    "drapeau": "🇭🇰",
+    "iso2": "HK",
+    "iso3": "HKG",
+    "region": "Asia",
+    "superficie": 1104.0,
+    "population": 7527500,
+    "pib": 406863396487,
+    "capitale_en": "City of Victoria",
+    "capitale_variantes": [
+      "Hong Kong",
+      "City of Victoria"
+    ]
+  },
+  {
+    "nom": "Hongrie",
+    "nom_en": "Hungary",
+    "capitale": "Budapest",
+    "drapeau": "🇭🇺",
+    "iso2": "HU",
+    "iso3": "HUN",
+    "region": "Europe",
+    "superficie": 93028.0,
+    "population": 9539502,
+    "pib": 222722738925,
+    "capitale_en": "Budapest",
+    "capitale_variantes": [
+      "Budapest"
+    ]
+  },
+  {
+    "nom": "Inde",
+    "nom_en": "India",
+    "capitale": "New Delhi",
+    "drapeau": "🇮🇳",
+    "iso2": "IN",
+    "iso3": "IND",
+    "region": "Asia",
+    "superficie": 3287263.0,
+    "population": 1417492000,
+    "pib": 3909891533858,
+    "capitale_en": "New Delhi",
+    "capitale_variantes": [
+      "New Delhi"
+    ]
+  },
+  {
+    "nom": "Indonésie",
+    "nom_en": "Indonesia",
+    "capitale": "Jakarta",
+    "drapeau": "🇮🇩",
+    "iso2": "ID",
+    "iso3": "IDN",
+    "region": "Asia",
+    "superficie": 1904569.0,
+    "population": 284438782,
+    "pib": 1396300098190,
+    "capitale_en": "Jakarta",
+    "capitale_variantes": [
+      "Jakarta"
+    ]
+  },
+  {
+    "nom": "Irak",
+    "nom_en": "Iraq",
+    "capitale": "Bagdad",
+    "drapeau": "🇮🇶",
+    "iso2": "IQ",
+    "iso3": "IRQ",
+    "region": "Asia",
+    "superficie": 438317.0,
+    "population": 46118793,
+    "pib": 279641257615,
+    "capitale_en": "Baghdad",
+    "capitale_variantes": [
+      "Bagdad",
+      "Baghdad"
+    ]
+  },
+  {
+    "nom": "Iran",
+    "nom_en": "Iran",
+    "capitale": "Téhéran",
+    "drapeau": "🇮🇷",
+    "iso2": "IR",
+    "iso3": "IRN",
+    "region": "Asia",
+    "superficie": 1648195.0,
+    "population": 85961000,
+    "pib": 475252089215,
+    "capitale_en": "Tehran",
+    "capitale_variantes": [
+      "Téhéran",
+      "Tehran"
+    ]
+  },
+  {
+    "nom": "Irlande",
+    "nom_en": "Ireland",
+    "capitale": "Dublin",
+    "drapeau": "🇮🇪",
+    "iso2": "IE",
+    "iso3": "IRL",
+    "region": "Europe",
+    "superficie": 70273.0,
+    "population": 5458600,
+    "pib": 609157459747,
+    "capitale_en": "Dublin",
+    "capitale_variantes": [
+      "Dublin"
+    ]
+  },
+  {
+    "nom": "Islande",
+    "nom_en": "Iceland",
+    "capitale": "Reykjavik",
+    "drapeau": "🇮🇸",
+    "iso2": "IS",
+    "iso3": "ISL",
+    "region": "Europe",
+    "superficie": 103000.0,
+    "population": 391810,
+    "pib": 33255181468,
+    "capitale_en": "Reykjavik",
+    "capitale_variantes": [
+      "Reykjavik"
+    ]
+  },
+  {
+    "nom": "Israël",
+    "nom_en": "Israel",
+    "capitale": "Jérusalem",
+    "drapeau": "🇮🇱",
+    "iso2": "IL",
+    "iso3": "ISR",
+    "region": "Asia",
+    "superficie": 21937.0,
+    "population": 10134800,
+    "pib": 540379921261,
+    "capitale_en": "Jerusalem",
+    "capitale_variantes": [
+      "Jérusalem",
+      "Jerusalem"
+    ]
+  },
+  {
+    "nom": "Italie",
+    "nom_en": "Italy",
+    "capitale": "Rome",
+    "drapeau": "🇮🇹",
+    "iso2": "IT",
+    "iso3": "ITA",
+    "region": "Europe",
+    "superficie": 301336.0,
+    "population": 58927633,
+    "pib": 2380825077243,
+    "capitale_en": "Rome",
+    "capitale_variantes": [
+      "Rome"
+    ]
+  },
+  {
+    "nom": "Jamaïque",
+    "nom_en": "Jamaica",
+    "capitale": "Kingston",
+    "drapeau": "🇯🇲",
+    "iso2": "JM",
+    "iso3": "JAM",
+    "region": "Americas",
+    "superficie": 10991.0,
+    "population": 2825544,
+    "pib": 22014397089,
+    "capitale_en": "Kingston",
+    "capitale_variantes": [
+      "Kingston"
+    ]
+  },
+  {
+    "nom": "Japon",
+    "nom_en": "Japan",
+    "capitale": "Tokyo",
+    "drapeau": "🇯🇵",
+    "iso2": "JP",
+    "iso3": "JPN",
+    "region": "Asia",
+    "superficie": 377930.0,
+    "population": 123210000,
+    "pib": 4027597523550,
+    "capitale_en": "Tokyo",
+    "capitale_variantes": [
+      "Tokyo"
+    ]
+  },
+  {
+    "nom": "Jersey",
+    "nom_en": "Jersey",
+    "capitale": "Saint Helier",
+    "drapeau": "🇯🇪",
+    "iso2": "JE",
+    "iso3": "JEY",
+    "region": "Europe",
+    "superficie": 116.0,
+    "population": 103267,
+    "pib": null,
+    "capitale_en": "Saint Helier",
+    "capitale_variantes": [
+      "Saint Helier"
+    ]
+  },
+  {
+    "nom": "Jordanie",
+    "nom_en": "Jordan",
+    "capitale": "Amman",
+    "drapeau": "🇯🇴",
+    "iso2": "JO",
+    "iso3": "JOR",
+    "region": "Asia",
+    "superficie": 89342.0,
+    "population": 11734000,
+    "pib": 53352289577,
+    "capitale_en": "Amman",
+    "capitale_variantes": [
+      "Amman"
+    ]
+  },
+  {
+    "nom": "Kazakhstan",
+    "nom_en": "Kazakhstan",
+    "capitale": "Astana",
+    "drapeau": "🇰🇿",
+    "iso2": "KZ",
+    "iso3": "KAZ",
+    "region": "Asia",
+    "superficie": 2724900.0,
+    "population": 20426568,
+    "pib": 291480274648,
+    "capitale_en": "Astana",
+    "capitale_variantes": [
+      "Astana"
+    ]
+  },
+  {
+    "nom": "Kenya",
+    "nom_en": "Kenya",
+    "capitale": "Nairobi",
+    "drapeau": "🇰🇪",
+    "iso2": "KE",
+    "iso3": "KEN",
+    "region": "Africa",
+    "superficie": 580367.0,
+    "population": 53330978,
+    "pib": 120339557905,
+    "capitale_en": "Nairobi",
+    "capitale_variantes": [
+      "Nairobi"
+    ]
+  },
+  {
+    "nom": "Kirghizistan",
+    "nom_en": "Kyrgyzstan",
+    "capitale": "Bishkek",
+    "drapeau": "🇰🇬",
+    "iso2": "KG",
+    "iso3": "KGZ",
+    "region": "Asia",
+    "superficie": 199951.0,
+    "population": 7281800,
+    "pib": 17478259659,
+    "capitale_en": "Bishkek",
+    "capitale_variantes": [
+      "Bishkek"
+    ]
+  },
+  {
+    "nom": "Kiribati",
+    "nom_en": "Kiribati",
+    "capitale": "South Tarawa",
+    "drapeau": "🇰🇮",
+    "iso2": "KI",
+    "iso3": "KIR",
+    "region": "Oceania",
+    "superficie": 811.0,
+    "population": 120740,
+    "pib": 307862564,
+    "capitale_en": "South Tarawa",
+    "capitale_variantes": [
+      "South Tarawa"
+    ]
+  },
+  {
+    "nom": "Kosovo",
+    "nom_en": "Kosovo",
+    "capitale": "Pristina",
+    "drapeau": "🇽🇰",
+    "iso2": "XK",
+    "iso3": "UNK",
+    "region": "Europe",
+    "superficie": 10908.0,
+    "population": 1585566,
+    "pib": null,
+    "capitale_en": "Pristina",
+    "capitale_variantes": [
+      "Pristina"
+    ]
+  },
+  {
+    "nom": "Koweït",
+    "nom_en": "Kuwait",
+    "capitale": "Kuwait City",
+    "drapeau": "🇰🇼",
+    "iso2": "KW",
+    "iso3": "KWT",
+    "region": "Asia",
+    "superficie": 17818.0,
+    "population": 4881254,
+    "pib": 160227273053,
+    "capitale_en": "Kuwait City",
+    "capitale_variantes": [
+      "Kuwait City"
+    ]
+  },
+  {
+    "nom": "Laos",
+    "nom_en": "Laos",
+    "capitale": "Vientiane",
+    "drapeau": "🇱🇦",
+    "iso2": "LA",
+    "iso3": "LAO",
+    "region": "Asia",
+    "superficie": 236800.0,
+    "population": 7647000,
+    "pib": 16502933121,
+    "capitale_en": "Vientiane",
+    "capitale_variantes": [
+      "Vientiane"
+    ]
+  },
+  {
+    "nom": "Lesotho",
+    "nom_en": "Lesotho",
+    "capitale": "Maseru",
+    "drapeau": "🇱🇸",
+    "iso2": "LS",
+    "iso3": "LSO",
+    "region": "Africa",
+    "superficie": 30355.0,
+    "population": 2116427,
+    "pib": 2271759454,
+    "capitale_en": "Maseru",
+    "capitale_variantes": [
+      "Maseru"
+    ]
+  },
+  {
+    "nom": "Lettonie",
+    "nom_en": "Latvia",
+    "capitale": "Riga",
+    "drapeau": "🇱🇻",
+    "iso2": "LV",
+    "iso3": "LVA",
+    "region": "Europe",
+    "superficie": 64559.0,
+    "population": 1829000,
+    "pib": 43684254432,
+    "capitale_en": "Riga",
+    "capitale_variantes": [
+      "Riga"
+    ]
+  },
+  {
+    "nom": "Liban",
+    "nom_en": "Lebanon",
+    "capitale": "Beyrouth",
+    "drapeau": "🇱🇧",
+    "iso2": "LB",
+    "iso3": "LBN",
+    "region": "Asia",
+    "superficie": 10452.0,
+    "population": 5490000,
+    "pib": 20078620356,
+    "capitale_en": "Beirut",
+    "capitale_variantes": [
+      "Beirut",
+      "Beyrouth"
+    ]
+  },
+  {
+    "nom": "Liberia",
+    "nom_en": "Liberia",
+    "capitale": "Monrovia",
+    "drapeau": "🇱🇷",
+    "iso2": "LR",
+    "iso3": "LBR",
+    "region": "Africa",
+    "superficie": 111369.0,
+    "population": 5248621,
+    "pib": 4779300900,
+    "capitale_en": "Monrovia",
+    "capitale_variantes": [
+      "Monrovia"
+    ]
+  },
+  {
+    "nom": "Libye",
+    "nom_en": "Libya",
+    "capitale": "Tripoli",
+    "drapeau": "🇱🇾",
+    "iso2": "LY",
+    "iso3": "LBY",
+    "region": "Africa",
+    "superficie": 1759540.0,
+    "population": 7459000,
+    "pib": 48487151215,
+    "capitale_en": "Tripoli",
+    "capitale_variantes": [
+      "Tripoli"
+    ]
+  },
+  {
+    "nom": "Liechtenstein",
+    "nom_en": "Liechtenstein",
+    "capitale": "Vaduz",
+    "drapeau": "🇱🇮",
+    "iso2": "LI",
+    "iso3": "LIE",
+    "region": "Europe",
+    "superficie": 160.0,
+    "population": 40900,
+    "pib": 8239379403,
+    "capitale_en": "Vaduz",
+    "capitale_variantes": [
+      "Vaduz"
+    ]
+  },
+  {
+    "nom": "Lituanie",
+    "nom_en": "Lithuania",
+    "capitale": "Vilnius",
+    "drapeau": "🇱🇹",
+    "iso2": "LT",
+    "iso3": "LTU",
+    "region": "Europe",
+    "superficie": 65300.0,
+    "population": 2894886,
+    "pib": 84869215513,
+    "capitale_en": "Vilnius",
+    "capitale_variantes": [
+      "Vilnius"
+    ]
+  },
+  {
+    "nom": "Luxembourg",
+    "nom_en": "Luxembourg",
+    "capitale": "Luxembourg",
+    "drapeau": "🇱🇺",
+    "iso2": "LU",
+    "iso3": "LUX",
+    "region": "Europe",
+    "superficie": 2586.0,
+    "population": 681973,
+    "pib": 93279851863,
+    "capitale_en": "Luxembourg",
+    "capitale_variantes": [
+      "Luxembourg"
+    ]
+  },
+  {
+    "nom": "Macao",
+    "nom_en": "Macau",
+    "capitale": "",
+    "drapeau": "🇲🇴",
+    "iso2": "MO",
+    "iso3": "MAC",
+    "region": "Asia",
+    "superficie": 30.0,
+    "population": 685900,
+    "pib": 49467258923,
+    "capitale_en": "",
+    "capitale_variantes": []
+  },
+  {
+    "nom": "Macédoine du Nord",
+    "nom_en": "North Macedonia",
+    "capitale": "Skopje",
+    "drapeau": "🇲🇰",
+    "iso2": "MK",
+    "iso3": "MKD",
+    "region": "Europe",
+    "superficie": 25713.0,
+    "population": 1822612,
+    "pib": 16951682245,
+    "capitale_en": "Skopje",
+    "capitale_variantes": [
+      "Skopje"
+    ]
+  },
+  {
+    "nom": "Madagascar",
+    "nom_en": "Madagascar",
+    "capitale": "Antananarivo",
+    "drapeau": "🇲🇬",
+    "iso2": "MG",
+    "iso3": "MDG",
+    "region": "Africa",
+    "superficie": 587041.0,
+    "population": 31727042,
+    "pib": 17420501490,
+    "capitale_en": "Antananarivo",
+    "capitale_variantes": [
+      "Antananarivo"
+    ]
+  },
+  {
+    "nom": "Malaisie",
+    "nom_en": "Malaysia",
+    "capitale": "Kuala Lumpur",
+    "drapeau": "🇲🇾",
+    "iso2": "MY",
+    "iso3": "MYS",
+    "region": "Asia",
+    "superficie": 330803.0,
+    "population": 34231700,
+    "pib": 422227005428,
+    "capitale_en": "Kuala Lumpur",
+    "capitale_variantes": [
+      "Kuala Lumpur"
+    ]
+  },
+  {
+    "nom": "Malawi",
+    "nom_en": "Malawi",
+    "capitale": "Lilongwe",
+    "drapeau": "🇲🇼",
+    "iso2": "MW",
+    "iso3": "MWI",
+    "region": "Africa",
+    "superficie": 118484.0,
+    "population": 20734262,
+    "pib": 11316411329,
+    "capitale_en": "Lilongwe",
+    "capitale_variantes": [
+      "Lilongwe"
+    ]
+  },
+  {
+    "nom": "Maldives",
+    "nom_en": "Maldives",
+    "capitale": "Malé",
+    "drapeau": "🇲🇻",
+    "iso2": "MV",
+    "iso3": "MDV",
+    "region": "Asia",
+    "superficie": 300.0,
+    "population": 515132,
+    "pib": 7061608267,
+    "capitale_en": "Malé",
+    "capitale_variantes": [
+      "Malé"
+    ]
+  },
+  {
+    "nom": "Mali",
+    "nom_en": "Mali",
+    "capitale": "Bamako",
+    "drapeau": "🇲🇱",
+    "iso2": "ML",
+    "iso3": "MLI",
+    "region": "Africa",
+    "superficie": 1240192.0,
+    "population": 22395489,
+    "pib": 26794747239,
+    "capitale_en": "Bamako",
+    "capitale_variantes": [
+      "Bamako"
+    ]
+  },
+  {
+    "nom": "Malte",
+    "nom_en": "Malta",
+    "capitale": "Valletta",
+    "drapeau": "🇲🇹",
+    "iso2": "MT",
+    "iso3": "MLT",
+    "region": "Europe",
+    "superficie": 316.0,
+    "population": 574250,
+    "pib": 24971574502,
+    "capitale_en": "Valletta",
+    "capitale_variantes": [
+      "Valletta"
+    ]
+  },
+  {
+    "nom": "Maroc",
+    "nom_en": "Morocco",
+    "capitale": "Rabat",
+    "drapeau": "🇲🇦",
+    "iso2": "MA",
+    "iso3": "MAR",
+    "region": "Africa",
+    "superficie": 446550.0,
+    "population": 36828330,
+    "pib": 160610994054,
+    "capitale_en": "Rabat",
+    "capitale_variantes": [
+      "Rabat"
+    ]
+  },
+  {
+    "nom": "Martinique",
+    "nom_en": "Martinique",
+    "capitale": "Fort-de-France",
+    "drapeau": "🇲🇶",
+    "iso2": "MQ",
+    "iso3": "MTQ",
+    "region": "Americas",
+    "superficie": 1128.0,
+    "population": 349925,
+    "pib": null,
+    "capitale_en": "Fort-de-France",
+    "capitale_variantes": [
+      "Fort-de-France"
+    ]
+  },
+  {
+    "nom": "Mauritanie",
+    "nom_en": "Mauritania",
+    "capitale": "Nouakchott",
+    "drapeau": "🇲🇷",
+    "iso2": "MR",
+    "iso3": "MRT",
+    "region": "Africa",
+    "superficie": 1030700.0,
+    "population": 4927532,
+    "pib": 10908045686,
+    "capitale_en": "Nouakchott",
+    "capitale_variantes": [
+      "Nouakchott"
+    ]
+  },
+  {
+    "nom": "Mayotte",
+    "nom_en": "Mayotte",
+    "capitale": "Mamoudzou",
+    "drapeau": "🇾🇹",
+    "iso2": "YT",
+    "iso3": "MYT",
+    "region": "Africa",
+    "superficie": 374.0,
+    "population": 320901,
+    "pib": null,
+    "capitale_en": "Mamoudzou",
+    "capitale_variantes": [
+      "Mamoudzou"
+    ]
+  },
+  {
+    "nom": "Mexique",
+    "nom_en": "Mexico",
+    "capitale": "Mexico",
+    "drapeau": "🇲🇽",
+    "iso2": "MX",
+    "iso3": "MEX",
+    "region": "Americas",
+    "superficie": 1964375.0,
+    "population": 130575786,
+    "pib": 1856365616165,
+    "capitale_en": "Mexico City",
+    "capitale_variantes": [
+      "Mexico",
+      "Ciudad de Mexico",
+      "Mexico City"
+    ]
+  },
+  {
+    "nom": "Micronésie",
+    "nom_en": "Micronesia",
+    "capitale": "Palikir",
+    "drapeau": "🇫🇲",
+    "iso2": "FM",
+    "iso3": "FSM",
+    "region": "Oceania",
+    "superficie": 702.0,
+    "population": 105564,
+    "pib": 471425099,
+    "capitale_en": "Palikir",
+    "capitale_variantes": [
+      "Palikir"
+    ]
+  },
+  {
+    "nom": "Moldavie",
+    "nom_en": "Moldova",
+    "capitale": "Chișinău",
+    "drapeau": "🇲🇩",
+    "iso2": "MD",
+    "iso3": "MDA",
+    "region": "Europe",
+    "superficie": 33847.0,
+    "population": 2749076,
+    "pib": 18200340853,
+    "capitale_en": "Chișinău",
+    "capitale_variantes": [
+      "Chișinău"
+    ]
+  },
+  {
+    "nom": "Monaco",
+    "nom_en": "Monaco",
+    "capitale": "Monaco",
+    "drapeau": "🇲🇨",
+    "iso2": "MC",
+    "iso3": "MCO",
+    "region": "Europe",
+    "superficie": 2.02,
+    "population": 38423,
+    "pib": 11125783372,
+    "capitale_en": "Monaco",
+    "capitale_variantes": [
+      "Monaco"
+    ]
+  },
+  {
+    "nom": "Mongolie",
+    "nom_en": "Mongolia",
+    "capitale": "Ulan Bator",
+    "drapeau": "🇲🇳",
+    "iso2": "MN",
+    "iso3": "MNG",
+    "region": "Asia",
+    "superficie": 1564110.0,
+    "population": 3544835,
+    "pib": 23794540024,
+    "capitale_en": "Ulan Bator",
+    "capitale_variantes": [
+      "Ulan Bator"
+    ]
+  },
+  {
+    "nom": "Montserrat",
+    "nom_en": "Montserrat",
+    "capitale": "Plymouth",
+    "drapeau": "🇲🇸",
+    "iso2": "MS",
+    "iso3": "MSR",
+    "region": "Americas",
+    "superficie": 102.0,
+    "population": 4386,
+    "pib": null,
+    "capitale_en": "Plymouth",
+    "capitale_variantes": [
+      "Plymouth"
+    ]
+  },
+  {
+    "nom": "Monténégro",
+    "nom_en": "Montenegro",
+    "capitale": "Podgorica",
+    "drapeau": "🇲🇪",
+    "iso2": "ME",
+    "iso3": "MNE",
+    "region": "Europe",
+    "superficie": 13812.0,
+    "population": 623327,
+    "pib": 8270016670,
+    "capitale_en": "Podgorica",
+    "capitale_variantes": [
+      "Podgorica"
+    ]
+  },
+  {
+    "nom": "Mozambique",
+    "nom_en": "Mozambique",
+    "capitale": "Maputo",
+    "drapeau": "🇲🇿",
+    "iso2": "MZ",
+    "iso3": "MOZ",
+    "region": "Africa",
+    "superficie": 801590.0,
+    "population": 34090466,
+    "pib": 22745341305,
+    "capitale_en": "Maputo",
+    "capitale_variantes": [
+      "Maputo"
+    ]
+  },
+  {
+    "nom": "Namibie",
+    "nom_en": "Namibia",
+    "capitale": "Windhoek",
+    "drapeau": "🇳🇦",
+    "iso2": "NA",
+    "iso3": "NAM",
+    "region": "Africa",
+    "superficie": 825615.0,
+    "population": 3022401,
+    "pib": 13372354511,
+    "capitale_en": "Windhoek",
+    "capitale_variantes": [
+      "Windhoek"
+    ]
+  },
+  {
+    "nom": "Nauru",
+    "nom_en": "Nauru",
+    "capitale": "Yaren",
+    "drapeau": "🇳🇷",
+    "iso2": "NR",
+    "iso3": "NRU",
+    "region": "Oceania",
+    "superficie": 21.0,
+    "population": 11680,
+    "pib": 162588620,
+    "capitale_en": "Yaren",
+    "capitale_variantes": [
+      "Yaren"
+    ]
+  },
+  {
+    "nom": "Nicaragua",
+    "nom_en": "Nicaragua",
+    "capitale": "Managua",
+    "drapeau": "🇳🇮",
+    "iso2": "NI",
+    "iso3": "NIC",
+    "region": "Americas",
+    "superficie": 130373.0,
+    "population": 6803886,
+    "pib": 19693982967,
+    "capitale_en": "Managua",
+    "capitale_variantes": [
+      "Managua"
+    ]
+  },
+  {
+    "nom": "Niger",
+    "nom_en": "Niger",
+    "capitale": "Niamey",
+    "drapeau": "🇳🇪",
+    "iso2": "NE",
+    "iso3": "NER",
+    "region": "Africa",
+    "superficie": 1267000.0,
+    "population": 26312034,
+    "pib": 19876128485,
+    "capitale_en": "Niamey",
+    "capitale_variantes": [
+      "Niamey"
+    ]
+  },
+  {
+    "nom": "Nigéria",
+    "nom_en": "Nigeria",
+    "capitale": "Abuja",
+    "drapeau": "🇳🇬",
+    "iso2": "NG",
+    "iso3": "NGA",
+    "region": "Africa",
+    "superficie": 923768.0,
+    "population": 223800000,
+    "pib": 252261880141,
+    "capitale_en": "Abuja",
+    "capitale_variantes": [
+      "Abuja"
+    ]
+  },
+  {
+    "nom": "Niue",
+    "nom_en": "Niue",
+    "capitale": "Alofi",
+    "drapeau": "🇳🇺",
+    "iso2": "NU",
+    "iso3": "NIU",
+    "region": "Oceania",
+    "superficie": 260.0,
+    "population": 1681,
+    "pib": null,
+    "capitale_en": "Alofi",
+    "capitale_variantes": [
+      "Alofi"
+    ]
+  },
+  {
+    "nom": "Norvège",
+    "nom_en": "Norway",
+    "capitale": "Oslo",
+    "drapeau": "🇳🇴",
+    "iso2": "NO",
+    "iso3": "NOR",
+    "region": "Europe",
+    "superficie": 386224.0,
+    "population": 5606944,
+    "pib": 483592648313,
+    "capitale_en": "Oslo",
+    "capitale_variantes": [
+      "Oslo"
+    ]
+  },
+  {
+    "nom": "Nouvelle-Calédonie",
+    "nom_en": "New Caledonia",
+    "capitale": "Nouméa",
+    "drapeau": "🇳🇨",
+    "iso2": "NC",
+    "iso3": "NCL",
+    "region": "Oceania",
+    "superficie": 18575.0,
+    "population": 264596,
+    "pib": 8548919387,
+    "capitale_en": "Nouméa",
+    "capitale_variantes": [
+      "Nouméa"
+    ]
+  },
+  {
+    "nom": "Nouvelle-Zélande",
+    "nom_en": "New Zealand",
+    "capitale": "Wellington",
+    "drapeau": "🇳🇿",
+    "iso2": "NZ",
+    "iso3": "NZL",
+    "region": "Oceania",
+    "superficie": 268838.0,
+    "population": 5324700,
+    "pib": 260172385097,
+    "capitale_en": "Wellington",
+    "capitale_variantes": [
+      "Wellington"
+    ]
+  },
+  {
+    "nom": "Népal",
+    "nom_en": "Nepal",
+    "capitale": "Katmandou",
+    "drapeau": "🇳🇵",
+    "iso2": "NP",
+    "iso3": "NPL",
+    "region": "Asia",
+    "superficie": 147181.0,
+    "population": 29911840,
+    "pib": 42914268286,
+    "capitale_en": "Kathmandu",
+    "capitale_variantes": [
+      "Katmandou",
+      "Kathmandu"
+    ]
+  },
+  {
+    "nom": "Oman",
+    "nom_en": "Oman",
+    "capitale": "Muscat",
+    "drapeau": "🇴🇲",
+    "iso2": "OM",
+    "iso3": "OMN",
+    "region": "Asia",
+    "superficie": 309500.0,
+    "population": 5343630,
+    "pib": 107137198769,
+    "capitale_en": "Muscat",
+    "capitale_variantes": [
+      "Muscat"
+    ]
+  },
+  {
+    "nom": "Ouganda",
+    "nom_en": "Uganda",
+    "capitale": "Kampala",
+    "drapeau": "🇺🇬",
+    "iso2": "UG",
+    "iso3": "UGA",
+    "region": "Africa",
+    "superficie": 241550.0,
+    "population": 45905417,
+    "pib": 53911907086,
+    "capitale_en": "Kampala",
+    "capitale_variantes": [
+      "Kampala"
+    ]
+  },
+  {
+    "nom": "Ouzbékistan",
+    "nom_en": "Uzbekistan",
+    "capitale": "Tashkent",
+    "drapeau": "🇺🇿",
+    "iso2": "UZ",
+    "iso3": "UZB",
+    "region": "Asia",
+    "superficie": 447400.0,
+    "population": 37859698,
+    "pib": 114965293466,
+    "capitale_en": "Tashkent",
+    "capitale_variantes": [
+      "Tashkent"
+    ]
+  },
+  {
+    "nom": "Pakistan",
+    "nom_en": "Pakistan",
+    "capitale": "Islamabad",
+    "drapeau": "🇵🇰",
+    "iso2": "PK",
+    "iso3": "PAK",
+    "region": "Asia",
+    "superficie": 796095.0,
+    "population": 241499431,
+    "pib": 371570000121,
+    "capitale_en": "Islamabad",
+    "capitale_variantes": [
+      "Islamabad"
+    ]
+  },
+  {
+    "nom": "Palaos (Palau)",
+    "nom_en": "Palau",
+    "capitale": "Ngerulmud",
+    "drapeau": "🇵🇼",
+    "iso2": "PW",
+    "iso3": "PLW",
+    "region": "Oceania",
+    "superficie": 459.0,
+    "population": 16733,
+    "pib": 276733062,
+    "capitale_en": "Ngerulmud",
+    "capitale_variantes": [
+      "Ngerulmud"
+    ]
+  },
+  {
+    "nom": "Palestine",
+    "nom_en": "Palestine",
+    "capitale": "Ramallah",
+    "drapeau": "🇵🇸",
+    "iso2": "PS",
+    "iso3": "PSE",
+    "region": "Asia",
+    "superficie": 6220.0,
+    "population": 5483450,
+    "pib": 13711100000,
+    "capitale_en": "Ramallah",
+    "capitale_variantes": [
+      "Ramallah"
+    ]
+  },
+  {
+    "nom": "Panama",
+    "nom_en": "Panama",
+    "capitale": "Panama City",
+    "drapeau": "🇵🇦",
+    "iso2": "PA",
+    "iso3": "PAN",
+    "region": "Americas",
+    "superficie": 75417.0,
+    "population": 4064780,
+    "pib": 86523959131,
+    "capitale_en": "Panama City",
+    "capitale_variantes": [
+      "Panama City"
+    ]
+  },
+  {
+    "nom": "Papouasie-Nouvelle-Guinée",
+    "nom_en": "Papua New Guinea",
+    "capitale": "Port Moresby",
+    "drapeau": "🇵🇬",
+    "iso2": "PG",
+    "iso3": "PNG",
+    "region": "Oceania",
+    "superficie": 462840.0,
+    "population": 11781559,
+    "pib": 31800428265,
+    "capitale_en": "Port Moresby",
+    "capitale_variantes": [
+      "Port Moresby"
+    ]
+  },
+  {
+    "nom": "Paraguay",
+    "nom_en": "Paraguay",
+    "capitale": "Asunción",
+    "drapeau": "🇵🇾",
+    "iso2": "PY",
+    "iso3": "PRY",
+    "region": "Americas",
+    "superficie": 406752.0,
+    "population": 6109644,
+    "pib": 44458118397,
+    "capitale_en": "Asunción",
+    "capitale_variantes": [
+      "Asunción"
+    ]
+  },
+  {
+    "nom": "Pays-Bas",
+    "nom_en": "Netherlands",
+    "capitale": "Amsterdam",
+    "drapeau": "🇳🇱",
+    "iso2": "NL",
+    "iso3": "NLD",
+    "region": "Europe",
+    "superficie": 41865.0,
+    "population": 18100436,
+    "pib": 1214927698572,
+    "capitale_en": "Amsterdam",
+    "capitale_variantes": [
+      "Amsterdam"
+    ]
+  },
+  {
+    "nom": "Pays-Bas caribéens",
+    "nom_en": "Caribbean Netherlands",
+    "capitale": "Kralendijk",
+    "drapeau": "🇧🇶",
+    "iso2": "BQ",
+    "iso3": "BES",
+    "region": "Americas",
+    "superficie": 328.0,
+    "population": 31980,
+    "pib": null,
+    "capitale_en": "Kralendijk",
+    "capitale_variantes": [
+      "Kralendijk"
+    ]
+  },
+  {
+    "nom": "Philippines",
+    "nom_en": "Philippines",
+    "capitale": "Manille",
+    "drapeau": "🇵🇭",
+    "iso2": "PH",
+    "iso3": "PHL",
+    "region": "Asia",
+    "superficie": 342353.0,
+    "population": 114123600,
+    "pib": 461617509782,
+    "capitale_en": "Manila",
+    "capitale_variantes": [
+      "Manila",
+      "Manille"
+    ]
+  },
+  {
+    "nom": "Pologne",
+    "nom_en": "Poland",
+    "capitale": "Varsovie",
+    "drapeau": "🇵🇱",
+    "iso2": "PL",
+    "iso3": "POL",
+    "region": "Europe",
+    "superficie": 312679.0,
+    "population": 37392000,
+    "pib": 917767106146,
+    "capitale_en": "Warsaw",
+    "capitale_variantes": [
+      "Warsaw",
+      "Warszawa",
+      "Varsovie"
+    ]
+  },
+  {
+    "nom": "Polynésie française",
+    "nom_en": "French Polynesia",
+    "capitale": "Papeetē",
+    "drapeau": "🇵🇫",
+    "iso2": "PF",
+    "iso3": "PYF",
+    "region": "Oceania",
+    "superficie": 4167.0,
+    "population": 279500,
+    "pib": 6323716355,
+    "capitale_en": "Papeetē",
+    "capitale_variantes": [
+      "Papeetē"
+    ]
+  },
+  {
+    "nom": "Porto Rico",
+    "nom_en": "Puerto Rico",
+    "capitale": "San Juan",
+    "drapeau": "🇵🇷",
+    "iso2": "PR",
+    "iso3": "PRI",
+    "region": "Americas",
+    "superficie": 8870.0,
+    "population": 3203295,
+    "pib": 126029527033,
+    "capitale_en": "San Juan",
+    "capitale_variantes": [
+      "San Juan"
+    ]
+  },
+  {
+    "nom": "Portugal",
+    "nom_en": "Portugal",
+    "capitale": "Lisbonne",
+    "drapeau": "🇵🇹",
+    "iso2": "PT",
+    "iso3": "PRT",
+    "region": "Europe",
+    "superficie": 92090.0,
+    "population": 10749635,
+    "pib": 313271185085,
+    "capitale_en": "Lisbon",
+    "capitale_variantes": [
+      "Lisbon",
+      "Lisboa",
+      "Lisbonne"
+    ]
+  },
+  {
+    "nom": "Pérou",
+    "nom_en": "Peru",
+    "capitale": "Lima",
+    "drapeau": "🇵🇪",
+    "iso2": "PE",
+    "iso3": "PER",
+    "region": "Americas",
+    "superficie": 1285216.0,
+    "population": 34350244,
+    "pib": 289221969062,
+    "capitale_en": "Lima",
+    "capitale_variantes": [
+      "Lima"
+    ]
+  },
+  {
+    "nom": "Qatar",
+    "nom_en": "Qatar",
+    "capitale": "Doha",
+    "drapeau": "🇶🇦",
+    "iso2": "QA",
+    "iso3": "QAT",
+    "region": "Asia",
+    "superficie": 11586.0,
+    "population": 3173024,
+    "pib": 219162637362,
+    "capitale_en": "Doha",
+    "capitale_variantes": [
+      "Doha"
+    ]
+  },
+  {
+    "nom": "Roumanie",
+    "nom_en": "Romania",
+    "capitale": "Bucarest",
+    "drapeau": "🇷🇴",
+    "iso2": "RO",
+    "iso3": "ROU",
+    "region": "Europe",
+    "superficie": 238391.0,
+    "population": 19036031,
+    "pib": 382564217988,
+    "capitale_en": "Bucharest",
+    "capitale_variantes": [
+      "Bucharest",
+      "Bucarest",
+      "Bucuresti"
+    ]
+  },
+  {
+    "nom": "Royaume-Uni",
+    "nom_en": "United Kingdom",
+    "capitale": "Londres",
+    "drapeau": "🇬🇧",
+    "iso2": "GB",
+    "iso3": "GBR",
+    "region": "Europe",
+    "superficie": 244376.0,
+    "population": 69281437,
+    "pib": 3686033044482,
+    "capitale_en": "London",
+    "capitale_variantes": [
+      "Londres",
+      "London"
+    ]
+  },
+  {
+    "nom": "Russie",
+    "nom_en": "Russia",
+    "capitale": "Moscou",
+    "drapeau": "🇷🇺",
+    "iso2": "RU",
+    "iso3": "RUS",
+    "region": "Europe",
+    "superficie": 17098246.0,
+    "population": 146028325,
+    "pib": 2173835806671,
+    "capitale_en": "Moscow",
+    "capitale_variantes": [
+      "Moscow",
+      "Moscou",
+      "Moskva"
+    ]
+  },
+  {
+    "nom": "Rwanda",
+    "nom_en": "Rwanda",
+    "capitale": "Kigali",
+    "drapeau": "🇷🇼",
+    "iso2": "RW",
+    "iso3": "RWA",
+    "region": "Africa",
+    "superficie": 26338.0,
+    "population": 14104969,
+    "pib": 14251642235,
+    "capitale_en": "Kigali",
+    "capitale_variantes": [
+      "Kigali"
+    ]
+  },
+  {
+    "nom": "République centrafricaine",
+    "nom_en": "Central African Republic",
+    "capitale": "Bangui",
+    "drapeau": "🇨🇫",
+    "iso2": "CF",
+    "iso3": "CAF",
+    "region": "Africa",
+    "superficie": 622984.0,
+    "population": 6470307,
+    "pib": 2751494281,
+    "capitale_en": "Bangui",
+    "capitale_variantes": [
+      "Bangui"
+    ]
+  },
+  {
+    "nom": "République dominicaine",
+    "nom_en": "Dominican Republic",
+    "capitale": "Santo Domingo",
+    "drapeau": "🇩🇴",
+    "iso2": "DO",
+    "iso3": "DOM",
+    "region": "Americas",
+    "superficie": 48671.0,
+    "population": 10771504,
+    "pib": 124282245638,
+    "capitale_en": "Santo Domingo",
+    "capitale_variantes": [
+      "Santo Domingo"
+    ]
+  },
+  {
+    "nom": "Réunion",
+    "nom_en": "Réunion",
+    "capitale": "Saint-Denis",
+    "drapeau": "🇷🇪",
+    "iso2": "RE",
+    "iso3": "REU",
+    "region": "Africa",
+    "superficie": 2511.0,
+    "population": 896175,
+    "pib": null,
+    "capitale_en": "Saint-Denis",
+    "capitale_variantes": [
+      "Saint-Denis"
+    ]
+  },
+  {
+    "nom": "Sahara Occidental",
+    "nom_en": "Western Sahara",
+    "capitale": "El Aaiún",
+    "drapeau": "🇪🇭",
+    "iso2": "EH",
+    "iso3": "ESH",
+    "region": "Africa",
+    "superficie": 266000.0,
+    "population": 600904,
+    "pib": null,
+    "capitale_en": "El Aaiún",
+    "capitale_variantes": [
+      "El Aaiún"
+    ]
+  },
+  {
+    "nom": "Saint-Barthélemy",
+    "nom_en": "Saint Barthélemy",
+    "capitale": "Gustavia",
+    "drapeau": "🇧🇱",
+    "iso2": "BL",
+    "iso3": "BLM",
+    "region": "Americas",
+    "superficie": 21.0,
+    "population": 10562,
+    "pib": null,
+    "capitale_en": "Gustavia",
+    "capitale_variantes": [
+      "Gustavia"
+    ]
+  },
+  {
+    "nom": "Saint-Christophe-et-Niévès",
+    "nom_en": "Saint Kitts and Nevis",
+    "capitale": "Basseterre",
+    "drapeau": "🇰🇳",
+    "iso2": "KN",
+    "iso3": "KNA",
+    "region": "Americas",
+    "superficie": 261.0,
+    "population": 51320,
+    "pib": 1122388888,
+    "capitale_en": "Basseterre",
+    "capitale_variantes": [
+      "Basseterre"
+    ]
+  },
+  {
+    "nom": "Saint-Marin",
+    "nom_en": "San Marino",
+    "capitale": "City of San Marino",
+    "drapeau": "🇸🇲",
+    "iso2": "SM",
+    "iso3": "SMR",
+    "region": "Europe",
+    "superficie": 61.0,
+    "population": 34132,
+    "pib": 2027527227,
+    "capitale_en": "City of San Marino",
+    "capitale_variantes": [
+      "City of San Marino"
+    ]
+  },
+  {
+    "nom": "Saint-Martin",
+    "nom_en": "Sint Maarten",
+    "capitale": "Philipsburg",
+    "drapeau": "🇸🇽",
+    "iso2": "SX",
+    "iso3": "SXM",
+    "region": "Americas",
+    "superficie": 34.0,
+    "population": 41349,
+    "pib": 1797836665,
+    "capitale_en": "Philipsburg",
+    "capitale_variantes": [
+      "Philipsburg"
+    ]
+  },
+  {
+    "nom": "Saint-Martin",
+    "nom_en": "Saint Martin",
+    "capitale": "Marigot",
+    "drapeau": "🇲🇫",
+    "iso2": "MF",
+    "iso3": "MAF",
+    "region": "Americas",
+    "superficie": 53.0,
+    "population": 31496,
+    "pib": 649206262,
+    "capitale_en": "Marigot",
+    "capitale_variantes": [
+      "Marigot"
+    ]
+  },
+  {
+    "nom": "Saint-Pierre-et-Miquelon",
+    "nom_en": "Saint Pierre and Miquelon",
+    "capitale": "Saint-Pierre",
+    "drapeau": "🇵🇲",
+    "iso2": "PM",
+    "iso3": "SPM",
+    "region": "Americas",
+    "superficie": 242.0,
+    "population": 5819,
+    "pib": null,
+    "capitale_en": "Saint-Pierre",
+    "capitale_variantes": [
+      "Saint-Pierre"
+    ]
+  },
+  {
+    "nom": "Saint-Vincent-et-les-Grenadines",
+    "nom_en": "Saint Vincent and the Grenadines",
+    "capitale": "Kingstown",
+    "drapeau": "🇻🇨",
+    "iso2": "VC",
+    "iso3": "VCT",
+    "region": "Americas",
+    "superficie": 389.0,
+    "population": 110872,
+    "pib": 1157207407,
+    "capitale_en": "Kingstown",
+    "capitale_variantes": [
+      "Kingstown"
+    ]
+  },
+  {
+    "nom": "Sainte-Hélène, Ascension et Tristan da Cunha",
+    "nom_en": "Saint Helena, Ascension and Tristan da Cunha",
+    "capitale": "Jamestown",
+    "drapeau": "🇸🇭",
+    "iso2": "SH",
+    "iso3": "SHN",
+    "region": "Africa",
+    "superficie": 394.0,
+    "population": 5651,
+    "pib": null,
+    "capitale_en": "Jamestown",
+    "capitale_variantes": [
+      "Jamestown"
+    ]
+  },
+  {
+    "nom": "Sainte-Lucie",
+    "nom_en": "Saint Lucia",
+    "capitale": "Castries",
+    "drapeau": "🇱🇨",
+    "iso2": "LC",
+    "iso3": "LCA",
+    "region": "Americas",
+    "superficie": 616.0,
+    "population": 184100,
+    "pib": 2549062962,
+    "capitale_en": "Castries",
+    "capitale_variantes": [
+      "Castries"
+    ]
+  },
+  {
+    "nom": "Salvador",
+    "nom_en": "El Salvador",
+    "capitale": "San Salvador",
+    "drapeau": "🇸🇻",
+    "iso2": "SV",
+    "iso3": "SLV",
+    "region": "Americas",
+    "superficie": 21041.0,
+    "population": 6029976,
+    "pib": 35364960000,
+    "capitale_en": "San Salvador",
+    "capitale_variantes": [
+      "San Salvador"
+    ]
+  },
+  {
+    "nom": "Samoa",
+    "nom_en": "Samoa",
+    "capitale": "Apia",
+    "drapeau": "🇼🇸",
+    "iso2": "WS",
+    "iso3": "WSM",
+    "region": "Oceania",
+    "superficie": 2842.0,
+    "population": 205557,
+    "pib": 1175749785,
+    "capitale_en": "Apia",
+    "capitale_variantes": [
+      "Apia"
+    ]
+  },
+  {
+    "nom": "Samoa américaines",
+    "nom_en": "American Samoa",
+    "capitale": "Pago Pago",
+    "drapeau": "🇦🇸",
+    "iso2": "AS",
+    "iso3": "ASM",
+    "region": "Oceania",
+    "superficie": 199.0,
+    "population": 49710,
+    "pib": 871000000,
+    "capitale_en": "Pago Pago",
+    "capitale_variantes": [
+      "Pago Pago"
+    ]
+  },
+  {
+    "nom": "Serbie",
+    "nom_en": "Serbia",
+    "capitale": "Belgrade",
+    "drapeau": "🇷🇸",
+    "iso2": "RS",
+    "iso3": "SRB",
+    "region": "Europe",
+    "superficie": 77589.0,
+    "population": 6567783,
+    "pib": 90097765959,
+    "capitale_en": "Belgrade",
+    "capitale_variantes": [
+      "Belgrade"
+    ]
+  },
+  {
+    "nom": "Seychelles",
+    "nom_en": "Seychelles",
+    "capitale": "Victoria",
+    "drapeau": "🇸🇨",
+    "iso2": "SC",
+    "iso3": "SYC",
+    "region": "Africa",
+    "superficie": 452.0,
+    "population": 122729,
+    "pib": 2167239562,
+    "capitale_en": "Victoria",
+    "capitale_variantes": [
+      "Victoria"
+    ]
+  },
+  {
+    "nom": "Sierra Leone",
+    "nom_en": "Sierra Leone",
+    "capitale": "Freetown",
+    "drapeau": "🇸🇱",
+    "iso2": "SL",
+    "iso3": "SLE",
+    "region": "Africa",
+    "superficie": 71740.0,
+    "population": 9077691,
+    "pib": 6971127235,
+    "capitale_en": "Freetown",
+    "capitale_variantes": [
+      "Freetown"
+    ]
+  },
+  {
+    "nom": "Singapour",
+    "nom_en": "Singapore",
+    "capitale": "Singapour",
+    "drapeau": "🇸🇬",
+    "iso2": "SG",
+    "iso3": "SGP",
+    "region": "Asia",
+    "superficie": 710.0,
+    "population": 6110200,
+    "pib": 547386645891,
+    "capitale_en": "Singapore",
+    "capitale_variantes": [
+      "Singapore",
+      "Singapour"
+    ]
+  },
+  {
+    "nom": "Slovaquie",
+    "nom_en": "Slovakia",
+    "capitale": "Bratislava",
+    "drapeau": "🇸🇰",
+    "iso2": "SK",
+    "iso3": "SVK",
+    "region": "Europe",
+    "superficie": 49037.0,
+    "population": 5413813,
+    "pib": 140934076532,
+    "capitale_en": "Bratislava",
+    "capitale_variantes": [
+      "Bratislava"
+    ]
+  },
+  {
+    "nom": "Slovénie",
+    "nom_en": "Slovenia",
+    "capitale": "Ljubljana",
+    "drapeau": "🇸🇮",
+    "iso2": "SI",
+    "iso3": "SVN",
+    "region": "Europe",
+    "superficie": 20273.0,
+    "population": 2130638,
+    "pib": 72972015197,
+    "capitale_en": "Ljubljana",
+    "capitale_variantes": [
+      "Ljubljana"
+    ]
+  },
+  {
+    "nom": "Somalie",
+    "nom_en": "Somalia",
+    "capitale": "Mogadishu",
+    "drapeau": "🇸🇴",
+    "iso2": "SO",
+    "iso3": "SOM",
+    "region": "Africa",
+    "superficie": 637657.0,
+    "population": 19655000,
+    "pib": 11967000000,
+    "capitale_en": "Mogadishu",
+    "capitale_variantes": [
+      "Mogadishu"
+    ]
+  },
+  {
+    "nom": "Soudan",
+    "nom_en": "Sudan",
+    "capitale": "Khartoum",
+    "drapeau": "🇸🇩",
+    "iso2": "SD",
+    "iso3": "SDN",
+    "region": "Africa",
+    "superficie": 1886068.0,
+    "population": 51662000,
+    "pib": 49672435513,
+    "capitale_en": "Khartoum",
+    "capitale_variantes": [
+      "Khartoum"
+    ]
+  },
+  {
+    "nom": "Soudan du Sud",
+    "nom_en": "South Sudan",
+    "capitale": "Juba",
+    "drapeau": "🇸🇸",
+    "iso2": "SS",
+    "iso3": "SSD",
+    "region": "Africa",
+    "superficie": 619745.0,
+    "population": 15786898,
+    "pib": 11997800760,
+    "capitale_en": "Juba",
+    "capitale_variantes": [
+      "Juba"
+    ]
+  },
+  {
+    "nom": "Sri Lanka",
+    "nom_en": "Sri Lanka",
+    "capitale": "Sri Jayawardenepura Kotte",
+    "drapeau": "🇱🇰",
+    "iso2": "LK",
+    "iso3": "LKA",
+    "region": "Asia",
+    "superficie": 65610.0,
+    "population": 21763170,
+    "pib": 98963185509,
+    "capitale_en": "Sri Jayawardenepura Kotte",
+    "capitale_variantes": [
+      "Sri Jayawardenepura Kotte"
+    ]
+  },
+  {
+    "nom": "Suisse",
+    "nom_en": "Switzerland",
+    "capitale": "Berne",
+    "drapeau": "🇨🇭",
+    "iso2": "CH",
+    "iso3": "CHE",
+    "region": "Europe",
+    "superficie": 41284.0,
+    "population": 9082848,
+    "pib": 936564198048,
+    "capitale_en": "Bern",
+    "capitale_variantes": [
+      "Berne",
+      "Bern"
+    ]
+  },
+  {
+    "nom": "Surinam",
+    "nom_en": "Suriname",
+    "capitale": "Paramaribo",
+    "drapeau": "🇸🇷",
+    "iso2": "SR",
+    "iso3": "SUR",
+    "region": "Americas",
+    "superficie": 163820.0,
+    "population": 616500,
+    "pib": 4416775112,
+    "capitale_en": "Paramaribo",
+    "capitale_variantes": [
+      "Paramaribo"
+    ]
+  },
+  {
+    "nom": "Suède",
+    "nom_en": "Sweden",
+    "capitale": "Stockholm",
+    "drapeau": "🇸🇪",
+    "iso2": "SE",
+    "iso3": "SWE",
+    "region": "Europe",
+    "superficie": 450295.0,
+    "population": 10605098,
+    "pib": 603715224265,
+    "capitale_en": "Stockholm",
+    "capitale_variantes": [
+      "Stockholm"
+    ]
+  },
+  {
+    "nom": "Svalbard et Jan Mayen",
+    "nom_en": "Svalbard and Jan Mayen",
+    "capitale": "Longyearbyen",
+    "drapeau": "🇸🇯",
+    "iso2": "SJ",
+    "iso3": "SJM",
+    "region": "Europe",
+    "superficie": 61399.0,
+    "population": 2530,
+    "pib": null,
+    "capitale_en": "Longyearbyen",
+    "capitale_variantes": [
+      "Longyearbyen"
+    ]
+  },
+  {
+    "nom": "Swaziland",
+    "nom_en": "Eswatini",
+    "capitale": "Mbabane",
+    "drapeau": "🇸🇿",
+    "iso2": "SZ",
+    "iso3": "SWZ",
+    "region": "Africa",
+    "superficie": 17364.0,
+    "population": 1235549,
+    "pib": 4858885840,
+    "capitale_en": "Mbabane",
+    "capitale_variantes": [
+      "Mbabane"
+    ]
+  },
+  {
+    "nom": "Syrie",
+    "nom_en": "Syria",
+    "capitale": "Damascus",
+    "drapeau": "🇸🇾",
+    "iso2": "SY",
+    "iso3": "SYR",
+    "region": "Asia",
+    "superficie": 185180.0,
+    "population": 25620000,
+    "pib": 23622827079,
+    "capitale_en": "Damascus",
+    "capitale_variantes": [
+      "Damascus"
+    ]
+  },
+  {
+    "nom": "São Tomé et Príncipe",
+    "nom_en": "São Tomé and Príncipe",
+    "capitale": "São Tomé",
+    "drapeau": "🇸🇹",
+    "iso2": "ST",
+    "iso3": "STP",
+    "region": "Africa",
+    "superficie": 964.0,
+    "population": 209607,
+    "pib": 822154621,
+    "capitale_en": "São Tomé",
+    "capitale_variantes": [
+      "São Tomé"
+    ]
+  },
+  {
+    "nom": "Sénégal",
+    "nom_en": "Senegal",
+    "capitale": "Dakar",
+    "drapeau": "🇸🇳",
+    "iso2": "SN",
+    "iso3": "SEN",
+    "region": "Africa",
+    "superficie": 196722.0,
+    "population": 18593258,
+    "pib": 32808056600,
+    "capitale_en": "Dakar",
+    "capitale_variantes": [
+      "Dakar"
+    ]
+  },
+  {
+    "nom": "Tadjikistan",
+    "nom_en": "Tajikistan",
+    "capitale": "Dushanbe",
+    "drapeau": "🇹🇯",
+    "iso2": "TJ",
+    "iso3": "TJK",
+    "region": "Asia",
+    "superficie": 143100.0,
+    "population": 10499000,
+    "pib": 14204575548,
+    "capitale_en": "Dushanbe",
+    "capitale_variantes": [
+      "Dushanbe"
+    ]
+  },
+  {
+    "nom": "Tanzanie",
+    "nom_en": "Tanzania",
+    "capitale": "Dodoma",
+    "drapeau": "🇹🇿",
+    "iso2": "TZ",
+    "iso3": "TZA",
+    "region": "Africa",
+    "superficie": 947303.0,
+    "population": 68153004,
+    "pib": 78844405385,
+    "capitale_en": "Dodoma",
+    "capitale_variantes": [
+      "Dodoma"
+    ]
+  },
+  {
+    "nom": "Taïwan",
+    "nom_en": "Taiwan",
+    "capitale": "Taipei",
+    "drapeau": "🇹🇼",
+    "iso2": "TW",
+    "iso3": "TWN",
+    "region": "Asia",
+    "superficie": 36197.0,
+    "population": 23317031,
+    "pib": null,
+    "capitale_en": "Taipei",
+    "capitale_variantes": [
+      "Taipei"
+    ]
+  },
+  {
+    "nom": "Tchad",
+    "nom_en": "Chad",
+    "capitale": "N'Djamena",
+    "drapeau": "🇹🇩",
+    "iso2": "TD",
+    "iso3": "TCD",
+    "region": "Africa",
+    "superficie": 1284000.0,
+    "population": 19340757,
+    "pib": 19518819751,
+    "capitale_en": "N'Djamena",
+    "capitale_variantes": [
+      "N'Djamena"
+    ]
+  },
+  {
+    "nom": "Tchéquie",
+    "nom_en": "Czechia",
+    "capitale": "Prague",
+    "drapeau": "🇨🇿",
+    "iso2": "CZ",
+    "iso3": "CZE",
+    "region": "Europe",
+    "superficie": 78865.0,
+    "population": 10882341,
+    "pib": 347034062928,
+    "capitale_en": "Prague",
+    "capitale_variantes": [
+      "Prague",
+      "Praha"
+    ]
+  },
+  {
+    "nom": "Terres australes et antarctiques françaises",
+    "nom_en": "French Southern and Antarctic Lands",
+    "capitale": "Port-aux-Français",
+    "drapeau": "🇹🇫",
+    "iso2": "TF",
+    "iso3": "ATF",
+    "region": "Antarctic",
+    "superficie": 7747.0,
+    "population": 400,
+    "pib": null,
+    "capitale_en": "Port-aux-Français",
+    "capitale_variantes": [
+      "Port-aux-Français"
+    ]
+  },
+  {
+    "nom": "Thaïlande",
+    "nom_en": "Thailand",
+    "capitale": "Bangkok",
+    "drapeau": "🇹🇭",
+    "iso2": "TH",
+    "iso3": "THA",
+    "region": "Asia",
+    "superficie": 513120.0,
+    "population": 65859640,
+    "pib": 526517658841,
+    "capitale_en": "Bangkok",
+    "capitale_variantes": [
+      "Bangkok"
+    ]
+  },
+  {
+    "nom": "Timor oriental",
+    "nom_en": "Timor-Leste",
+    "capitale": "Dili",
+    "drapeau": "🇹🇱",
+    "iso2": "TL",
+    "iso3": "TLS",
+    "region": "Asia",
+    "superficie": 14874.0,
+    "population": 1391221,
+    "pib": 1865608515,
+    "capitale_en": "Dili",
+    "capitale_variantes": [
+      "Dili"
+    ]
+  },
+  {
+    "nom": "Togo",
+    "nom_en": "Togo",
+    "capitale": "Lomé",
+    "drapeau": "🇹🇬",
+    "iso2": "TG",
+    "iso3": "TGO",
+    "region": "Africa",
+    "superficie": 56785.0,
+    "population": 8095498,
+    "pib": 10651180146,
+    "capitale_en": "Lomé",
+    "capitale_variantes": [
+      "Lomé"
+    ]
+  },
+  {
+    "nom": "Tokelau",
+    "nom_en": "Tokelau",
+    "capitale": "Fakaofo",
+    "drapeau": "🇹🇰",
+    "iso2": "TK",
+    "iso3": "TKL",
+    "region": "Oceania",
+    "superficie": 12.0,
+    "population": 2608,
+    "pib": null,
+    "capitale_en": "Fakaofo",
+    "capitale_variantes": [
+      "Fakaofo"
+    ]
+  },
+  {
+    "nom": "Tonga",
+    "nom_en": "Tonga",
+    "capitale": "Nuku'alofa",
+    "drapeau": "🇹🇴",
+    "iso2": "TO",
+    "iso3": "TON",
+    "region": "Oceania",
+    "superficie": 747.0,
+    "population": 100179,
+    "pib": 591139749,
+    "capitale_en": "Nuku'alofa",
+    "capitale_variantes": [
+      "Nuku'alofa"
+    ]
+  },
+  {
+    "nom": "Trinité-et-Tobago",
+    "nom_en": "Trinidad and Tobago",
+    "capitale": "Port of Spain",
+    "drapeau": "🇹🇹",
+    "iso2": "TT",
+    "iso3": "TTO",
+    "region": "Americas",
+    "superficie": 5130.0,
+    "population": 1367764,
+    "pib": 25633544529,
+    "capitale_en": "Port of Spain",
+    "capitale_variantes": [
+      "Port of Spain"
+    ]
+  },
+  {
+    "nom": "Tunisie",
+    "nom_en": "Tunisia",
+    "capitale": "Tunis",
+    "drapeau": "🇹🇳",
+    "iso2": "TN",
+    "iso3": "TUN",
+    "region": "Africa",
+    "superficie": 163610.0,
+    "population": 11972169,
+    "pib": 51332285656,
+    "capitale_en": "Tunis",
+    "capitale_variantes": [
+      "Tunis"
+    ]
+  },
+  {
+    "nom": "Turkménistan",
+    "nom_en": "Turkmenistan",
+    "capitale": "Ashgabat",
+    "drapeau": "🇹🇲",
+    "iso2": "TM",
+    "iso3": "TKM",
+    "region": "Asia",
+    "superficie": 488100.0,
+    "population": 7057841,
+    "pib": 51387209872,
+    "capitale_en": "Ashgabat",
+    "capitale_variantes": [
+      "Ashgabat"
+    ]
+  },
+  {
+    "nom": "Turquie",
+    "nom_en": "Turkey",
+    "capitale": "Ankara",
+    "drapeau": "🇹🇷",
+    "iso2": "TR",
+    "iso3": "TUR",
+    "region": "Asia",
+    "superficie": 783562.0,
+    "population": 85664944,
+    "pib": 1359123768774,
+    "capitale_en": "Ankara",
+    "capitale_variantes": [
+      "Ankara"
+    ]
+  },
+  {
+    "nom": "Tuvalu",
+    "nom_en": "Tuvalu",
+    "capitale": "Funafuti",
+    "drapeau": "🇹🇻",
+    "iso2": "TV",
+    "iso3": "TUV",
+    "region": "Oceania",
+    "superficie": 26.0,
+    "population": 10643,
+    "pib": 62280311,
+    "capitale_en": "Funafuti",
+    "capitale_variantes": [
+      "Funafuti"
+    ]
+  },
+  {
+    "nom": "Ukraine",
+    "nom_en": "Ukraine",
+    "capitale": "Kiev",
+    "drapeau": "🇺🇦",
+    "iso2": "UA",
+    "iso3": "UKR",
+    "region": "Europe",
+    "superficie": 603550.0,
+    "population": 32862000,
+    "pib": 190741262414,
+    "capitale_en": "Kyiv",
+    "capitale_variantes": [
+      "Kyiv",
+      "Kiev"
+    ]
+  },
+  {
+    "nom": "Uruguay",
+    "nom_en": "Uruguay",
+    "capitale": "Montevideo",
+    "drapeau": "🇺🇾",
+    "iso2": "UY",
+    "iso3": "URY",
+    "region": "Americas",
+    "superficie": 181034.0,
+    "population": 3499451,
+    "pib": 80961511073,
+    "capitale_en": "Montevideo",
+    "capitale_variantes": [
+      "Montevideo"
+    ]
+  },
+  {
+    "nom": "Vanuatu",
+    "nom_en": "Vanuatu",
+    "capitale": "Port Vila",
+    "drapeau": "🇻🇺",
+    "iso2": "VU",
+    "iso3": "VUT",
+    "region": "Oceania",
+    "superficie": 12189.0,
+    "population": 321409,
+    "pib": 1117972034,
+    "capitale_en": "Port Vila",
+    "capitale_variantes": [
+      "Port Vila"
+    ]
+  },
+  {
+    "nom": "Venezuela",
+    "nom_en": "Venezuela",
+    "capitale": "Caracas",
+    "drapeau": "🇻🇪",
+    "iso2": "VE",
+    "iso3": "VEN",
+    "region": "Americas",
+    "superficie": 916445.0,
+    "population": 28517000,
+    "pib": 119802963257,
+    "capitale_en": "Caracas",
+    "capitale_variantes": [
+      "Caracas"
+    ]
+  },
+  {
+    "nom": "Viêt Nam",
+    "nom_en": "Vietnam",
+    "capitale": "Hanoï",
+    "drapeau": "🇻🇳",
+    "iso2": "VN",
+    "iso3": "VNM",
+    "region": "Asia",
+    "superficie": 331212.0,
+    "population": 101343800,
+    "pib": 476388230307,
+    "capitale_en": "Hanoi",
+    "capitale_variantes": [
+      "Hanoï",
+      "Hanoi"
+    ]
+  },
+  {
+    "nom": "Wallis-et-Futuna",
+    "nom_en": "Wallis and Futuna",
+    "capitale": "Mata-Utu",
+    "drapeau": "🇼🇫",
+    "iso2": "WF",
+    "iso3": "WLF",
+    "region": "Oceania",
+    "superficie": 142.0,
+    "population": 11620,
+    "pib": null,
+    "capitale_en": "Mata-Utu",
+    "capitale_variantes": [
+      "Mata-Utu"
+    ]
+  },
+  {
+    "nom": "Yémen",
+    "nom_en": "Yemen",
+    "capitale": "Sana'a",
+    "drapeau": "🇾🇪",
+    "iso2": "YE",
+    "iso3": "YEM",
+    "region": "Asia",
+    "superficie": 527968.0,
+    "population": 32684503,
+    "pib": 21606160663,
+    "capitale_en": "Sana'a",
+    "capitale_variantes": [
+      "Sana'a"
+    ]
+  },
+  {
+    "nom": "Zambie",
+    "nom_en": "Zambia",
+    "capitale": "Lusaka",
+    "drapeau": "🇿🇲",
+    "iso2": "ZM",
+    "iso3": "ZMB",
+    "region": "Africa",
+    "superficie": 752612.0,
+    "population": 19693423,
+    "pib": 25303185342,
+    "capitale_en": "Lusaka",
+    "capitale_variantes": [
+      "Lusaka"
+    ]
+  },
+  {
+    "nom": "Zimbabwe",
+    "nom_en": "Zimbabwe",
+    "capitale": "Harare",
+    "drapeau": "🇿🇼",
+    "iso2": "ZW",
+    "iso3": "ZWE",
+    "region": "Africa",
+    "superficie": 390757.0,
+    "population": 17073087,
+    "pib": 41539411516,
+    "capitale_en": "Harare",
+    "capitale_variantes": [
+      "Harare"
+    ]
+  },
+  {
+    "nom": "Égypte",
+    "nom_en": "Egypt",
+    "capitale": "Le Caire",
+    "drapeau": "🇪🇬",
+    "iso2": "EG",
+    "iso3": "EGY",
+    "region": "Africa",
+    "superficie": 1002450.0,
+    "population": 107271260,
+    "pib": 389059911003,
+    "capitale_en": "Cairo",
+    "capitale_variantes": [
+      "Cairo",
+      "Caire",
+      "Le Caire"
+    ]
+  },
+  {
+    "nom": "Émirats arabes unis",
+    "nom_en": "United Arab Emirates",
+    "capitale": "Abou Dabi",
+    "drapeau": "🇦🇪",
+    "iso2": "AE",
+    "iso3": "ARE",
+    "region": "Asia",
+    "superficie": 83600.0,
+    "population": 11294243,
+    "pib": 552324846834,
+    "capitale_en": "Abu Dhabi",
+    "capitale_variantes": [
+      "Abou Dabi",
+      "Abu Dhabi"
+    ]
+  },
+  {
+    "nom": "Équateur",
+    "nom_en": "Ecuador",
+    "capitale": "Quito",
+    "drapeau": "🇪🇨",
+    "iso2": "EC",
+    "iso3": "ECU",
+    "region": "Americas",
+    "superficie": 276841.0,
+    "population": 18103660,
+    "pib": 124676074700,
+    "capitale_en": "Quito",
+    "capitale_variantes": [
+      "Quito"
+    ]
+  },
+  {
+    "nom": "Érythrée",
+    "nom_en": "Eritrea",
+    "capitale": "Asmara",
+    "drapeau": "🇪🇷",
+    "iso2": "ER",
+    "iso3": "ERI",
+    "region": "Africa",
+    "superficie": 117600.0,
+    "population": 3607000,
+    "pib": 2065001626,
+    "capitale_en": "Asmara",
+    "capitale_variantes": [
+      "Asmara"
+    ]
+  },
+  {
+    "nom": "États-Unis",
+    "nom_en": "United States",
+    "capitale": "Washington",
+    "drapeau": "🇺🇸",
+    "iso2": "US",
+    "iso3": "USA",
+    "region": "Americas",
+    "superficie": 9525067.0,
+    "population": 340110988,
+    "pib": 28750956130731,
+    "capitale_en": "Washington, D.C.",
+    "capitale_variantes": [
+      "Washington",
+      "Washington, D.C."
+    ]
+  },
+  {
+    "nom": "Éthiopie",
+    "nom_en": "Ethiopia",
+    "capitale": "Addis-Abeba",
+    "drapeau": "🇪🇹",
+    "iso2": "ET",
+    "iso3": "ETH",
+    "region": "Africa",
+    "superficie": 1104300.0,
+    "population": 111652998,
+    "pib": 149740297952,
+    "capitale_en": "Addis Ababa",
+    "capitale_variantes": [
+      "Addis Ababa",
+      "Addis-Abeba"
+    ]
+  },
+  {
+    "nom": "Île Christmas",
+    "nom_en": "Christmas Island",
+    "capitale": "Flying Fish Cove",
+    "drapeau": "🇨🇽",
+    "iso2": "CX",
+    "iso3": "CXR",
+    "region": "Oceania",
+    "superficie": 135.0,
+    "population": 1692,
+    "pib": null,
+    "capitale_en": "Flying Fish Cove",
+    "capitale_variantes": [
+      "Flying Fish Cove"
+    ]
+  },
+  {
+    "nom": "Île Maurice",
+    "nom_en": "Mauritius",
+    "capitale": "Port Louis",
+    "drapeau": "🇲🇺",
+    "iso2": "MU",
+    "iso3": "MUS",
+    "region": "Africa",
+    "superficie": 2040.0,
+    "population": 1243741,
+    "pib": 14937861786,
+    "capitale_en": "Port Louis",
+    "capitale_variantes": [
+      "Port Louis"
+    ]
+  },
+  {
+    "nom": "Île Norfolk",
+    "nom_en": "Norfolk Island",
+    "capitale": "Kingston",
+    "drapeau": "🇳🇫",
+    "iso2": "NF",
+    "iso3": "NFK",
+    "region": "Oceania",
+    "superficie": 36.0,
+    "population": 2188,
+    "pib": null,
+    "capitale_en": "Kingston",
+    "capitale_variantes": [
+      "Kingston"
+    ]
+  },
+  {
+    "nom": "Île de Man",
+    "nom_en": "Isle of Man",
+    "capitale": "Douglas",
+    "drapeau": "🇮🇲",
+    "iso2": "IM",
+    "iso3": "IMN",
+    "region": "Europe",
+    "superficie": 572.0,
+    "population": 84530,
+    "pib": 7431257410,
+    "capitale_en": "Douglas",
+    "capitale_variantes": [
+      "Douglas"
+    ]
+  },
+  {
+    "nom": "Îles Caïmans",
+    "nom_en": "Cayman Islands",
+    "capitale": "George Town",
+    "drapeau": "🇰🇾",
+    "iso2": "KY",
+    "iso3": "CYM",
+    "region": "Americas",
+    "superficie": 264.0,
+    "population": 84738,
+    "pib": 7241244269,
+    "capitale_en": "George Town",
+    "capitale_variantes": [
+      "George Town"
+    ]
+  },
+  {
+    "nom": "Îles Cocos",
+    "nom_en": "Cocos (Keeling) Islands",
+    "capitale": "West Island",
+    "drapeau": "🇨🇨",
+    "iso2": "CC",
+    "iso3": "CCK",
+    "region": "Oceania",
+    "superficie": 14.0,
+    "population": 593,
+    "pib": null,
+    "capitale_en": "West Island",
+    "capitale_variantes": [
+      "West Island"
+    ]
+  },
+  {
+    "nom": "Îles Cook",
+    "nom_en": "Cook Islands",
+    "capitale": "Avarua",
+    "drapeau": "🇨🇰",
+    "iso2": "CK",
+    "iso3": "COK",
+    "region": "Oceania",
+    "superficie": 236.0,
+    "population": 15040,
+    "pib": null,
+    "capitale_en": "Avarua",
+    "capitale_variantes": [
+      "Avarua"
+    ]
+  },
+  {
+    "nom": "Îles Féroé",
+    "nom_en": "Faroe Islands",
+    "capitale": "Tórshavn",
+    "drapeau": "🇫🇴",
+    "iso2": "FO",
+    "iso3": "FRO",
+    "region": "Europe",
+    "superficie": 1393.0,
+    "population": 54885,
+    "pib": 4052937169,
+    "capitale_en": "Tórshavn",
+    "capitale_variantes": [
+      "Tórshavn"
+    ]
+  },
+  {
+    "nom": "Îles Malouines",
+    "nom_en": "Falkland Islands",
+    "capitale": "Stanley",
+    "drapeau": "🇫🇰",
+    "iso2": "FK",
+    "iso3": "FLK",
+    "region": "Americas",
+    "superficie": 12173.0,
+    "population": 3662,
+    "pib": null,
+    "capitale_en": "Stanley",
+    "capitale_variantes": [
+      "Stanley"
+    ]
+  },
+  {
+    "nom": "Îles Mariannes du Nord",
+    "nom_en": "Northern Mariana Islands",
+    "capitale": "Saipan",
+    "drapeau": "🇲🇵",
+    "iso2": "MP",
+    "iso3": "MNP",
+    "region": "Oceania",
+    "superficie": 464.0,
+    "population": 47329,
+    "pib": 1096000000,
+    "capitale_en": "Saipan",
+    "capitale_variantes": [
+      "Saipan"
+    ]
+  },
+  {
+    "nom": "Îles Marshall",
+    "nom_en": "Marshall Islands",
+    "capitale": "Majuro",
+    "drapeau": "🇲🇭",
+    "iso2": "MH",
+    "iso3": "MHL",
+    "region": "Oceania",
+    "superficie": 181.0,
+    "population": 42418,
+    "pib": 290108489,
+    "capitale_en": "Majuro",
+    "capitale_variantes": [
+      "Majuro"
+    ]
+  },
+  {
+    "nom": "Îles Pitcairn",
+    "nom_en": "Pitcairn Islands",
+    "capitale": "Adamstown",
+    "drapeau": "🇵🇳",
+    "iso2": "PN",
+    "iso3": "PCN",
+    "region": "Oceania",
+    "superficie": 47.0,
+    "population": 35,
+    "pib": null,
+    "capitale_en": "Adamstown",
+    "capitale_variantes": [
+      "Adamstown"
+    ]
+  },
+  {
+    "nom": "Îles Salomon",
+    "nom_en": "Solomon Islands",
+    "capitale": "Honiara",
+    "drapeau": "🇸🇧",
+    "iso2": "SB",
+    "iso3": "SLB",
+    "region": "Oceania",
+    "superficie": 28896.0,
+    "population": 750325,
+    "pib": 1583964703,
+    "capitale_en": "Honiara",
+    "capitale_variantes": [
+      "Honiara"
+    ]
+  },
+  {
+    "nom": "Îles Turques-et-Caïques",
+    "nom_en": "Turks and Caicos Islands",
+    "capitale": "Cockburn Town",
+    "drapeau": "🇹🇨",
+    "iso2": "TC",
+    "iso3": "TCA",
+    "region": "Americas",
+    "superficie": 948.0,
+    "population": 50828,
+    "pib": 1745378000,
+    "capitale_en": "Cockburn Town",
+    "capitale_variantes": [
+      "Cockburn Town"
+    ]
+  },
+  {
+    "nom": "Îles Vierges britanniques",
+    "nom_en": "British Virgin Islands",
+    "capitale": "Road Town",
+    "drapeau": "🇻🇬",
+    "iso2": "VG",
+    "iso3": "VGB",
+    "region": "Americas",
+    "superficie": 151.0,
+    "population": 39471,
+    "pib": null,
+    "capitale_en": "Road Town",
+    "capitale_variantes": [
+      "Road Town"
+    ]
+  },
+  {
+    "nom": "Îles Vierges des États-Unis",
+    "nom_en": "United States Virgin Islands",
+    "capitale": "Charlotte Amalie",
+    "drapeau": "🇻🇮",
+    "iso2": "VI",
+    "iso3": "VIR",
+    "region": "Americas",
+    "superficie": 347.0,
+    "population": 87146,
+    "pib": 4672000000,
+    "capitale_en": "Charlotte Amalie",
+    "capitale_variantes": [
+      "Charlotte Amalie"
+    ]
+  },
+  {
+    "nom": "Îles du Cap-Vert",
+    "nom_en": "Cape Verde",
+    "capitale": "Praia",
+    "drapeau": "🇨🇻",
+    "iso2": "CV",
+    "iso3": "CPV",
+    "region": "Africa",
+    "superficie": 4033.0,
+    "population": 491233,
+    "pib": 2725414150,
+    "capitale_en": "Praia",
+    "capitale_variantes": [
+      "Praia"
+    ]
+  }
 ]

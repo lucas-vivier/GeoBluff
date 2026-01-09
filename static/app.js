@@ -31,6 +31,7 @@ const rulesBtn = document.getElementById('rules-btn');
 const rulesModal = document.getElementById('rules-modal');
 const rulesContent = document.getElementById('rules-content');
 const closeRulesBtn = document.getElementById('close-rules-btn');
+const restartGameBtn = document.getElementById('restart-game-btn');
 const capitalValidationModal = document.getElementById('capital-validation-modal');
 const capitalValidationText = document.getElementById('capital-validation-text');
 const capitalAcceptBtn = document.getElementById('capital-accept-btn');
@@ -450,6 +451,7 @@ async function startGame() {
 // Event listeners
 startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', startGame);
+restartGameBtn.addEventListener('click', startGame);
 bluffBtn.addEventListener('click', callBluff);
 capitalSubmit.addEventListener('click', submitCapital);
 capitalInput.addEventListener('keypress', (e) => {

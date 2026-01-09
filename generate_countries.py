@@ -28,7 +28,13 @@ def fetch_rest_countries() -> dict:
     print("📥 Récupération REST Countries API...")
     
     url = "https://restcountries.com/v3.1/all"
-    response = requests.get(url, timeout=60)
+    params = {
+        "fields": "name,cca2,cca3,translations,capital,region,area,population",
+    }
+    headers = {"User-Agent": "GeoBluff/1.0 (+https://restcountries.com)"}
+    response = requests.get(url, params=params, headers=headers, timeout=60)
+    if response.status_code == 400:
+        response = requests.get(url, headers=headers, timeout=60)
     response.raise_for_status()
     data = response.json()
     

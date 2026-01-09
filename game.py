@@ -310,10 +310,10 @@ def check_bluff_result():
     board = game_state["board"]
     bluff_caller = game_state["bluff_caller"]
 
-    # Check if order is correct (descending)
+    # Check if order is correct (ascending)
     is_correct_order = True
     for i in range(len(board) - 1):
-        if board[i][category] < board[i + 1][category]:
+        if board[i][category] > board[i + 1][category]:
             is_correct_order = False
             break
 
