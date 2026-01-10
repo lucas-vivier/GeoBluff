@@ -3,6 +3,21 @@
 let gameState = null;
 let toastTimeout = null;
 let isLoading = false;
+let gameId = null;
+let revealEnabled = true;
+
+// Get game_id from URL if present
+function getGameIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('game');
+}
+
+// Update URL with game_id
+function updateUrlWithGameId(id) {
+    const url = new URL(window.location);
+    url.searchParams.set('game', id);
+    window.history.replaceState({}, '', url);
+}
 
 // DOM Elements
 const startScreen = document.getElementById('start-screen');
@@ -20,6 +35,7 @@ const capitalModal = document.getElementById('capital-modal');
 const capitalCountry = document.getElementById('capital-country');
 const capitalInput = document.getElementById('capital-input');
 const capitalSubmit = document.getElementById('capital-submit');
+const capitalSkip = document.getElementById('capital-skip');
 const gameoverModal = document.getElementById('gameover-modal');
 const winnerText = document.getElementById('winner-text');
 const gameoverMessage = document.getElementById('gameover-message');
@@ -79,6 +95,7 @@ const translations = {
         continue_button: 'Continuer',
         capital_prompt: 'Entrez la capitale',
         capital_placeholder: 'Capitale...',
+        dont_know_button: 'Je ne sais pas',
         replay_button: 'Rejouer',
         capital_validation_title: 'Validation de la capitale',
         accept_button: 'Accepter',
@@ -125,6 +142,7 @@ const translations = {
         continue_button: 'Continue',
         capital_prompt: 'Enter the capital',
         capital_placeholder: 'Capital...',
+        dont_know_button: "Don't know",
         replay_button: 'Play again',
         capital_validation_title: 'Capital validation',
         accept_button: 'Accept',
@@ -172,7 +190,7 @@ function applyTranslations() {
 
 async function syncLanguage() {
     try {
-        const result = await api('set-language', 'POST', { language: currentLanguage });
+        const result = await api('set-language', 'POST', { game_id: gameId, language: currentLanguage });
         if (result && result.category) {
             gameState = result;
             render();
@@ -338,6 +356,7 @@ async function selectAndPlayCard(card) {
 
     isLoading = true;
     const result = await api('play-card', 'POST', {
+        game_id: gameId,
         player: gameState.current_player,
         card_name: card.name
     });
@@ -354,7 +373,7 @@ async function setPosition(position) {
     if (gameState.phase !== 'placing' || isLoading) return;
 
     isLoading = true;
-    const result = await api('set-position', 'POST', { position });
+    const result = await api('set-position', 'POST', { game_id: gameId, position });
     isLoading = false;
 
     if (!result.error) {
@@ -367,7 +386,7 @@ async function setPosition(position) {
 async function validatePlacement() {
     if (gameState.phase !== 'placing') return;
 
-    const result = await api('validate-placement', 'POST');
+    const result = await api('validate-placement', 'POST', { game_id: gameId });
 
     if (!result.error) {
         gameState = result;
@@ -379,7 +398,7 @@ async function validatePlacement() {
 async function cancelPlacement() {
     if (gameState.phase !== 'placing') return;
 
-    const result = await api('cancel-placement', 'POST');
+    const result = await api('cancel-placement', 'POST', { game_id: gameId });
 
     if (!result.error) {
         gameState = result;
@@ -393,20 +412,25 @@ async function callBluff() {
     if (gameState.board.length < 2) return;
 
     const result = await api('call-bluff', 'POST', {
+        game_id: gameId,
         player: gameState.current_player
     });
 
     if (!result.error) {
         gameState = result;
+        // Disable reveals briefly to prevent accidental clicks
+        revealEnabled = false;
         render();
+        setTimeout(() => { revealEnabled = true; }, 300);
     }
 }
 
 // Reveal card during bluff or final validation (by clicking on it)
 async function revealCardByIndex(index) {
+    if (!revealEnabled) return;
     if (gameState.phase !== 'bluff_reveal' && gameState.phase !== 'final_validation') return;
 
-    const result = await api('reveal-card', 'POST', { index });
+    const result = await api('reveal-card', 'POST', { game_id: gameId, index });
 
     if (!result.error) {
         gameState = result;
@@ -422,6 +446,7 @@ async function submitCapital() {
     const currentPlayer = gameState.player1_cards.length === 0 ? 1 : 2;
 
     const result = await api('check-capital', 'POST', {
+        game_id: gameId,
         player: currentPlayer,
         answer: answer
     });
@@ -433,9 +458,26 @@ async function submitCapital() {
     }
 }
 
+// Skip capital (don't know)
+async function skipCapital() {
+    const currentPlayer = gameState.player1_cards.length === 0 ? 1 : 2;
+
+    const result = await api('check-capital', 'POST', {
+        game_id: gameId,
+        player: currentPlayer,
+        answer: ''
+    });
+
+    if (!result.error) {
+        gameState = result;
+        capitalInput.value = '';
+        render();
+    }
+}
+
 // Capital validation decision (opponent accepts or refuses)
 async function capitalDecision(accepted) {
-    const result = await api('capital-decision', 'POST', { accepted });
+    const result = await api('capital-decision', 'POST', { game_id: gameId, accepted });
 
     if (!result.error) {
         gameState = result;
@@ -445,7 +487,7 @@ async function capitalDecision(accepted) {
 
 // Change category
 async function changeCategory() {
-    const result = await api('change-category', 'POST');
+    const result = await api('change-category', 'POST', { game_id: gameId });
 
     if (!result.error) {
         gameState = result;
@@ -460,7 +502,7 @@ async function continueAfterResult() {
         endpoint = 'continue-after-final-validation';
     }
 
-    const result = await api(endpoint, 'POST');
+    const result = await api(endpoint, 'POST', { game_id: gameId });
 
     if (!result.error) {
         gameState = result;
@@ -684,6 +726,8 @@ async function startGame() {
     const cardsCount = cardsCountSelect ? parseInt(cardsCountSelect.value) : 7;
     try {
         gameState = await api('new-game', 'POST', { cards_per_player: cardsCount, language: currentLanguage });
+        gameId = gameState.game_id;
+        updateUrlWithGameId(gameId);
         startScreen.classList.add('hidden');
         gameScreen.classList.remove('hidden');
         render();
@@ -697,6 +741,11 @@ function goHome() {
     gameScreen.classList.add('hidden');
     startScreen.classList.remove('hidden');
     gameState = null;
+    gameId = null;
+    // Clear game_id from URL
+    const url = new URL(window.location);
+    url.searchParams.delete('game');
+    window.history.replaceState({}, '', url);
 }
 
 // Event listeners
@@ -711,6 +760,7 @@ if (languageBtn) {
 }
 bluffBtn.addEventListener('click', callBluff);
 capitalSubmit.addEventListener('click', submitCapital);
+capitalSkip.addEventListener('click', skipCapital);
 capitalInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') submitCapital();
 });
@@ -767,4 +817,27 @@ const storedLanguage = localStorage.getItem('language');
 const browserLanguage = navigator.language || '';
 currentLanguage = storedLanguage || (browserLanguage.startsWith('en') ? 'en' : 'fr');
 applyTranslations();
-syncLanguage();
+
+// Check if there's a game_id in URL and try to load it
+async function initFromUrl() {
+    const urlGameId = getGameIdFromUrl();
+    if (urlGameId) {
+        try {
+            const state = await api(`game-state?game_id=${urlGameId}`, 'GET');
+            if (!state.error) {
+                gameId = urlGameId;
+                gameState = state;
+                startScreen.classList.add('hidden');
+                gameScreen.classList.remove('hidden');
+                render();
+                return;
+            }
+        } catch (err) {
+            console.error('Error loading game from URL:', err);
+        }
+    }
+    // No game in URL or failed to load - sync language for future games
+    syncLanguage();
+}
+
+initFromUrl();

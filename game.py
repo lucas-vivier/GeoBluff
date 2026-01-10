@@ -2,6 +2,7 @@
 import json
 import random
 import unicodedata
+import uuid
 from pathlib import Path
 
 # Use countries.json for production, fallback to countries_test.json if needed
@@ -94,9 +95,9 @@ def normalize_language(language):
     language = language.lower().strip()
     return language if language in SUPPORTED_LANGUAGES else DEFAULT_LANGUAGE
 
-def get_language():
-    if game_state and "language" in game_state:
-        return game_state["language"]
+def get_language(game_id=None):
+    if game_id and game_id in games and "language" in games[game_id]:
+        return games[game_id]["language"]
     return game_language
 
 def get_category_label(category_id, language):
@@ -111,19 +112,19 @@ def translate(key, language, **params):
         params["label"] = get_category_label(params["category_id"], language)
     return template.format(**params)
 
-def set_message(key, **params):
+def set_message(game_state, key, **params):
     if game_state is None:
         return
     game_state["message_parts"] = [{"key": key, "params": params}]
 
-def append_message(key, **params):
+def append_message(game_state, key, **params):
     if game_state is None:
         return
     if not game_state.get("message_parts"):
         game_state["message_parts"] = []
     game_state["message_parts"].append({"key": key, "params": params})
 
-def clear_message():
+def clear_message(game_state):
     if game_state is None:
         return
     game_state["message_parts"] = None
@@ -146,7 +147,7 @@ def load_countries():
 COUNTRIES = load_countries()
 CATEGORIES, CATEGORY_LABELS = load_categories_config(COUNTRIES)
 
-game_state = None
+games = {}  # Dict of game_id -> game_state
 
 def pick_random_category(exclude=None):
     """Pick a random category, optionally excluding one."""
@@ -195,9 +196,9 @@ def check_capital(input_capital, correct_capital):
 
     return levenshtein_distance(input_norm, correct_norm) <= 2
 
-def new_game(cards_per_player=7, language=None):
+def new_game(cards_per_player=7, language=None, game_id=None):
     """Start a new game."""
-    global game_state, game_language
+    global game_language
 
     if language is not None:
         game_language = normalize_language(language)
@@ -213,7 +214,12 @@ def new_game(cards_per_player=7, language=None):
     player1_cards = shuffled[:cards_per_player]
     player2_cards = shuffled[cards_per_player:cards_per_player * 2]
 
+    # Generate new game_id if not provided
+    if not game_id:
+        game_id = str(uuid.uuid4())[:8]
+
     game_state = {
+        "game_id": game_id,
         "category": category,
         "category_label": get_category_label(category, game_language),
         "player1_cards": player1_cards,
@@ -230,15 +236,17 @@ def new_game(cards_per_player=7, language=None):
         "language": game_language
     }
 
-    return get_state()
+    games[game_id] = game_state
+    return get_state(game_id)
 
-def get_state():
+def get_state(game_id):
     """Get current game state (hiding opponent's card values)."""
-    if game_state is None:
+    if game_id not in games:
         return None
 
+    game_state = games[game_id]
     state = game_state.copy()
-    language = get_language()
+    language = get_language(game_id)
     state["language"] = language
     state["category_label"] = get_category_label(state["category"], language)
     category = state["category"]
@@ -301,22 +309,24 @@ def get_state():
 
     return state
 
-def set_language(language):
+def set_language(game_id, language):
     """Set current language for the game."""
-    global game_language, game_state
+    global game_language
 
     game_language = normalize_language(language)
-    if game_state:
+    if game_id and game_id in games:
+        game_state = games[game_id]
         game_state["language"] = game_language
         game_state["category_label"] = get_category_label(game_state["category"], game_language)
-    return get_state() if game_state else {"language": game_language}
+        return get_state(game_id)
+    return {"language": game_language}
 
-def change_category():
+def change_category(game_id):
     """Change to a different category (only during playing phase with just reference card)."""
-    global game_state
-
-    if game_state is None:
+    if game_id not in games:
         return {"error": "No game in progress"}
+
+    game_state = games[game_id]
 
     if game_state["phase"] != "playing":
         return {"error": "Can only change category during playing phase"}
@@ -330,18 +340,18 @@ def change_category():
     new_category = pick_random_category(exclude=old_category)
 
     game_state["category"] = new_category
-    game_state["category_label"] = get_category_label(new_category, get_language())
-    set_message("new_category", category_id=new_category)
+    game_state["category_label"] = get_category_label(new_category, get_language(game_id))
+    set_message(game_state, "new_category", category_id=new_category)
 
-    return get_state()
+    return get_state(game_id)
 
 
-def play_card(player, card_name):
+def play_card(game_id, player, card_name):
     """Play a card from hand - enters placing phase."""
-    global game_state
-
-    if game_state is None:
+    if game_id not in games:
         return {"error": "No game in progress"}
+
+    game_state = games[game_id]
 
     if game_state["phase"] != "playing":
         return {"error": "Cannot play card now"}
@@ -361,15 +371,18 @@ def play_card(player, card_name):
     # Default position: rightmost (after all existing cards)
     game_state["pending_position"] = len(game_state["board"])
     game_state["phase"] = "placing"
-    set_message("choose_position")
+    set_message(game_state, "choose_position")
 
-    return get_state()
+    return get_state(game_id)
 
-def set_position(position):
+def set_position(game_id, position):
     """Change the position of the pending card (index)."""
-    global game_state
+    if game_id not in games:
+        return {"error": "No game in progress"}
 
-    if game_state is None or game_state["phase"] != "placing":
+    game_state = games[game_id]
+
+    if game_state["phase"] != "placing":
         return {"error": "Not in placing phase"}
 
     # Position is an index from 0 to len(board)
@@ -378,13 +391,16 @@ def set_position(position):
         return {"error": f"Position must be between 0 and {max_pos}"}
 
     game_state["pending_position"] = position
-    return get_state()
+    return get_state(game_id)
 
-def validate_placement():
+def validate_placement(game_id):
     """Validate the card placement and end turn."""
-    global game_state
+    if game_id not in games:
+        return {"error": "No game in progress"}
 
-    if game_state is None or game_state["phase"] != "placing":
+    game_state = games[game_id]
+
+    if game_state["phase"] != "placing":
         return {"error": "Not in placing phase"}
 
     card = game_state["pending_card"]
@@ -405,21 +421,24 @@ def validate_placement():
         game_state["phase"] = "final_validation"
         game_state["final_player"] = player  # Player who placed last card
         game_state["capital_card"] = card  # Store for capital check later
-        set_message("final_validation")
-        return get_state()
+        set_message(game_state, "final_validation")
+        return get_state(game_id)
 
     # Switch player
     game_state["current_player"] = 2 if player == 1 else 1
     game_state["phase"] = "playing"
-    clear_message()
+    clear_message(game_state)
 
-    return get_state()
+    return get_state(game_id)
 
-def cancel_placement():
+def cancel_placement(game_id):
     """Cancel placement and return card to hand."""
-    global game_state
+    if game_id not in games:
+        return {"error": "No game in progress"}
 
-    if game_state is None or game_state["phase"] != "placing":
+    game_state = games[game_id]
+
+    if game_state["phase"] != "placing":
         return {"error": "Not in placing phase"}
 
     player = game_state["current_player"]
@@ -430,16 +449,16 @@ def cancel_placement():
     game_state["pending_card"] = None
     game_state["pending_position"] = None
     game_state["phase"] = "playing"
-    clear_message()
+    clear_message(game_state)
 
-    return get_state()
+    return get_state(game_id)
 
-def call_bluff(player):
+def call_bluff(game_id, player):
     """Call bluff on the last played card."""
-    global game_state
-
-    if game_state is None:
+    if game_id not in games:
         return {"error": "No game in progress"}
+
+    game_state = games[game_id]
 
     if game_state["phase"] != "playing":
         return {"error": "Cannot call bluff now"}
@@ -453,15 +472,18 @@ def call_bluff(player):
     game_state["phase"] = "bluff_reveal"
     game_state["bluff_caller"] = player
     game_state["reveal_index"] = 0
-    set_message("reveal_cards")
+    set_message(game_state, "reveal_cards")
 
-    return get_state()
+    return get_state(game_id)
 
-def reveal_card(index):
+def reveal_card(game_id, index):
     """Reveal a specific card during bluff check or final validation."""
-    global game_state
+    if game_id not in games:
+        return {"error": "No game in progress"}
 
-    if game_state is None or game_state["phase"] not in ("bluff_reveal", "final_validation"):
+    game_state = games[game_id]
+
+    if game_state["phase"] not in ("bluff_reveal", "final_validation"):
         return {"error": "Not in reveal phase"}
 
     if index < 0 or index >= len(game_state["board"]):
@@ -476,15 +498,15 @@ def reveal_card(index):
     # Check if all cards revealed
     if revealed_count >= len(game_state["board"]):
         if game_state["phase"] == "bluff_reveal":
-            return check_bluff_result()
+            return check_bluff_result(game_id)
         else:
-            return check_final_validation_result()
+            return check_final_validation_result(game_id)
 
-    return get_state()
+    return get_state(game_id)
 
-def check_bluff_result():
+def check_bluff_result(game_id):
     """Check if bluff was correct after all cards revealed - enter result phase."""
-    global game_state
+    game_state = games[game_id]
 
     category = game_state["category"]
     board = game_state["board"]
@@ -503,22 +525,22 @@ def check_bluff_result():
     if is_correct_order:
         # Order was correct, bluff caller loses
         loser = bluff_caller
-        set_message("bluff_correct", player=bluff_caller)
+        set_message(game_state, "bluff_correct", player=bluff_caller)
     else:
         # Order was wrong, bluff caller wins
         loser = 2 if bluff_caller == 1 else 1
-        set_message("bluff_wrong", player=loser)
+        set_message(game_state, "bluff_wrong", player=loser)
 
     # Enter result phase - wait for user to click continue
     game_state["phase"] = "bluff_result"
     game_state["bluff_loser"] = loser
 
-    return get_state()
+    return get_state(game_id)
 
 
-def check_final_validation_result():
+def check_final_validation_result(game_id):
     """Check if order is correct after final validation - either ask capital or penalize."""
-    global game_state
+    game_state = games[game_id]
 
     category = game_state["category"]
     board = game_state["board"]
@@ -537,22 +559,22 @@ def check_final_validation_result():
         # Order correct - now ask for capital
         card = game_state["capital_card"]
         game_state["phase"] = "capital_check"
-        set_message("order_correct_capital", player=player, country=card["name"])
+        set_message(game_state, "order_correct_capital", player=player, country=card["name"])
     else:
         # Order wrong - player draws 2 cards, enter result phase
         game_state["phase"] = "final_validation_result"
         game_state["final_validation_failed"] = True
-        set_message("order_wrong", player=player)
+        set_message(game_state, "order_wrong", player=player)
 
-    return get_state()
+    return get_state(game_id)
 
 
-def continue_after_final_validation():
+def continue_after_final_validation(game_id):
     """Continue game after failed final validation - end of round like bluff."""
-    global game_state
-
-    if game_state is None:
+    if game_id not in games:
         return {"error": "No game in progress"}
+
+    game_state = games[game_id]
 
     if game_state["phase"] != "final_validation_result":
         return {"error": "Not in final validation result phase"}
@@ -563,7 +585,7 @@ def continue_after_final_validation():
     game_state["board"] = []
 
     # Player draws 2 new cards
-    draw_new_cards(player, 2)
+    draw_new_cards(game_id, player, 2)
 
     # Clear validation state
     game_state["final_player"] = None
@@ -572,17 +594,17 @@ def continue_after_final_validation():
 
     # Start new round with new category, other player starts
     other_player = 2 if player == 1 else 1
-    start_new_round(other_player)
+    start_new_round(game_id, other_player)
 
-    return get_state()
+    return get_state(game_id)
 
 
-def continue_after_bluff():
+def continue_after_bluff(game_id):
     """Continue game after bluff result has been shown."""
-    global game_state
-
-    if game_state is None:
+    if game_id not in games:
         return {"error": "No game in progress"}
+
+    game_state = games[game_id]
 
     if game_state["phase"] != "bluff_result":
         return {"error": "Not in bluff result phase"}
@@ -593,25 +615,25 @@ def continue_after_bluff():
     game_state["board"] = []
 
     # Loser draws 2 new cards from available countries
-    draw_new_cards(loser, 2)
+    draw_new_cards(game_id, loser, 2)
 
     # Check if someone has won (no cards left) - unlikely after drawing but check anyway
     for player in [1, 2]:
         if len(game_state[f"player{player}_cards"]) == 0:
             game_state["phase"] = "game_over"
             game_state["winner"] = player
-            set_message("game_over_win", player=player)
-            return get_state()
+            set_message(game_state, "game_over_win", player=player)
+            return get_state(game_id)
 
     # Start new round with new category and new reference card
-    start_new_round(loser)
+    start_new_round(game_id, loser)
 
-    return get_state()
+    return get_state(game_id)
 
 
-def draw_new_cards(player, count):
+def draw_new_cards(game_id, player, count):
     """Draw new cards for a player from available countries."""
-    global game_state
+    game_state = games[game_id]
 
     # Get all cards currently in players' hands
     player_cards = set(c["name"] for c in game_state["player1_cards"] + game_state["player2_cards"])
@@ -625,9 +647,9 @@ def draw_new_cards(player, count):
         new_cards = random.sample(available, cards_to_draw)
         game_state[f"player{player}_cards"].extend(new_cards)
 
-def start_new_round(starting_player):
+def start_new_round(game_id, starting_player):
     """Start a new round with a new category."""
-    global game_state
+    game_state = games[game_id]
 
     # Pick new category (pure random, repetition allowed)
     new_category = pick_random_category()
@@ -644,19 +666,19 @@ def start_new_round(starting_player):
 
     game_state["board"] = [reference_card]
     game_state["category"] = new_category
-    game_state["category_label"] = get_category_label(new_category, get_language())
+    game_state["category_label"] = get_category_label(new_category, get_language(game_id))
     game_state["current_player"] = starting_player
     game_state["phase"] = "playing"
     game_state["bluff_caller"] = None
     game_state["reveal_index"] = 0
-    append_message("new_category", category_id=new_category)
+    append_message(game_state, "new_category", category_id=new_category)
 
-def check_capital_answer(player, answer):
+def check_capital_answer(game_id, player, answer):
     """Check if the capital answer is correct."""
-    global game_state
-
-    if game_state is None:
+    if game_id not in games:
         return {"error": "No game in progress"}
+
+    game_state = games[game_id]
 
     if game_state["phase"] != "capital_check":
         return {"error": "Not in capital check phase"}
@@ -668,23 +690,23 @@ def check_capital_answer(player, answer):
     if check_capital(answer, correct_capital):
         game_state["phase"] = "game_over"
         game_state["winner"] = player
-        set_message("capital_correct", capital=correct_capital, player=player)
+        set_message(game_state, "capital_correct", capital=correct_capital, player=player)
     else:
         # Wrong answer - enter validation phase where opponent can accept or refuse
         game_state["phase"] = "capital_validation"
         game_state["capital_answer"] = answer
         game_state["capital_player"] = player
-        set_message("capital_incorrect", answer=answer, capital=correct_capital)
+        set_message(game_state, "capital_incorrect", answer=answer, capital=correct_capital)
 
-    return get_state()
+    return get_state(game_id)
 
 
-def validate_capital_decision(accepted):
+def validate_capital_decision(game_id, accepted):
     """Opponent decides if the capital answer is acceptable."""
-    global game_state
-
-    if game_state is None:
+    if game_id not in games:
         return {"error": "No game in progress"}
+
+    game_state = games[game_id]
 
     if game_state["phase"] != "capital_validation":
         return {"error": "Not in capital validation phase"}
@@ -698,7 +720,7 @@ def validate_capital_decision(accepted):
         # Opponent accepts the answer
         game_state["phase"] = "game_over"
         game_state["winner"] = player
-        set_message("capital_accepted", player=player)
+        set_message(game_state, "capital_accepted", player=player)
     else:
         # Opponent refuses - remove the capital_card from board and player draws 2 new cards
         if game_state.get("capital_card"):
@@ -706,14 +728,14 @@ def validate_capital_decision(accepted):
             game_state["board"] = [c for c in game_state["board"] if c["name"] != card["name"]]
         else:
             game_state["board"].pop()
-        draw_new_cards(player, 2)
+        draw_new_cards(game_id, player, 2)
         game_state["phase"] = "playing"
         game_state["current_player"] = 2 if player == 1 else 1
-        set_message("capital_refused", capital=correct_capital, player=player)
+        set_message(game_state, "capital_refused", capital=correct_capital, player=player)
 
     # Clear validation state
     game_state["capital_answer"] = None
     game_state["capital_player"] = None
     game_state["capital_card"] = None
 
-    return get_state()
+    return get_state(game_id)

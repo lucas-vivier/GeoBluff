@@ -898,6 +898,16 @@ body {
     flex: 1;
 }
 
+/* Capital modal buttons */
+.capital-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.capital-buttons button {
+    flex: 1;
+}
+
 /* Card entry animation */
 .card {
     animation: cardEntry 0.3s ease-out;
