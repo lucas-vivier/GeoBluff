@@ -443,14 +443,24 @@ body {
 }
 
 .board-cards {
+    display: flex;
     flex: 1;
-    justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
     min-height: calc(var(--card-height) - 10px);
     overflow-x: auto;
     padding: 0.25rem;
     scroll-behavior: smooth;
+    gap: 0.25rem;
+}
+
+/* Use auto margins on first/last cards to center content */
+.board-cards > :first-child {
+    margin-left: auto;
+}
+
+.board-cards > :last-child {
+    margin-right: auto;
 }
 
 .board-cards .card {

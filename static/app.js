@@ -2,6 +2,7 @@
 
 let gameState = null;
 let toastTimeout = null;
+let isLoading = false;
 
 // DOM Elements
 const startScreen = document.getElementById('start-screen');
@@ -333,12 +334,14 @@ function createSlot(index, isActive) {
 
 // Select and play card (enter placing phase)
 async function selectAndPlayCard(card) {
-    if (gameState.phase !== 'playing') return;
+    if (gameState.phase !== 'playing' || isLoading) return;
 
+    isLoading = true;
     const result = await api('play-card', 'POST', {
         player: gameState.current_player,
         card_name: card.name
     });
+    isLoading = false;
 
     if (!result.error) {
         gameState = result;
@@ -348,9 +351,11 @@ async function selectAndPlayCard(card) {
 
 // Set position for pending card (index)
 async function setPosition(position) {
-    if (gameState.phase !== 'placing') return;
+    if (gameState.phase !== 'placing' || isLoading) return;
 
+    isLoading = true;
     const result = await api('set-position', 'POST', { position });
+    isLoading = false;
 
     if (!result.error) {
         gameState = result;
