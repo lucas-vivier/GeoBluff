@@ -15,6 +15,29 @@ DEFAULT_CATEGORIES = [
     {"id": "gdp", "label": "PIB ($)"},
 ]
 
+DEFAULT_CATEGORY_SETS = [
+    {
+        "id": "basic",
+        "label": "Basique",
+        "categories": ["population", "area", "north_south", "east_west"]
+    },
+    {
+        "id": "economics",
+        "label": "Economie",
+        "categories": [
+            "population",
+            "area",
+            "north_south",
+            "east_west",
+            "gdp",
+            "inflation",
+            "internet_users",
+            "electricity_access",
+            "unemployment"
+        ]
+    }
+]
+
 CONFIG_FILE = Path(__file__).parent / "categories_config.json"
 
 SUPPORTED_LANGUAGES = {"fr", "en"}
@@ -74,6 +97,7 @@ def load_categories_config(countries):
     if not CONFIG_FILE.exists():
         enabled = [c["id"] for c in DEFAULT_CATEGORIES]
         labels = {c["id"]: c["label"] for c in DEFAULT_CATEGORIES}
+        category_sets = DEFAULT_CATEGORY_SETS
     else:
         with open(CONFIG_FILE, encoding="utf-8") as f:
             config = json.load(f)
@@ -81,13 +105,31 @@ def load_categories_config(countries):
         categories = config.get("categories", DEFAULT_CATEGORIES)
         enabled = config.get("enabled_categories") or [c["id"] for c in categories]
         labels = {c["id"]: c.get("label", c["id"]) for c in categories if c["id"] in enabled}
+        category_sets = config.get("category_sets") or DEFAULT_CATEGORY_SETS
 
     if countries:
         available = set(countries[0].keys())
         enabled = [cat_id for cat_id in enabled if cat_id in available]
         labels = {cat_id: labels[cat_id] for cat_id in enabled}
 
-    return enabled, labels
+        filtered_sets = {}
+        for cat_set in category_sets:
+            set_id = cat_set.get("id")
+            if not set_id:
+                continue
+            set_categories = [c for c in cat_set.get("categories", []) if c in enabled]
+            if not set_categories:
+                continue
+            filtered_sets[set_id] = {
+                "id": set_id,
+                "label": cat_set.get("label", set_id),
+                "categories": set_categories
+            }
+        category_sets = filtered_sets
+    else:
+        category_sets = {s["id"]: s for s in category_sets if s.get("id")}
+
+    return enabled, labels, category_sets
 
 def normalize_language(language):
     if not language:
@@ -145,19 +187,20 @@ def load_countries():
     return []
 
 COUNTRIES = load_countries()
-CATEGORIES, CATEGORY_LABELS = load_categories_config(COUNTRIES)
+CATEGORIES, CATEGORY_LABELS, CATEGORY_SETS = load_categories_config(COUNTRIES)
 
 games = {}  # Dict of game_id -> game_state
 
-def pick_random_category(exclude=None):
-    """Pick a random category, optionally excluding one."""
-    if not CATEGORIES:
+def pick_random_category(category_pool=None, exclude=None):
+    """Pick a random category from a pool, optionally excluding one."""
+    pool = category_pool or CATEGORIES
+    if not pool:
         return None
-    if exclude and len(CATEGORIES) > 1:
-        candidates = [c for c in CATEGORIES if c != exclude]
+    if exclude and len(pool) > 1:
+        candidates = [c for c in pool if c != exclude]
         if candidates:
             return random.choice(candidates)
-    return random.choice(CATEGORIES)
+    return random.choice(pool)
 
 def normalize_text(text):
     """Remove accents and lowercase for comparison."""
@@ -196,7 +239,13 @@ def check_capital(input_capital, correct_capital):
 
     return levenshtein_distance(input_norm, correct_norm) <= 2
 
-def new_game(cards_per_player=7, language=None, game_id=None):
+def resolve_category_pool(category_set_id):
+    if category_set_id and category_set_id in CATEGORY_SETS:
+        return CATEGORY_SETS[category_set_id]["categories"]
+    return CATEGORIES
+
+
+def new_game(cards_per_player=7, language=None, game_id=None, category_set=None):
     """Start a new game."""
     global game_language
 
@@ -205,7 +254,8 @@ def new_game(cards_per_player=7, language=None, game_id=None):
 
     cards_per_player = max(3, min(cards_per_player, 10))
 
-    category = pick_random_category()
+    category_pool = resolve_category_pool(category_set)
+    category = pick_random_category(category_pool)
     shuffled = random.sample(COUNTRIES, len(COUNTRIES))
 
     # Reference card (after player hands)
@@ -222,6 +272,8 @@ def new_game(cards_per_player=7, language=None, game_id=None):
         "game_id": game_id,
         "category": category,
         "category_label": get_category_label(category, game_language),
+        "category_pool": category_pool,
+        "category_set": category_set if category_set in CATEGORY_SETS else None,
         "player1_cards": player1_cards,
         "player2_cards": player2_cards,
         "board": [reference_card],  # Start with reference card on board
@@ -306,6 +358,7 @@ def get_state(game_id):
         state["message"] = None
 
     state.pop("message_parts", None)
+    state.pop("category_pool", None)
 
     return state
 
@@ -337,7 +390,8 @@ def change_category(game_id):
 
     # Pick a different category
     old_category = game_state["category"]
-    new_category = pick_random_category(exclude=old_category)
+    category_pool = game_state.get("category_pool") or CATEGORIES
+    new_category = pick_random_category(category_pool, exclude=old_category)
 
     game_state["category"] = new_category
     game_state["category_label"] = get_category_label(new_category, get_language(game_id))
@@ -652,7 +706,8 @@ def start_new_round(game_id, starting_player):
     game_state = games[game_id]
 
     # Pick new category (pure random, repetition allowed)
-    new_category = pick_random_category()
+    category_pool = game_state.get("category_pool") or CATEGORIES
+    new_category = pick_random_category(category_pool)
 
     # Pick a reference card from remaining countries (not in players' hands)
     player_cards = set(c["name"] for c in game_state["player1_cards"] + game_state["player2_cards"])

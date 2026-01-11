@@ -61,6 +61,7 @@ const cardsCountSelect = document.getElementById('cards-count');
 const lastCapitalDiv = document.getElementById('last-capital');
 const languageBtn = document.getElementById('language-btn');
 const languageBtnStart = document.getElementById('language-btn-start');
+const categorySetInputs = document.querySelectorAll('input[name="category-set"]');
 
 let currentLanguage = 'fr';
 
@@ -68,6 +69,11 @@ const translations = {
     fr: {
         subtitle: 'Jeu de géographie pour deux équipes',
         start_description: 'Placez vos cartes du plus grand au plus petit et appelez le bluff au bon moment.',
+        category_mode_title: 'Mode de categories',
+        category_set_basic: 'Basique',
+        category_set_basic_desc: 'Population, superficie, nord/sud, est/ouest',
+        category_set_economics: 'Economie',
+        category_set_economics_desc: 'Basique + PIB, inflation, chomage, internet, electricite',
         chip_population: '👥 Population',
         chip_area: '📐 Superficie',
         chip_gdp: '💰 PIB',
@@ -119,6 +125,11 @@ const translations = {
     en: {
         subtitle: 'Geography game for two teams',
         start_description: 'Place your cards from largest to smallest and call the bluff at the right time.',
+        category_mode_title: 'Category mode',
+        category_set_basic: 'Basic',
+        category_set_basic_desc: 'Population, area, north/south, east/west',
+        category_set_economics: 'Economics',
+        category_set_economics_desc: 'Basic + GDP, inflation, unemployment, internet, electricity',
         chip_population: '👥 Population',
         chip_area: '📐 Area',
         chip_gdp: '💰 GDP',
@@ -202,6 +213,27 @@ function applyTranslations() {
         languageBtnStart.textContent = btnText;
         languageBtnStart.title = btnTitle;
     }
+}
+
+function getSelectedCategorySet() {
+    const selected = document.querySelector('input[name="category-set"]:checked');
+    return selected ? selected.value : null;
+}
+
+function syncCategorySetSelection() {
+    if (!categorySetInputs || categorySetInputs.length === 0) return;
+    const stored = localStorage.getItem('categorySet');
+    if (stored) {
+        const match = Array.from(categorySetInputs).find((input) => input.value === stored);
+        if (match) {
+            match.checked = true;
+        }
+    }
+    categorySetInputs.forEach((input) => {
+        input.addEventListener('change', () => {
+            localStorage.setItem('categorySet', input.value);
+        });
+    });
 }
 
 async function syncLanguage() {
@@ -574,12 +606,23 @@ function render() {
 
     bottomArea.classList.toggle('active', isPlaying);
     topArea.classList.remove('active'); // Opponent is never "active" visually
+    bottomArea.classList.toggle('team-1', currentPlayer === 1);
+    bottomArea.classList.toggle('team-2', currentPlayer === 2);
+    topArea.classList.toggle('team-1', opponentTeam === 1);
+    topArea.classList.toggle('team-2', opponentTeam === 2);
 
     // Update labels to show correct team numbers
-    bottomArea.querySelector('.player-label').textContent = t('team_1_label').replace('1', currentPlayer);
+    const bottomLabel = bottomArea.querySelector('.player-label');
+    if (bottomLabel) {
+        bottomLabel.textContent = t('team_1_label').replace('1', currentPlayer);
+        bottomLabel.classList.toggle('team-1', currentPlayer === 1);
+        bottomLabel.classList.toggle('team-2', currentPlayer === 2);
+    }
     const topLabel = topArea.querySelector('.player-label');
     if (topLabel) {
         topLabel.textContent = t('team_2_label').replace('2', opponentTeam);
+        topLabel.classList.toggle('team-1', opponentTeam === 1);
+        topLabel.classList.toggle('team-2', opponentTeam === 2);
     }
 
     // Render active player cards (bottom - player1Cards container)
@@ -750,7 +793,12 @@ function hideToast() {
 async function startGame() {
     const cardsCount = cardsCountSelect ? parseInt(cardsCountSelect.value) : 7;
     try {
-        gameState = await api('new-game', 'POST', { cards_per_player: cardsCount, language: currentLanguage });
+        const categorySet = getSelectedCategorySet();
+        gameState = await api('new-game', 'POST', {
+            cards_per_player: cardsCount,
+            language: currentLanguage,
+            category_set: categorySet
+        });
         gameId = gameState.game_id;
         updateUrlWithGameId(gameId);
         startScreen.classList.add('hidden');
@@ -1015,6 +1063,7 @@ const storedLanguage = localStorage.getItem('language');
 const browserLanguage = navigator.language || '';
 currentLanguage = storedLanguage || (browserLanguage.startsWith('en') ? 'en' : 'fr');
 applyTranslations();
+syncCategorySetSelection();
 
 // Check if there's a game_id in URL and try to load it
 async function initFromUrl() {

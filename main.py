@@ -60,6 +60,7 @@ class NewGameRequest(BaseModel):
     cards_per_player: int = 7
     language: Optional[str] = None
     game_id: Optional[str] = None
+    category_set: Optional[str] = None
 
 
 class SetLanguageRequest(BaseModel):
@@ -95,7 +96,8 @@ async def new_game(req: Optional[NewGameRequest] = Body(default=None)):
     cards = req.cards_per_player if req else 7
     language = req.language if req else None
     game_id = req.game_id if req else None
-    return game.new_game(cards, language=language, game_id=game_id)
+    category_set = req.category_set if req else None
+    return game.new_game(cards, language=language, game_id=game_id, category_set=category_set)
 
 @app.post("/api/set-language")
 async def set_language(req: SetLanguageRequest):

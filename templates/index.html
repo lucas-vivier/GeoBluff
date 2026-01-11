@@ -14,17 +14,22 @@
             <h1>🌍 GeoBluff</h1>
             <p class="subtitle" data-i18n="subtitle">Jeu de géographie pour deux équipes</p>
             <p data-i18n="start_description">Placez vos cartes du plus grand au plus petit et appelez le bluff au bon moment.</p>
-            <div class="categories">
-                <span class="category-chip" data-i18n="chip_population">👥 Population</span>
-                <span class="category-chip" data-i18n="chip_area">📐 Superficie</span>
-                <span class="category-chip" data-i18n="chip_gdp">💰 PIB</span>
-                <span class="category-chip" data-i18n="chip_life_expectancy">❤️ Espérance de vie</span>
-                <span class="category-chip" data-i18n="chip_density">🏘️ Densité</span>
-                <span class="category-chip" data-i18n="chip_internet">🌐 Internet</span>
-                <span class="category-chip" data-i18n="chip_electricity">💡 Électricité</span>
-                <span class="category-chip" data-i18n="chip_unemployment">📉 Chômage</span>
-                <span class="category-chip" data-i18n="chip_north_south">🧭 Nord/Sud</span>
-                <span class="category-chip" data-i18n="chip_east_west">🧭 Est/Ouest</span>
+            <div class="category-chooser">
+                <p class="category-chooser-title" data-i18n="category_mode_title">Mode de catégories</p>
+                <label class="category-option">
+                    <input type="radio" name="category-set" value="basic" checked>
+                    <div class="category-option-text">
+                        <span class="category-option-name" data-i18n="category_set_basic">Basique</span>
+                        <span class="category-option-desc" data-i18n="category_set_basic_desc">Population, superficie, nord/sud, est/ouest</span>
+                    </div>
+                </label>
+                <label class="category-option">
+                    <input type="radio" name="category-set" value="economics">
+                    <div class="category-option-text">
+                        <span class="category-option-name" data-i18n="category_set_economics">Économie</span>
+                        <span class="category-option-desc" data-i18n="category_set_economics_desc">Basique + PIB, inflation, chômage, internet, électricité</span>
+                    </div>
+                </label>
             </div>
             <div class="cards-selector">
                 <label for="cards-count" data-i18n="cards_label">Cartes par équipe :</label>
@@ -58,6 +63,7 @@
             <!-- Player 2 area (opponent, top) - no label needed -->
             <div class="player-area player2-area">
                 <div id="player2-cards" class="cards-container opponent-cards"></div>
+                <div class="player-label" data-i18n="team_2_label">équipe 2</div>
             </div>
 
             <!-- Board area -->

@@ -86,5 +86,32 @@
       "source": "rest",
       "field": "longitude"
     }
+  ],
+  "category_sets": [
+    {
+      "id": "basic",
+      "label": "Basique",
+      "categories": [
+        "population",
+        "area",
+        "north_south",
+        "east_west"
+      ]
+    },
+    {
+      "id": "economics",
+      "label": "Economie",
+      "categories": [
+        "population",
+        "area",
+        "north_south",
+        "east_west",
+        "gdp",
+        "inflation",
+        "internet_users",
+        "electricity_access",
+        "unemployment"
+      ]
+    }
   ]
 }

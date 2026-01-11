@@ -11,6 +11,10 @@
     --primary-dark: #1d4ed8;
     --danger: #e11d48;
     --danger-dark: #be123c;
+    --team1: #0ea5e9;
+    --team1-rgb: 14, 165, 233;
+    --team2: #f97316;
+    --team2-rgb: 249, 115, 22;
     --success: #16a34a;
     --bg: #f1f5f9;
     --card-bg: #ffffff;
@@ -100,22 +104,60 @@ body {
     margin-bottom: 0.5rem;
 }
 
-#start-screen .categories {
+#start-screen .category-chooser {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
     margin-bottom: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
+    width: min(520px, 92vw);
 }
 
-#start-screen .category-chip {
-    background: rgba(255, 255, 255, 0.85);
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
+#start-screen .category-chooser-title {
+    font-size: 0.95rem;
+    font-weight: 600;
     color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+}
+
+#start-screen .category-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
     box-shadow: var(--shadow-soft);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+#start-screen .category-option:hover {
+    transform: translateY(-1px);
+    border-color: rgba(37, 99, 235, 0.4);
+}
+
+#start-screen .category-option input {
+    accent-color: var(--primary);
+    transform: scale(1.1);
+}
+
+#start-screen .category-option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+#start-screen .category-option-name {
+    font-weight: 600;
+    color: var(--text);
+}
+
+#start-screen .category-option-desc {
+    font-size: 0.85rem;
+    color: var(--text-light);
 }
 
 #start-screen p {
@@ -239,6 +281,11 @@ body {
     padding: 0.25rem;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+}
+
+.player1-area .cards-container,
+.player2-area .cards-container {
+    justify-content: center;
 }
 
 .active-cards .card {
@@ -778,23 +825,39 @@ body {
 }
 
 /* Highlight current player cards */
-.player1-area.active .cards-container {
-    background: rgba(37, 99, 235, 0.15);
-    border-radius: 8px;
-    border: 2px solid var(--primary);
-    box-shadow: 0 0 12px rgba(37, 99, 235, 0.3);
+/* Team coloring */
+.player-label.team-1 {
+    color: var(--team1);
 }
 
-.player2-area.active .cards-container {
-    background: rgba(220, 38, 38, 0.15);
+.player-label.team-2 {
+    color: var(--team2);
+}
+
+.player-area.team-1 .player-label {
+    color: var(--team1);
+}
+
+.player-area.team-2 .player-label {
+    color: var(--team2);
+}
+
+.player-area.team-1 .cards-container {
+    background: rgba(var(--team1-rgb), 0.16);
     border-radius: 8px;
-    border: 2px solid var(--danger);
-    box-shadow: 0 0 12px rgba(220, 38, 38, 0.3);
+    border: 2px solid var(--team1);
+    box-shadow: 0 0 12px rgba(var(--team1-rgb), 0.35);
+}
+
+.player-area.team-2 .cards-container {
+    background: rgba(var(--team2-rgb), 0.16);
+    border-radius: 8px;
+    border: 2px solid var(--team2);
+    box-shadow: 0 0 12px rgba(var(--team2-rgb), 0.35);
 }
 
 /* Pulse animation for active player cards */
-.player1-area.active .card,
-.player2-area.active .card {
+.player-area.active .card {
     animation: cardPulseScaled 2s ease-in-out infinite;
 }
 
@@ -804,22 +867,20 @@ body {
 }
 
 /* Player label colors */
-.player1-area.active .player-label {
-    color: var(--primary);
+.player-area.active.team-1 .player-label {
+    color: var(--team1);
 }
 
-.player2-area.active .player-label {
-    color: var(--danger);
+.player-area.active.team-2 .player-label {
+    color: var(--team2);
 }
 
 /* Enlarge active player cards - handled via animation cardPulseScaled */
-.player1-area.active .cards-container,
-.player2-area.active .cards-container {
+.player-area.active .cards-container {
     padding: 0.5rem;
 }
 
-.player1-area.active .card,
-.player2-area.active .card {
+.player-area.active .card {
     transform-origin: center bottom;
 }
 
@@ -851,16 +912,77 @@ body {
 
 /* When opponent is hidden, use the extra space for bigger board and cards */
 #game-screen.opponent-hidden #board-area {
-    max-height: calc(var(--board-max-height) + 70px);
+    max-height: calc(var(--board-max-height) + 120px);
 }
 
-#game-screen.opponent-hidden .player1-area.active .card {
+#game-screen.opponent-hidden .player-area.active .card {
     animation: cardPulseScaledLarge 2s ease-in-out infinite;
 }
 
 @keyframes cardPulseScaledLarge {
     0%, 100% { transform: scale(1.22) translateY(0); }
     50% { transform: scale(1.22) translateY(-3px); }
+}
+
+/* When opponent is hidden, reclaim space and scale up the main play area */
+#game-screen.opponent-hidden {
+    --card-width: clamp(78px, 15vw, 150px);
+    --card-height: clamp(112px, 22vw, 210px);
+    --board-min-height: clamp(200px, 28vh, 320px);
+    --board-max-height: clamp(320px, 42vh, 460px);
+}
+
+#game-screen.opponent-hidden {
+    gap: 0.2rem;
+    padding: 0.25rem;
+}
+
+#game-screen.opponent-hidden .player-area {
+    gap: 0.15rem;
+}
+
+#game-screen.opponent-hidden #board-area {
+    padding: 0.25rem 0.4rem;
+}
+
+#game-screen.opponent-hidden .board-wrapper {
+    gap: 0.25rem;
+}
+
+#game-screen.opponent-hidden .category-header {
+    margin-bottom: 0.25rem;
+}
+
+#game-screen.opponent-hidden #placing-bar,
+#game-screen.opponent-hidden #reveal-bar,
+#game-screen.opponent-hidden #bluff-result-bar,
+#game-screen.opponent-hidden .bluff-standalone {
+    margin-top: 0.2rem;
+}
+
+#game-screen.opponent-hidden .bluff-standalone {
+    margin-top: 0;
+}
+
+#game-screen.opponent-hidden #placing-bar,
+#game-screen.opponent-hidden #reveal-bar,
+#game-screen.opponent-hidden #bluff-result-bar {
+    padding: 0.4rem;
+}
+#game-screen.opponent-hidden .player2-area {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+#game-screen.opponent-hidden .player2-area .player-label {
+    display: none;
+}
+
+#game-screen.opponent-hidden .player1-area {
+    flex: 1 1 auto;
 }
 
 /* Card value formatting */
