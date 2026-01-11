@@ -22,8 +22,8 @@
     --glow: 0 0 0 3px rgba(37, 99, 235, 0.18);
     --card-width: clamp(64px, 12vw, 120px);
     --card-height: clamp(92px, 18vw, 170px);
-    --board-min-height: clamp(140px, 22vh, 220px);
-    --board-max-height: clamp(210px, 32vh, 320px);
+    --board-min-height: clamp(120px, 18vh, 200px);
+    --board-max-height: clamp(190px, 28vh, 280px);
     --slot-height: calc(var(--card-height) - 10px);
     --app-max-width: 1020px;
 }
@@ -72,6 +72,14 @@ body {
     gap: 1rem;
     padding: 2rem;
     background: linear-gradient(135deg, rgba(224, 242, 254, 0.9) 0%, rgba(248, 250, 252, 0.95) 45%, rgba(254, 243, 199, 0.9) 100%);
+    position: relative;
+}
+
+/* Language button on start screen */
+.start-language-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
 }
 
 #start-screen h1 {
@@ -190,8 +198,8 @@ body {
 
 /* Game screen layout */
 #game-screen {
-    padding: 0.5rem;
-    gap: 0.5rem;
+    padding: 0.4rem;
+    gap: 0.35rem;
     min-height: 100vh;
     min-height: 100svh;
     min-height: 100dvh;
@@ -333,14 +341,15 @@ body {
     50% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
 }
 
-/* Board area */
+/* Board area - compact */
 #board-area {
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(226, 232, 240, 0.9) 100%);
-    border-radius: 16px;
-    padding: 0.5rem;
+    border-radius: 12px;
+    padding: 0.2rem 0.35rem;
     min-height: var(--board-min-height);
     max-height: var(--board-max-height);
     position: relative;
@@ -353,7 +362,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.35rem;
     margin-bottom: 0.5rem;
 }
 
@@ -449,7 +458,7 @@ body {
     flex-wrap: nowrap;
     min-height: calc(var(--card-height) - 10px);
     overflow-x: auto;
-    padding: 0.25rem;
+    padding: 0.15rem;
     scroll-behavior: smooth;
     gap: 0.25rem;
 }
@@ -471,10 +480,10 @@ body {
 /* Last capital display */
 .last-capital {
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-light);
     padding: 0.25rem;
-    min-height: 1.5rem;
+    min-height: 1.2rem;
 }
 
 .last-capital:not(:empty) {
@@ -500,10 +509,10 @@ body {
     border: 2px dashed var(--success);
 }
 
-/* Action bar */
-#action-bar, #placing-bar, #reveal-bar, #bluff-result-bar {
+/* Action bars (placing, reveal, result) */
+#placing-bar, #reveal-bar, #bluff-result-bar {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.9);
@@ -514,14 +523,18 @@ body {
     border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
-#turn-indicator {
-    font-weight: 600;
-    color: var(--primary);
-    letter-spacing: 0.02em;
+/* Placing bar needs space-between for buttons */
+#placing-bar {
+    justify-content: space-between;
 }
 
-#turn-indicator.player2 {
-    color: var(--danger);
+/* Standalone BLUFF button */
+.bluff-standalone {
+    display: block;
+    width: 100%;
+    padding: 0.9rem 2rem;
+    font-size: 1.2rem;
+    margin-top: auto;
 }
 
 /* Placing bar */
@@ -782,12 +795,12 @@ body {
 /* Pulse animation for active player cards */
 .player1-area.active .card,
 .player2-area.active .card {
-    animation: cardPulse 2s ease-in-out infinite;
+    animation: cardPulseScaled 2s ease-in-out infinite;
 }
 
-@keyframes cardPulse {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
+@keyframes cardPulseScaled {
+    0%, 100% { transform: scale(1.12) translateY(0); }
+    50% { transform: scale(1.12) translateY(-3px); }
 }
 
 /* Player label colors */
@@ -799,15 +812,89 @@ body {
     color: var(--danger);
 }
 
+/* Enlarge active player cards - handled via animation cardPulseScaled */
+.player1-area.active .cards-container,
+.player2-area.active .cards-container {
+    padding: 0.5rem;
+}
+
+.player1-area.active .card,
+.player2-area.active .card {
+    transform-origin: center bottom;
+}
+
+/* Opponent collapse toggle */
+.player2-area {
+    transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+    overflow: hidden;
+}
+
+.player2-area.collapsed {
+    max-height: 28px;
+    opacity: 0.7;
+}
+
+.player2-area.collapsed .cards-container {
+    display: none;
+}
+
+.player2-area.collapsed .player-label {
+    font-size: 0.7rem;
+}
+
+/* Toggle button active state */
+#toggle-opponent-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* When opponent is hidden, use the extra space for bigger board and cards */
+#game-screen.opponent-hidden #board-area {
+    max-height: calc(var(--board-max-height) + 70px);
+}
+
+#game-screen.opponent-hidden .player1-area.active .card {
+    animation: cardPulseScaledLarge 2s ease-in-out infinite;
+}
+
+@keyframes cardPulseScaledLarge {
+    0%, 100% { transform: scale(1.22) translateY(0); }
+    50% { transform: scale(1.22) translateY(-3px); }
+}
+
 /* Card value formatting */
 .card .value {
     word-break: break-all;
 }
 
+/* Top bar: category + controls */
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+}
+
+.top-bar .category-header {
+    margin-bottom: 0;
+}
+
+.top-bar .category-label {
+    font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+}
+
+.top-bar .btn-change-category {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+}
+
 /* Top buttons container */
 .top-controls {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.35rem;
     align-items: center;
     justify-content: flex-end;
 }
@@ -921,5 +1008,100 @@ body {
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+/* Tutorial walkthrough */
+.tutorial {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+}
+
+.tutorial-highlight {
+    position: absolute;
+    border-radius: 12px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+    transition: all 0.4s ease;
+    pointer-events: none;
+    animation: tutorialPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes tutorialPulse {
+    0%, 100% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75), 0 0 0 4px rgba(37, 99, 235, 0.5); }
+    50% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75), 0 0 0 8px rgba(37, 99, 235, 0.3); }
+}
+
+.tutorial-tooltip {
+    position: absolute;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    max-width: 280px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    animation: tooltipIn 0.3s ease-out;
+    z-index: 301;
+}
+
+.tutorial-tooltip::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+}
+
+.tutorial-tooltip.arrow-up::before {
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-color: white;
+}
+
+.tutorial-tooltip.arrow-down::before {
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: white;
+}
+
+.tutorial-tooltip p {
+    margin: 0 0 0.75rem;
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.tutorial-progress {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 0.75rem;
+}
+
+.tutorial-progress span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s;
+}
+
+.tutorial-progress span.active {
+    background: var(--primary);
+}
+
+.tutorial-tooltip button {
+    width: 100%;
+}
+
+@keyframes tooltipIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

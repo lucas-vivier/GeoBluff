@@ -10,6 +10,7 @@
     <div id="app">
         <!-- Start screen -->
         <div id="start-screen" class="screen">
+            <button id="language-btn-start" class="icon-btn language-btn start-language-btn" title="Passer en anglais">🇬🇧</button>
             <h1>🌍 GeoBluff</h1>
             <p class="subtitle" data-i18n="subtitle">Jeu de géographie pour deux équipes</p>
             <p data-i18n="start_description">Placez vos cartes du plus grand au plus petit et appelez le bluff au bon moment.</p>
@@ -29,9 +30,8 @@
                 <label for="cards-count" data-i18n="cards_label">Cartes par équipe :</label>
                 <select id="cards-count">
                     <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="7" selected>7</option>
-                    <option value="10">10</option>
+                    <option value="5" selected>5</option>
+                    <option value="7">7</option>
                 </select>
             </div>
             <button id="start-btn" class="btn-primary" data-i18n="start_button">Nouvelle Partie</button>
@@ -39,26 +39,29 @@
 
         <!-- Game screen -->
         <div id="game-screen" class="screen hidden">
-            <!-- Top buttons row -->
-            <div class="top-controls">
-                <button id="language-btn" class="icon-btn language-btn" title="Passer en anglais">🇬🇧</button>
-                <button id="home-btn" class="icon-btn" data-i18n-title="home_title" title="Retour au menu">🏠</button>
-                <button id="restart-game-btn" class="icon-btn" data-i18n-title="restart_title" title="Recommencer">⟲</button>
-                <button id="rules-btn" class="icon-btn" data-i18n-title="rules_title" title="Règles">?</button>
+            <!-- Top bar: category + controls -->
+            <div class="top-bar">
+                <div class="category-header">
+                    <span id="category-name" class="category-label"></span>
+                    <button id="change-category-btn" class="btn-change-category" data-i18n-title="change_category_title" title="Changer de catégorie">🔄</button>
+                </div>
+                <div class="top-controls">
+                    <button id="toggle-opponent-btn" class="icon-btn" data-i18n-title="toggle_opponent_title" title="Masquer/afficher adversaire">👁️</button>
+                    <button id="language-btn" class="icon-btn language-btn" title="Passer en anglais">🇬🇧</button>
+                    <button id="home-btn" class="icon-btn" data-i18n-title="home_title" title="Retour au menu">🏠</button>
+                    <button id="restart-game-btn" class="icon-btn" data-i18n-title="restart_title" title="Recommencer">⟲</button>
+                    <button id="tutorial-btn" class="icon-btn" data-i18n-title="tutorial_title" title="Tutoriel">📖</button>
+                    <button id="rules-btn" class="icon-btn" data-i18n-title="rules_title" title="Règles">?</button>
+                </div>
             </div>
 
-            <!-- Player 2 area (opponent, top) -->
+            <!-- Player 2 area (opponent, top) - no label needed -->
             <div class="player-area player2-area">
-                <div class="player-label" data-i18n="team_2_label">équipe 2</div>
                 <div id="player2-cards" class="cards-container opponent-cards"></div>
             </div>
 
             <!-- Board area -->
             <div id="board-area">
-                <div class="category-header">
-                    <span id="category-name" class="category-label"></span>
-                    <button id="change-category-btn" class="btn-change-category" data-i18n-title="change_category_title" title="Changer de catégorie">🔄</button>
-                </div>
                 <div class="board-wrapper">
                     <div class="board-indicator minus">
                         <span class="icon">-</span>
@@ -79,11 +82,8 @@
                 <div class="player-label" data-i18n="team_1_label">équipe 1</div>
             </div>
 
-            <!-- Action bar - playing phase -->
-            <div id="action-bar">
-                <button id="bluff-btn" class="btn-danger" data-i18n="bluff_button" data-i18n-title="bluff_title" title="Posez d'abord une carte">BLUFF !</button>
-                <div id="turn-indicator">Tour: équipe 1</div>
-            </div>
+            <!-- Bluff button - standalone -->
+            <button id="bluff-btn" class="btn-danger bluff-standalone" data-i18n="bluff_button" data-i18n-title="bluff_title" title="Posez d'abord une carte">BLUFF !</button>
 
             <!-- Action bar - placing phase -->
             <div id="placing-bar" class="hidden">
@@ -142,6 +142,16 @@
                 <h2 data-i18n="rules_title_text">Regles du jeu</h2>
                 <div id="rules-content" class="rules-text"></div>
                 <button id="close-rules-btn" class="btn-primary" data-i18n="close_rules_button">Compris !</button>
+            </div>
+        </div>
+
+        <!-- Tutorial walkthrough -->
+        <div id="tutorial-overlay" class="tutorial hidden">
+            <div class="tutorial-highlight"></div>
+            <div class="tutorial-tooltip">
+                <p id="tutorial-text"></p>
+                <div id="tutorial-progress" class="tutorial-progress"></div>
+                <button id="tutorial-next" class="btn-primary" data-i18n="tutorial_next">Suivant</button>
             </div>
         </div>
     </div>

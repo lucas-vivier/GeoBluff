@@ -24,8 +24,8 @@ const startScreen = document.getElementById('start-screen');
 const gameScreen = document.getElementById('game-screen');
 const startBtn = document.getElementById('start-btn');
 const bluffBtn = document.getElementById('bluff-btn');
-const turnIndicator = document.getElementById('turn-indicator');
 const messageArea = document.getElementById('message-area');
+const toggleOpponentBtn = document.getElementById('toggle-opponent-btn');
 const categoryName = document.getElementById('category-name');
 const player1Cards = document.getElementById('player1-cards');
 const player2Cards = document.getElementById('player2-cards');
@@ -40,7 +40,6 @@ const gameoverModal = document.getElementById('gameover-modal');
 const winnerText = document.getElementById('winner-text');
 const gameoverMessage = document.getElementById('gameover-message');
 const restartBtn = document.getElementById('restart-btn');
-const actionBar = document.getElementById('action-bar');
 const placingBar = document.getElementById('placing-bar');
 const cancelBtn = document.getElementById('cancel-btn');
 const validateBtn = document.getElementById('validate-btn');
@@ -61,6 +60,7 @@ const homeBtn = document.getElementById('home-btn');
 const cardsCountSelect = document.getElementById('cards-count');
 const lastCapitalDiv = document.getElementById('last-capital');
 const languageBtn = document.getElementById('language-btn');
+const languageBtnStart = document.getElementById('language-btn-start');
 
 let currentLanguage = 'fr';
 
@@ -110,7 +110,11 @@ const translations = {
         west: 'Ouest',
         switch_to_en: 'Passer en anglais',
         switch_to_fr: 'Passer en français',
-        winner_text: "L'équipe {team} gagne !"
+        winner_text: "L'équipe {team} gagne !",
+        toggle_opponent_title: 'Masquer/afficher adversaire',
+        toggle_opponent_show: 'Afficher adversaire',
+        toggle_opponent_hide: 'Masquer adversaire',
+        tutorial_title: 'Tutoriel'
     },
     en: {
         subtitle: 'Geography game for two teams',
@@ -157,7 +161,11 @@ const translations = {
         west: 'West',
         switch_to_en: 'Switch to English',
         switch_to_fr: 'Switch to French',
-        winner_text: 'Team {team} wins!'
+        winner_text: 'Team {team} wins!',
+        toggle_opponent_title: 'Show/hide opponent',
+        toggle_opponent_show: 'Show opponent',
+        toggle_opponent_hide: 'Hide opponent',
+        tutorial_title: 'Tutorial'
     }
 };
 
@@ -181,10 +189,18 @@ function applyTranslations() {
         el.placeholder = t(el.dataset.i18nPlaceholder);
     });
 
+    // Update both language buttons (game screen and start screen)
+    const target = currentLanguage === 'fr' ? 'en' : 'fr';
+    const btnText = target === 'en' ? '🇬🇧' : '🇫🇷';
+    const btnTitle = currentLanguage === 'fr' ? t('switch_to_en') : t('switch_to_fr');
+
     if (languageBtn) {
-        const target = currentLanguage === 'fr' ? 'en' : 'fr';
-        languageBtn.textContent = target === 'en' ? '🇬🇧' : '🇫🇷';
-        languageBtn.title = currentLanguage === 'fr' ? t('switch_to_en') : t('switch_to_fr');
+        languageBtn.textContent = btnText;
+        languageBtn.title = btnTitle;
+    }
+    if (languageBtnStart) {
+        languageBtnStart.textContent = btnText;
+        languageBtnStart.title = btnTitle;
     }
 }
 
@@ -543,27 +559,39 @@ function render() {
     // Clear last capital display (not used anymore)
     lastCapitalDiv.textContent = '';
 
-    // Update turn indicator
-    turnIndicator.textContent = t('turn_indicator', { team: gameState.current_player });
-    turnIndicator.className = gameState.current_player === 2 ? 'player2' : '';
-
-    // Update player areas
+    // Swap visual: active player always at bottom, opponent always at top
+    const currentPlayer = gameState.current_player;
     const isPlaying = gameState.phase === 'playing';
-    document.querySelector('.player1-area').classList.toggle('active', gameState.current_player === 1 && isPlaying);
-    document.querySelector('.player2-area').classList.toggle('active', gameState.current_player === 2 && isPlaying);
 
-    // Render player 1 cards (never show values in hand)
+    // Get the cards for current player and opponent
+    const activeCards = currentPlayer === 1 ? gameState.player1_cards : gameState.player2_cards;
+    const opponentCards = currentPlayer === 1 ? gameState.player2_cards : gameState.player1_cards;
+    const opponentTeam = currentPlayer === 1 ? 2 : 1;
+
+    // Update player areas - bottom area (player1-area in HTML) is always active
+    const bottomArea = document.querySelector('.player1-area');
+    const topArea = document.querySelector('.player2-area');
+
+    bottomArea.classList.toggle('active', isPlaying);
+    topArea.classList.remove('active'); // Opponent is never "active" visually
+
+    // Update labels to show correct team numbers
+    bottomArea.querySelector('.player-label').textContent = t('team_1_label').replace('1', currentPlayer);
+    const topLabel = topArea.querySelector('.player-label');
+    if (topLabel) {
+        topLabel.textContent = t('team_2_label').replace('2', opponentTeam);
+    }
+
+    // Render active player cards (bottom - player1Cards container)
     player1Cards.innerHTML = '';
-    gameState.player1_cards.forEach(card => {
-        const isActive = gameState.current_player === 1 && gameState.phase === 'playing';
-        player1Cards.appendChild(createCard(card, { isActive, showValue: false }));
+    activeCards.forEach(card => {
+        player1Cards.appendChild(createCard(card, { isActive: isPlaying, showValue: false }));
     });
 
-    // Render player 2 cards (never show values in hand)
+    // Render opponent cards (top - player2Cards container)
     player2Cards.innerHTML = '';
-    gameState.player2_cards.forEach(card => {
-        const isActive = gameState.current_player === 2 && gameState.phase === 'playing';
-        player2Cards.appendChild(createCard(card, { isActive, showValue: false }));
+    opponentCards.forEach(card => {
+        player2Cards.appendChild(createCard(card, { isActive: false, showValue: false }));
     });
 
     // Render board
@@ -644,7 +672,6 @@ function render() {
     }
 
     // Show/hide action bars
-    actionBar.classList.add('hidden');
     placingBar.classList.add('hidden');
     bluffResultBar.classList.add('hidden');
 
@@ -653,8 +680,6 @@ function render() {
     } else if (gameState.phase === 'bluff_result' || gameState.phase === 'final_validation_result') {
         bluffResultBar.classList.remove('hidden');
         bluffResultMessage.textContent = gameState.message;
-    } else if (gameState.phase !== 'bluff_reveal' && gameState.phase !== 'final_validation') {
-        actionBar.classList.remove('hidden');
     }
 
     // Update bluff button - only enabled when there are at least 2 cards on board
@@ -731,6 +756,11 @@ async function startGame() {
         startScreen.classList.add('hidden');
         gameScreen.classList.remove('hidden');
         render();
+
+        // Show tutorial for first-time users
+        if (shouldShowTutorial()) {
+            setTimeout(showTutorial, 500);
+        }
     } catch (err) {
         console.error('Error starting game:', err);
     }
@@ -753,8 +783,39 @@ startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', startGame);
 restartGameBtn.addEventListener('click', startGame);
 if (homeBtn) homeBtn.addEventListener('click', goHome);
+
+// Toggle opponent visibility (hidden by default)
+if (toggleOpponentBtn) {
+    toggleOpponentBtn.addEventListener('click', () => {
+        const player2Area = document.querySelector('.player2-area');
+        const isCollapsed = player2Area.classList.toggle('collapsed');
+        toggleOpponentBtn.classList.toggle('active', !isCollapsed); // Active when showing
+        toggleOpponentBtn.textContent = isCollapsed ? '👁️‍🗨️' : '👁️';
+        toggleOpponentBtn.title = t(isCollapsed ? 'toggle_opponent_show' : 'toggle_opponent_hide');
+        // Toggle class on game screen for bigger board/cards when opponent hidden
+        gameScreen.classList.toggle('opponent-hidden', isCollapsed);
+        // Save preference
+        localStorage.setItem('opponentVisible', !isCollapsed);
+    });
+    // Default: opponent hidden, unless user explicitly chose to show
+    const savedVisible = localStorage.getItem('opponentVisible') === 'true';
+    if (!savedVisible) {
+        document.querySelector('.player2-area').classList.add('collapsed');
+        toggleOpponentBtn.textContent = '👁️‍🗨️';
+        gameScreen.classList.add('opponent-hidden');
+    } else {
+        toggleOpponentBtn.classList.add('active');
+        toggleOpponentBtn.textContent = '👁️';
+    }
+}
+
 if (languageBtn) {
     languageBtn.addEventListener('click', () => {
+        setLanguage(currentLanguage === 'fr' ? 'en' : 'fr');
+    });
+}
+if (languageBtnStart) {
+    languageBtnStart.addEventListener('click', () => {
         setLanguage(currentLanguage === 'fr' ? 'en' : 'fr');
     });
 }
@@ -812,6 +873,143 @@ rulesModal.addEventListener('click', (e) => {
         rulesModal.classList.add('hidden');
     }
 });
+
+// Tutorial walkthrough
+const tutorialOverlay = document.getElementById('tutorial-overlay');
+const tutorialText = document.getElementById('tutorial-text');
+const tutorialProgress = document.getElementById('tutorial-progress');
+const tutorialNextBtn = document.getElementById('tutorial-next');
+const tutorialHighlight = document.querySelector('.tutorial-highlight');
+const tutorialTooltip = document.querySelector('.tutorial-tooltip');
+
+let tutorialStep = 0;
+
+const tutorialSteps = {
+    fr: [
+        { target: '#player1-cards', text: 'Cliquez sur une carte pour la placer sur le plateau.', position: 'above' },
+        { target: '#board-area', text: 'Placez vos cartes dans le bon ordre : du plus petit a gauche au plus grand a droite.', position: 'below' },
+        { target: '#bluff-btn', text: "Appelez BLUFF si l'ordre est faux. Attention : toutes les erreurs seront revelees, meme celles de votre equipe !", position: 'above' },
+        { target: '#board-area', text: 'Pour gagner, posez toutes vos cartes et donnez la capitale de votre dernier pays !', position: 'below' }
+    ],
+    en: [
+        { target: '#player1-cards', text: 'Click a card to place it on the board.', position: 'above' },
+        { target: '#board-area', text: 'Place cards in order: smallest on the left, largest on the right.', position: 'below' },
+        { target: '#bluff-btn', text: 'Call BLUFF if the order is wrong. Warning: all mistakes will be revealed, even your own team\'s!', position: 'above' },
+        { target: '#board-area', text: 'To win, play all your cards and name the capital of your last country!', position: 'below' }
+    ]
+};
+
+function getTutorialSteps() {
+    return tutorialSteps[currentLanguage] || tutorialSteps.fr;
+}
+
+function showTutorial() {
+    tutorialStep = 0;
+    tutorialOverlay.classList.remove('hidden');
+    renderTutorialStep();
+}
+
+function hideTutorial() {
+    tutorialOverlay.classList.add('hidden');
+    localStorage.setItem('tutorialSeen', 'true');
+}
+
+function renderTutorialStep() {
+    const steps = getTutorialSteps();
+    const step = steps[tutorialStep];
+    const targetEl = document.querySelector(step.target);
+
+    if (!targetEl) {
+        nextTutorialStep();
+        return;
+    }
+
+    tutorialText.textContent = step.text;
+
+    // Update progress dots
+    tutorialProgress.innerHTML = steps.map((_, i) =>
+        `<span class="${i === tutorialStep ? 'active' : ''}"></span>`
+    ).join('');
+
+    // Update button text
+    const isLastStep = tutorialStep === steps.length - 1;
+    tutorialNextBtn.textContent = isLastStep
+        ? (currentLanguage === 'en' ? 'Got it!' : 'Compris !')
+        : (currentLanguage === 'en' ? 'Next' : 'Suivant');
+
+    // Position highlight over target
+    const rect = targetEl.getBoundingClientRect();
+    const padding = 8;
+
+    tutorialHighlight.style.top = `${rect.top - padding}px`;
+    tutorialHighlight.style.left = `${rect.left - padding}px`;
+    tutorialHighlight.style.width = `${rect.width + padding * 2}px`;
+    tutorialHighlight.style.height = `${rect.height + padding * 2}px`;
+
+    // Position tooltip
+    positionTooltip(rect, step.position);
+}
+
+function positionTooltip(targetRect, position) {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Remove existing arrow classes
+    tutorialTooltip.classList.remove('arrow-up', 'arrow-down');
+
+    // Get tooltip dimensions after a brief delay to ensure it's rendered
+    const tooltipWidth = 280;
+    const tooltipHeight = 150;
+
+    let top, left;
+
+    if (position === 'above') {
+        top = targetRect.top - tooltipHeight - 30;
+        tutorialTooltip.classList.add('arrow-down');
+    } else {
+        top = targetRect.bottom + 30;
+        tutorialTooltip.classList.add('arrow-up');
+    }
+
+    // Center horizontally relative to target
+    left = targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2);
+
+    // Keep within viewport bounds
+    left = Math.max(16, Math.min(left, viewportWidth - tooltipWidth - 16));
+    top = Math.max(16, Math.min(top, viewportHeight - tooltipHeight - 16));
+
+    tutorialTooltip.style.top = `${top}px`;
+    tutorialTooltip.style.left = `${left}px`;
+}
+
+function nextTutorialStep() {
+    const steps = getTutorialSteps();
+    tutorialStep++;
+
+    if (tutorialStep >= steps.length) {
+        hideTutorial();
+    } else {
+        renderTutorialStep();
+    }
+}
+
+function shouldShowTutorial() {
+    return !localStorage.getItem('tutorialSeen');
+}
+
+tutorialNextBtn.addEventListener('click', nextTutorialStep);
+
+tutorialOverlay.addEventListener('click', (e) => {
+    if (e.target === tutorialOverlay) {
+        hideTutorial();
+    }
+});
+
+// Tutorial button in top bar
+const tutorialBtn = document.getElementById('tutorial-btn');
+if (tutorialBtn) {
+    tutorialBtn.addEventListener('click', showTutorial);
+}
 
 const storedLanguage = localStorage.getItem('language');
 const browserLanguage = navigator.language || '';
