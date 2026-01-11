@@ -4,14 +4,27 @@
     "area",
     "gdp",
     "life_expectancy",
-    "co2_per_capita",
+    "mobile_subscriptions",
     "population_density",
     "inflation",
     "internet_users",
     "electricity_access",
     "unemployment",
     "north_south",
-    "east_west"
+    "east_west",
+    "tourism_arrivals",
+    "forest_area",
+    "urban_population",
+    "air_pollution",
+    "renewable_electricity",
+    "electricity_from_hydro",
+    "electricity_from_nuclear",
+    "electricity_from_gas",
+    "electricity_from_oil",
+    "electricity_from_coal",
+    "energy_use_per_capita",
+    "alcohol_consumption",
+    "fertility_rate"
   ],
   "categories": [
     {
@@ -39,10 +52,10 @@
       "indicator": "SP.DYN.LE00.IN"
     },
     {
-      "id": "co2_per_capita",
-      "label": "CO2 par habitant (t)",
+      "id": "mobile_subscriptions",
+      "label": "Abonnements mobiles (pour 100)",
       "source": "wb",
-      "indicator": "EN.ATM.CO2E.PC"
+      "indicator": "IT.CEL.SETS.P2"
     },
     {
       "id": "population_density",
@@ -85,6 +98,84 @@
       "label": "Est/Ouest (longitude)",
       "source": "rest",
       "field": "longitude"
+    },
+    {
+      "id": "tourism_arrivals",
+      "label": "Arrivees touristiques",
+      "source": "wb",
+      "indicator": "ST.INT.ARVL"
+    },
+    {
+      "id": "forest_area",
+      "label": "Zone forestiere (%)",
+      "source": "wb",
+      "indicator": "AG.LND.FRST.ZS"
+    },
+    {
+      "id": "urban_population",
+      "label": "Population urbaine (%)",
+      "source": "wb",
+      "indicator": "SP.URB.TOTL.IN.ZS"
+    },
+    {
+      "id": "air_pollution",
+      "label": "Pollution de l'air (PM2.5)",
+      "source": "wb",
+      "indicator": "EN.ATM.PM25.MC.M3"
+    },
+    {
+      "id": "renewable_electricity",
+      "label": "Electricite renouvelable (%)",
+      "source": "wb",
+      "indicator": "EG.ELC.RNEW.ZS"
+    },
+    {
+      "id": "electricity_from_hydro",
+      "label": "Electricite hydraulique (%)",
+      "source": "wb",
+      "indicator": "EG.ELC.HYRO.ZS"
+    },
+    {
+      "id": "electricity_from_nuclear",
+      "label": "Electricite nucleaire (%)",
+      "source": "wb",
+      "indicator": "EG.ELC.NUCL.ZS"
+    },
+    {
+      "id": "electricity_from_gas",
+      "label": "Electricite gaz (%)",
+      "source": "wb",
+      "indicator": "EG.ELC.NGAS.ZS"
+    },
+    {
+      "id": "electricity_from_oil",
+      "label": "Electricite petrole (%)",
+      "source": "wb",
+      "indicator": "EG.ELC.PETR.ZS"
+    },
+    {
+      "id": "electricity_from_coal",
+      "label": "Electricite charbon (%)",
+      "source": "wb",
+      "indicator": "EG.ELC.COAL.ZS"
+    },
+    {
+      "id": "energy_use_per_capita",
+      "label": "Consommation d'energie (kg eq petrole/hab)",
+      "source": "wb",
+      "indicator": "EG.USE.PCAP.KG.OE"
+    },
+    {
+      "id": "alcohol_consumption",
+      "label": "Consommation d'alcool (L/hab)",
+      "source": "wb",
+      "indicator": "SH.ALC.PCAP.LI"
+    },
+    {
+      "id": "fertility_rate",
+      "label": "Fertilite (enfants par femme)",
+      "source": "wb",
+      "indicator": "SP.DYN.TFRT.IN"
     }
   ],
   "category_sets": [
@@ -111,6 +202,39 @@
         "internet_users",
         "electricity_access",
         "unemployment"
+      ]
+    },
+    {
+      "id": "energy",
+      "label": "Energie",
+      "categories": [
+        "population",
+        "area",
+        "north_south",
+        "east_west",
+        "energy_use_per_capita",
+        "renewable_electricity",
+        "electricity_from_hydro",
+        "electricity_from_nuclear",
+        "electricity_from_gas",
+        "electricity_from_oil",
+        "electricity_from_coal"
+      ]
+    },
+    {
+      "id": "fun",
+      "label": "Advanced",
+      "categories": [
+        "population",
+        "area",
+        "north_south",
+        "east_west",
+        "tourism_arrivals",
+        "forest_area",
+        "urban_population",
+        "air_pollution",
+        "alcohol_consumption",
+        "fertility_rate"
       ]
     }
   ]

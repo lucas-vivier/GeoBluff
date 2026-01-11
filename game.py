@@ -1,6 +1,7 @@
 """Game logic for GeoBluff."""
 import json
 import random
+import time
 import unicodedata
 import uuid
 from pathlib import Path
@@ -35,6 +36,39 @@ DEFAULT_CATEGORY_SETS = [
             "electricity_access",
             "unemployment"
         ]
+    },
+    {
+        "id": "energy",
+        "label": "Energie",
+        "categories": [
+            "population",
+            "area",
+            "north_south",
+            "east_west",
+            "energy_use_per_capita",
+            "renewable_electricity",
+            "electricity_from_hydro",
+            "electricity_from_nuclear",
+            "electricity_from_gas",
+            "electricity_from_oil",
+            "electricity_from_coal"
+        ]
+    },
+    {
+        "id": "fun",
+        "label": "Advanced",
+        "categories": [
+            "population",
+            "area",
+            "north_south",
+            "east_west",
+            "tourism_arrivals",
+            "forest_area",
+            "urban_population",
+            "air_pollution",
+            "alcohol_consumption",
+            "fertility_rate"
+        ]
     }
 ]
 
@@ -43,20 +77,34 @@ CONFIG_FILE = Path(__file__).parent / "categories_config.json"
 SUPPORTED_LANGUAGES = {"fr", "en"}
 DEFAULT_LANGUAGE = "fr"
 game_language = DEFAULT_LANGUAGE
+PRESENCE_TIMEOUT_SECONDS = 6
 
 CATEGORY_LABELS_EN = {
     "population": "Population",
     "area": "Area (km2)",
     "gdp": "GDP ($)",
     "life_expectancy": "Life expectancy (years)",
-    "co2_per_capita": "CO2 per capita (t)",
+    "mobile_subscriptions": "Mobile subscriptions (per 100)",
     "population_density": "Density (people/km2)",
     "inflation": "Annual inflation (%)",
     "internet_users": "Internet users (%)",
     "electricity_access": "Electricity access (%)",
     "unemployment": "Unemployment (%)",
     "north_south": "North/South (latitude)",
-    "east_west": "East/West (longitude)"
+    "east_west": "East/West (longitude)",
+    "tourism_arrivals": "Tourism arrivals",
+    "forest_area": "Forest area (%)",
+    "urban_population": "Urban population (%)",
+    "air_pollution": "Air pollution (PM2.5)",
+    "renewable_electricity": "Renewable electricity (%)",
+    "electricity_from_hydro": "Hydroelectricity (%)",
+    "electricity_from_nuclear": "Nuclear electricity (%)",
+    "electricity_from_gas": "Gas electricity (%)",
+    "electricity_from_oil": "Oil electricity (%)",
+    "electricity_from_coal": "Coal electricity (%)",
+    "energy_use_per_capita": "Energy use (kg oil eq/capita)",
+    "alcohol_consumption": "Alcohol consumption (L/capita)",
+    "fertility_rate": "Fertility rate (births per woman)"
 }
 
 TRANSLATIONS = {
@@ -285,18 +333,33 @@ def new_game(cards_per_player=7, language=None, game_id=None, category_set=None)
         "reveal_index": 0,
         "pending_card": None,  # Card being placed (not yet validated)
         "pending_position": 0,  # Index where card will be inserted (0 = leftmost)
-        "language": game_language
+        "language": game_language,
+        "presence": {}
     }
 
     games[game_id] = game_state
     return get_state(game_id)
 
-def get_state(game_id):
+def get_state(game_id, client_id=None):
     """Get current game state (hiding opponent's card values)."""
     if game_id not in games:
         return None
 
     game_state = games[game_id]
+    now = time.time()
+    presence = game_state.setdefault("presence", {})
+    stale = [cid for cid, ts in presence.items() if now - ts > PRESENCE_TIMEOUT_SECONDS]
+    for cid in stale:
+        presence.pop(cid, None)
+    if client_id:
+        presence[client_id] = now
+
+    active_clients = len(presence)
+    if client_id:
+        other_present = any(cid != client_id for cid in presence)
+    else:
+        other_present = active_clients > 1
+
     state = game_state.copy()
     language = get_language(game_id)
     state["language"] = language
@@ -359,6 +422,9 @@ def get_state(game_id):
 
     state.pop("message_parts", None)
     state.pop("category_pool", None)
+    state.pop("presence", None)
+    state["active_clients"] = active_clients
+    state["other_present"] = other_present
 
     return state
 

@@ -106,9 +106,9 @@ async def set_language(req: SetLanguageRequest):
 
 
 @app.get("/api/game-state")
-async def game_state(game_id: str):
+async def game_state(game_id: str, client_id: Optional[str] = None):
     """Get current game state."""
-    state = game.get_state(game_id)
+    state = game.get_state(game_id, client_id=client_id)
     if state is None:
         return JSONResponse({"error": "No game in progress"}, status_code=404)
     return state

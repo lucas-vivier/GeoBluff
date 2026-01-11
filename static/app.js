@@ -5,6 +5,9 @@ let toastTimeout = null;
 let isLoading = false;
 let gameId = null;
 let revealEnabled = true;
+let pollInterval = null;
+
+const POLL_INTERVAL_MS = 1000;
 
 // Get game_id from URL if present
 function getGameIdFromUrl() {
@@ -61,9 +64,19 @@ const cardsCountSelect = document.getElementById('cards-count');
 const lastCapitalDiv = document.getElementById('last-capital');
 const languageBtn = document.getElementById('language-btn');
 const languageBtnStart = document.getElementById('language-btn-start');
-const categorySetInputs = document.querySelectorAll('input[name="category-set"]');
+const categorySetSelect = document.getElementById('category-set-select');
+const categorySetDesc = document.getElementById('category-set-desc');
+const modeSelect = document.getElementById('play-mode-select');
+const presenceIndicator = document.getElementById('presence-indicator');
+const presenceText = document.getElementById('presence-text');
+const inviteModal = document.getElementById('invite-modal');
+const inviteLinkInput = document.getElementById('invite-link-input');
+const inviteCopyBtn = document.getElementById('invite-copy-btn');
+const inviteCloseBtn = document.getElementById('invite-close-btn');
 
 let currentLanguage = 'fr';
+const clientId = getOrCreateClientId();
+let currentMode = 'local';
 
 const translations = {
     fr: {
@@ -74,6 +87,10 @@ const translations = {
         category_set_basic_desc: 'Population, superficie, nord/sud, est/ouest',
         category_set_economics: 'Economie',
         category_set_economics_desc: 'Basique + PIB, inflation, chomage, internet, electricite',
+        category_set_energy: 'Energie',
+        category_set_energy_desc: 'Basique + mix electrique, renouvelable, nucleaire, charbon, gaz',
+        category_set_fun: 'Advanced',
+        category_set_fun_desc: 'Basique + tourisme, forets, pollution, alcool, fertilite',
         chip_population: '👥 Population',
         chip_area: '📐 Superficie',
         chip_gdp: '💰 PIB',
@@ -120,7 +137,19 @@ const translations = {
         toggle_opponent_title: 'Masquer/afficher adversaire',
         toggle_opponent_show: 'Afficher adversaire',
         toggle_opponent_hide: 'Masquer adversaire',
-        tutorial_title: 'Tutoriel'
+        tutorial_title: 'Tutoriel',
+        copy_link_success: 'Lien copie !',
+        copy_link_error: 'Copie impossible.',
+        copy_link_missing: "Demarrez une partie d'abord.",
+        presence_waiting: "En attente d'un adversaire",
+        presence_connected: 'Adversaire connecte',
+        mode_title: 'Mode de jeu',
+        mode_local: 'Passer le telephone',
+        mode_online: 'En ligne (en cours)',
+        invite_title: 'Inviter un joueur',
+        invite_description: 'Copiez ce lien et partagez-le.',
+        invite_copy: 'Copier le lien',
+        invite_close: 'Fermer'
     },
     en: {
         subtitle: 'Geography game for two teams',
@@ -130,6 +159,10 @@ const translations = {
         category_set_basic_desc: 'Population, area, north/south, east/west',
         category_set_economics: 'Economics',
         category_set_economics_desc: 'Basic + GDP, inflation, unemployment, internet, electricity',
+        category_set_energy: 'Energy',
+        category_set_energy_desc: 'Basic + power mix, renewables, nuclear, coal, gas',
+        category_set_fun: 'Advanced',
+        category_set_fun_desc: 'Basic + tourism, forests, pollution, alcohol, birth rate',
         chip_population: '👥 Population',
         chip_area: '📐 Area',
         chip_gdp: '💰 GDP',
@@ -176,9 +209,31 @@ const translations = {
         toggle_opponent_title: 'Show/hide opponent',
         toggle_opponent_show: 'Show opponent',
         toggle_opponent_hide: 'Hide opponent',
-        tutorial_title: 'Tutorial'
+        tutorial_title: 'Tutorial',
+        copy_link_success: 'Link copied!',
+        copy_link_error: 'Copy failed.',
+        copy_link_missing: 'Start a game first.',
+        presence_waiting: 'Waiting for opponent',
+        presence_connected: 'Opponent connected',
+        mode_title: 'Game mode',
+        mode_local: 'Pass the phone',
+        mode_online: 'Online (in progress)',
+        invite_title: 'Invite a player',
+        invite_description: 'Copy this link and share it.',
+        invite_copy: 'Copy link',
+        invite_close: 'Close'
     }
 };
+
+function getOrCreateClientId() {
+    const existing = localStorage.getItem('clientId');
+    if (existing) return existing;
+    const id = (window.crypto && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : `client-${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem('clientId', id);
+    return id;
+}
 
 function t(key, params = {}) {
     const bundle = translations[currentLanguage] || translations.fr;
@@ -213,26 +268,46 @@ function applyTranslations() {
         languageBtnStart.textContent = btnText;
         languageBtnStart.title = btnTitle;
     }
+
+    updateCategorySetDescription();
+}
+
+function updateCategorySetDescription() {
+    if (!categorySetSelect || !categorySetDesc) return;
+    const selected = categorySetSelect.value || 'basic';
+    const descKey = `category_set_${selected}_desc`;
+    categorySetDesc.textContent = t(descKey);
+}
+
+function syncModeSelection() {
+    if (!modeSelect) return;
+    const stored = localStorage.getItem('playMode');
+    if (stored) {
+        modeSelect.value = stored;
+    }
+    currentMode = modeSelect.value || 'local';
+    modeSelect.addEventListener('change', () => {
+        currentMode = modeSelect.value || 'local';
+        localStorage.setItem('playMode', currentMode);
+    });
 }
 
 function getSelectedCategorySet() {
-    const selected = document.querySelector('input[name="category-set"]:checked');
-    return selected ? selected.value : null;
+    return categorySetSelect ? categorySetSelect.value : null;
 }
 
 function syncCategorySetSelection() {
-    if (!categorySetInputs || categorySetInputs.length === 0) return;
+    if (!categorySetSelect) return;
     const stored = localStorage.getItem('categorySet');
     if (stored) {
-        const match = Array.from(categorySetInputs).find((input) => input.value === stored);
-        if (match) {
-            match.checked = true;
-        }
+        categorySetSelect.value = stored;
+    } else {
+        categorySetSelect.value = 'basic';
     }
-    categorySetInputs.forEach((input) => {
-        input.addEventListener('change', () => {
-            localStorage.setItem('categorySet', input.value);
-        });
+    updateCategorySetDescription();
+    categorySetSelect.addEventListener('change', () => {
+        localStorage.setItem('categorySet', categorySetSelect.value);
+        updateCategorySetDescription();
     });
 }
 
@@ -282,17 +357,27 @@ function formatValue(value, category) {
         area: { million: ' M km²', thousand: 'k km²', unit: ' km²' },
         gdp: { trillion: ' T$', billion: ' B$', million: ' M$', unit: ' $' },
         life_expectancy: ' yrs',
-        co2_per_capita: ' t',
+        mobile_subscriptions: ' /100',
         population_density: ' people/km²',
-        percent: ' %'
+        percent: ' %',
+        tourism: { million: ' M', thousand: ' k' },
+        air_pollution: ' ug/m3',
+        energy_use: ' kg oe',
+        alcohol: ' L',
+        fertility_rate: ' births/woman'
     } : {
         population: { billion: ' Mrd', million: ' M', thousand: ' k' },
         area: { million: ' M km²', thousand: 'k km²', unit: ' km²' },
         gdp: { trillion: ' T$', billion: ' Mrd$', million: ' M$', unit: ' $' },
         life_expectancy: ' ans',
-        co2_per_capita: ' t',
+        mobile_subscriptions: ' /100',
         population_density: ' hab/km²',
-        percent: ' %'
+        percent: ' %',
+        tourism: { million: ' M', thousand: ' k' },
+        air_pollution: ' ug/m3',
+        energy_use: ' kg eq',
+        alcohol: ' L',
+        fertility_rate: ' enfants/femme'
     };
 
     if (category === 'population') {
@@ -315,8 +400,8 @@ function formatValue(value, category) {
     if (category === 'life_expectancy') {
         return num.toFixed(1) + units.life_expectancy;
     }
-    if (category === 'co2_per_capita') {
-        return num.toFixed(2) + units.co2_per_capita;
+    if (category === 'mobile_subscriptions') {
+        return num.toFixed(1) + units.mobile_subscriptions;
     }
     if (category === 'population_density') {
         return num.toFixed(1) + units.population_density;
@@ -332,6 +417,47 @@ function formatValue(value, category) {
     }
     if (category === 'unemployment') {
         return num.toFixed(1) + units.percent;
+    }
+    if (category === 'tourism_arrivals') {
+        if (num >= 1e6) return (num / 1e6).toFixed(1) + units.tourism.million;
+        if (num >= 1e3) return (num / 1e3).toFixed(0) + units.tourism.thousand;
+        return num.toFixed(0);
+    }
+    if (category === 'forest_area') {
+        return num.toFixed(1) + units.percent;
+    }
+    if (category === 'urban_population') {
+        return num.toFixed(1) + units.percent;
+    }
+    if (category === 'air_pollution') {
+        return num.toFixed(1) + units.air_pollution;
+    }
+    if (category === 'renewable_electricity') {
+        return num.toFixed(1) + units.percent;
+    }
+    if (category === 'electricity_from_hydro') {
+        return num.toFixed(1) + units.percent;
+    }
+    if (category === 'electricity_from_nuclear') {
+        return num.toFixed(1) + units.percent;
+    }
+    if (category === 'electricity_from_gas') {
+        return num.toFixed(1) + units.percent;
+    }
+    if (category === 'electricity_from_oil') {
+        return num.toFixed(1) + units.percent;
+    }
+    if (category === 'electricity_from_coal') {
+        return num.toFixed(1) + units.percent;
+    }
+    if (category === 'energy_use_per_capita') {
+        return num.toFixed(0) + units.energy_use;
+    }
+    if (category === 'alcohol_consumption') {
+        return num.toFixed(1) + units.alcohol;
+    }
+    if (category === 'fertility_rate') {
+        return num.toFixed(1) + units.fertility_rate;
     }
     if (category === 'north_south') {
         return formatHemisphere(value, 'N', 'S');
@@ -566,6 +692,16 @@ function render() {
 
     // Update category
     categoryName.textContent = gameState.category_label;
+    if (presenceIndicator && presenceText) {
+        const isOnlineMode = currentMode === 'online';
+        presenceIndicator.classList.toggle('hidden', !isOnlineMode);
+        if (isOnlineMode) {
+            const isConnected = Boolean(gameState.other_present);
+            presenceIndicator.classList.toggle('connected', isConnected);
+            presenceIndicator.classList.toggle('waiting', !isConnected);
+            presenceText.textContent = t(isConnected ? 'presence_connected' : 'presence_waiting');
+        }
+    }
 
     // Update board indicators based on category
     const minusIndicator = document.querySelector('.board-indicator.minus');
@@ -789,9 +925,81 @@ function hideToast() {
     messageArea.classList.add('hidden');
 }
 
+function getInviteLink() {
+    if (!gameId) return null;
+    const url = new URL(window.location);
+    url.searchParams.set('game', gameId);
+    return url.toString();
+}
+
+function showInviteModal(inviteLink) {
+    if (!inviteModal || !inviteLinkInput) return;
+    inviteLinkInput.value = inviteLink || '';
+    inviteModal.classList.remove('hidden');
+}
+
+function hideInviteModal() {
+    if (!inviteModal) return;
+    inviteModal.classList.add('hidden');
+}
+
+async function copyInviteLink() {
+    const inviteLink = inviteLinkInput ? inviteLinkInput.value : getInviteLink();
+    if (!inviteLink) {
+        showToast(t('copy_link_missing'));
+        return;
+    }
+
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(inviteLink);
+        } else {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = inviteLink;
+            tempInput.setAttribute('readonly', '');
+            tempInput.style.position = 'absolute';
+            tempInput.style.left = '-9999px';
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+        }
+        showToast(t('copy_link_success'));
+    } catch (err) {
+        console.error('Copy link failed:', err);
+        showToast(t('copy_link_error'));
+    }
+}
+
+function startPolling() {
+    stopPolling();
+    if (currentMode !== 'online') return;
+    pollInterval = setInterval(async () => {
+        if (!gameId) return;
+        try {
+            const state = await api(`game-state?game_id=${gameId}&client_id=${clientId}`, 'GET');
+            if (!state.error) {
+                gameState = state;
+                render();
+            }
+        } catch (err) {
+            console.error('Polling error:', err);
+        }
+    }, POLL_INTERVAL_MS);
+}
+
+function stopPolling() {
+    if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+    }
+}
+
 // Start new game
 async function startGame() {
     const cardsCount = cardsCountSelect ? parseInt(cardsCountSelect.value) : 7;
+    currentMode = modeSelect ? modeSelect.value : 'local';
+    localStorage.setItem('playMode', currentMode);
     try {
         const categorySet = getSelectedCategorySet();
         gameState = await api('new-game', 'POST', {
@@ -804,6 +1012,13 @@ async function startGame() {
         startScreen.classList.add('hidden');
         gameScreen.classList.remove('hidden');
         render();
+        if (currentMode === 'online') {
+            const inviteLink = getInviteLink();
+            showInviteModal(inviteLink);
+            startPolling();
+        } else {
+            stopPolling();
+        }
 
         // Show tutorial for first-time users
         if (shouldShowTutorial()) {
@@ -820,6 +1035,8 @@ function goHome() {
     startScreen.classList.remove('hidden');
     gameState = null;
     gameId = null;
+    stopPolling();
+    hideInviteModal();
     // Clear game_id from URL
     const url = new URL(window.location);
     url.searchParams.delete('game');
@@ -921,6 +1138,20 @@ rulesModal.addEventListener('click', (e) => {
         rulesModal.classList.add('hidden');
     }
 });
+
+if (inviteCopyBtn) {
+    inviteCopyBtn.addEventListener('click', copyInviteLink);
+}
+if (inviteCloseBtn) {
+    inviteCloseBtn.addEventListener('click', hideInviteModal);
+}
+if (inviteModal) {
+    inviteModal.addEventListener('click', (e) => {
+        if (e.target === inviteModal) {
+            hideInviteModal();
+        }
+    });
+}
 
 // Tutorial walkthrough
 const tutorialOverlay = document.getElementById('tutorial-overlay');
@@ -1064,19 +1295,26 @@ const browserLanguage = navigator.language || '';
 currentLanguage = storedLanguage || (browserLanguage.startsWith('en') ? 'en' : 'fr');
 applyTranslations();
 syncCategorySetSelection();
+syncModeSelection();
 
 // Check if there's a game_id in URL and try to load it
 async function initFromUrl() {
     const urlGameId = getGameIdFromUrl();
     if (urlGameId) {
         try {
-            const state = await api(`game-state?game_id=${urlGameId}`, 'GET');
+            const state = await api(`game-state?game_id=${urlGameId}&client_id=${clientId}`, 'GET');
             if (!state.error) {
+                currentMode = 'online';
+                localStorage.setItem('playMode', currentMode);
+                if (modeSelect) {
+                    modeSelect.value = 'online';
+                }
                 gameId = urlGameId;
                 gameState = state;
                 startScreen.classList.add('hidden');
                 gameScreen.classList.remove('hidden');
                 render();
+                startPolling();
                 return;
             }
         } catch (err) {
