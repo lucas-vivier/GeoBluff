@@ -281,14 +281,12 @@ function updateCategorySetDescription() {
 
 function syncModeSelection() {
     if (!modeSelect) return;
-    const stored = localStorage.getItem('playMode');
-    if (stored) {
-        modeSelect.value = stored;
-    }
-    currentMode = modeSelect.value || 'local';
+    // Always default to local mode on page load - clear any stored preference
+    localStorage.removeItem('playMode');
+    modeSelect.value = 'local';
+    currentMode = 'local';
     modeSelect.addEventListener('change', () => {
         currentMode = modeSelect.value || 'local';
-        localStorage.setItem('playMode', currentMode);
     });
 }
 
@@ -999,7 +997,6 @@ function stopPolling() {
 async function startGame() {
     const cardsCount = cardsCountSelect ? parseInt(cardsCountSelect.value) : 7;
     currentMode = modeSelect ? modeSelect.value : 'local';
-    localStorage.setItem('playMode', currentMode);
     try {
         const categorySet = getSelectedCategorySet();
         gameState = await api('new-game', 'POST', {
@@ -1011,6 +1008,15 @@ async function startGame() {
         updateUrlWithGameId(gameId);
         startScreen.classList.add('hidden');
         gameScreen.classList.remove('hidden');
+        // Force opponent-hidden by default (opponent hidden = more space)
+        const player2Area = document.querySelector('.player2-area');
+        player2Area.classList.add('collapsed');
+        gameScreen.classList.add('opponent-hidden');
+        console.log('FORCE opponent-hidden added:', gameScreen.className); // DEBUG
+        if (toggleOpponentBtn) {
+            toggleOpponentBtn.textContent = '👁️‍🗨️';
+            toggleOpponentBtn.classList.remove('active');
+        }
         render();
         if (currentMode === 'online') {
             const inviteLink = getInviteLink();
@@ -1297,31 +1303,15 @@ applyTranslations();
 syncCategorySetSelection();
 syncModeSelection();
 
-// Check if there's a game_id in URL and try to load it
-async function initFromUrl() {
+// Clear any game_id from URL on page load to always start fresh
+function initFromUrl() {
     const urlGameId = getGameIdFromUrl();
     if (urlGameId) {
-        try {
-            const state = await api(`game-state?game_id=${urlGameId}&client_id=${clientId}`, 'GET');
-            if (!state.error) {
-                currentMode = 'online';
-                localStorage.setItem('playMode', currentMode);
-                if (modeSelect) {
-                    modeSelect.value = 'online';
-                }
-                gameId = urlGameId;
-                gameState = state;
-                startScreen.classList.add('hidden');
-                gameScreen.classList.remove('hidden');
-                render();
-                startPolling();
-                return;
-            }
-        } catch (err) {
-            console.error('Error loading game from URL:', err);
-        }
+        // Clear game_id from URL - always start fresh on refresh
+        const url = new URL(window.location);
+        url.searchParams.delete('game');
+        window.history.replaceState({}, '', url);
     }
-    // No game in URL or failed to load - sync language for future games
     syncLanguage();
 }
 
