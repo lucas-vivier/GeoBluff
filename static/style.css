@@ -429,7 +429,6 @@ body {
     position: relative;
     border: 1px solid rgba(148, 163, 184, 0.25);
     box-shadow: var(--shadow);
-    overflow: hidden;
 }
 
 .category-header {
@@ -484,6 +483,8 @@ body {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .board-indicator {
@@ -535,6 +536,8 @@ body {
     padding: 0.15rem;
     scroll-behavior: smooth;
     gap: 0.25rem;
+    min-width: 0;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Use auto margins on first/last cards to center content */
@@ -980,14 +983,17 @@ body {
 }
 
 #game-screen.opponent-hidden .board-wrapper {
-    flex: 0 0 auto;
+    flex: 1;
     width: 100%;
     justify-content: space-between;
+    min-width: 0;
 }
 
 #game-screen.opponent-hidden .board-cards {
-    flex: 0 0 auto;
+    flex: 1;
     min-height: 0;
+    min-width: 0;
+    overflow-x: auto;
 }
 
 #game-screen.opponent-hidden .category-header {
